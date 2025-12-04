@@ -593,7 +593,7 @@ function SkinNotes:selection_byhover()
           return
      end     
 
-     local fart = ''
+     local skinHighlightName = ''
      for curIndex = skinObjectsPerIDs[1], skinObjectsPerIDs[#skinObjectsPerIDs] do
           local curSkinIndex = curIndex - (16 * (self.selectSkinPagePositionIndex - 1))
 
@@ -612,7 +612,7 @@ function SkinNotes:selection_byhover()
                if luaSpriteExists(displaySkinIconButton) == false then return end
                playAnim(displaySkinIconButton, 'hover', true)
 
-               fart = self.totalSkinObjectNames[self.selectSkinPagePositionIndex][curSkinIndex]
+               skinHighlightName = self.totalSkinObjectNames[self.selectSkinPagePositionIndex][curSkinIndex]
           end
           if skinObjectsPerHovered[curSkinIndex] == false and nonCurrentPreSelectedSkin and nonCurrentCurSelectedSkin then
                if luaSpriteExists(displaySkinIconButton) == false then return end
@@ -628,8 +628,8 @@ function SkinNotes:selection_byhover()
      end
 
      if getPropertyFromClass('flixel.FlxG', 'mouse.justMoved') == true then
-          if fart ~= '' then
-               setTextString('skinHighlightName', fart)
+          if skinHighlightName ~= '' then
+               setTextString('skinHighlightName', skinHighlightName)
                return
           else
                setTextString('skinHighlightName', '')
