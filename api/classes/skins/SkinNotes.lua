@@ -23,6 +23,8 @@ local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 local keyboardJustConditionPress    = funkinlua.keyboardJustConditionPress
 local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
+-- TODO: This class sucks cuz it violates the single responsibility principle
+-- TODO: handling everthing instead of each module responsible for only one aspect
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 ---@class SkinNotes
@@ -946,12 +948,14 @@ function SkinNotes:preview_animation(loadAnim)
           end
 
           --[[ 
-               I've spent hours finding a solution to fix a stupid visual bug where switching to the 
-               preview colored animations for the strums, by using the buttons below will remain the same 
-               previous animations until pressing a button to play an animation and adding "mouseReleased('left')" 
-               to this if statement, literally solve this stupid issue
+               I've spent literal hours finding a solution to fix a stupid visual bug. Switching to preview 
+               colored animations for the strums. Then using the preview animation buttons below will remain 
+               the same previous animations until pressing a button to play an animation. 
+               
+               And for some reason adding "mouseReleased('left')" function to this "if" statement here below. 
+               Somehow fucking solves this stupid issue, why? idk.
 
-               Welcome to programming where Occam's Razor is somehow the main solution to every problem
+               Sometimes the strangest and unexpected random solutions literally solves a stupid problem.
                     ~ Meme1079
           ]]
           if (conditionPressedLeft or conditionPressedRight) or mouseReleased('left') then
