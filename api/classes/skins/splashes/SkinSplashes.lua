@@ -25,6 +25,13 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinSplashSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
+---@alias ParentClasses
+---| 'extends' # The classes' extension from itself, not related from the superclass.
+---| 'inherit' # The superclass that will be derived from this subclass.
+
+--- Allows for the classes inherit multiple parent classes either as an inherit or extension.
+---@param parentClasses ParentClasses The multiple classes to inherit.
+---@return table Returns all the parent classes into one table.
 local function inheritedClasses(parentClasses)
      local parentClassesOutput = {}
      if parentClasses.extends ~= nil then
@@ -37,7 +44,7 @@ local function inheritedClasses(parentClasses)
                parentClassesOutput[#parentClassesOutput+1] = classes
           end
      end
-     
+
      local classes = {}
      function classes:__index(index)
           for classesIndex = 1, #parentClassesOutput do
@@ -51,19 +58,18 @@ local function inheritedClasses(parentClasses)
      return setmetatable({}, classes)
 end
 
---- Main class for the splash skin state inherited by many subclasses.
+--- Main class for the splash skin state inherited by many of its extended subclasses.
 ---@class SkinSplashes: SkinSplashesPreview, SkinSplashesSearch
 local SkinSplashes = inheritedClasses({
      inherit = {SkinNotes}, 
      extends = {SkinSplashesPreview, SkinSplashesSearch}
 })
 
---- Initializes the creation of a skin state to display skins.
----@param stateClass
----@param stateStart string The given starting skin state to display first when created.
----@param stateType table[string] The given skin states within a group to display later.
----@param statePath table[string] The given corresponding image paths to each skin states.
----@return table
+--- Initializes the attributes for the splash skin state to use.
+---@param stateClass string The corresponding name for this skin state.
+---@param statePath string The corresponding image path to display for this skin state.
+---@param statePrefix string the corresponding image prefix name for this skin state. 
+---@return SkinSplashes
 function SkinSplashes:new(stateClass, statePaths, statePrefix)
      local self = setmetatable(setmetatable({}, self), {__index = self})
      self.stateClass  = stateClass
@@ -73,7 +79,7 @@ function SkinSplashes:new(stateClass, statePaths, statePrefix)
      return self
 end
 
---- Loads multiple-unique data to the class itself, to be used later.
+--- Loads multiple attribute properties (including its save data) for the class, used after initialization.
 ---@return nil
 function SkinSplashes:load()
      self.totalSkins     = states.getTotalSkins(self.stateClass, self.statePaths)
@@ -174,8 +180,8 @@ function SkinSplashes:load()
      self.noteStaticPreviewSkinImagePath          = previewSkinImagePath
 end
 
---- Creates a 16 chunk display of the selected skins.
----@param index? integer The specified page index for the given chunk to display.
+--- Creates a chunk to display to selected specific skins to choose from.
+---@param index? integer The given page-index for the chunk to display, if it exists.
 ---@return nil
 function SkinSplashes:create(index)
      local index = index == nil and 1 or index

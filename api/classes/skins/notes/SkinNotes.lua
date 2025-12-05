@@ -30,6 +30,13 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
+---@alias ParentClasses
+---| 'extends' # The classes' extension from itself, not related from the superclass.
+---| 'inherit' # The superclass that will be derived from this subclass.
+
+--- Allows for the classes inherit multiple parent classes either as an inherit or extension.
+---@param parentClasses ParentClasses The multiple classes to inherit.
+---@return table Returns all the parent classes into one table.
 local function inheritedClasses(parentClasses)
      local parentClassesOutput = {}
      if parentClasses.extends ~= nil then
@@ -56,17 +63,17 @@ local function inheritedClasses(parentClasses)
      return setmetatable({}, classes)
 end
 
---- Main class for the note skin state inherited by many subclasses.
+--- Main class for the note skin state inherited by many of its extended subclasses.
 ---@class SkinNotes: SkinNotesPage, SkinNotesSelection, SkinNotesPreview, SkinNotesCheckbox, SkinNotesSearch
 local SkinNotes = inheritedClasses({
      extends = {SkinNotesPage, SkinNotesSelection, SkinNotesPreview, SkinNotesCheckbox, SkinNotesSearch}
 })
 
---- Initializes the creation of a skin state to display skins.
----@param stateClass string The given tag for the class to inherit.
----@param statePath string The corresponding image path to display its skins.
----@param statePrefix string the corresponding prefix image for the said state. 
----@return table
+--- Initializes the attributes for the note skin state to use.
+---@param stateClass string The corresponding name for this skin state.
+---@param statePath string The corresponding image path to display for this skin state.
+---@param statePrefix string the corresponding image prefix name for this skin state. 
+---@return SkinNotes
 function SkinNotes:new(stateClass, statePaths, statePrefix)
      local self = setmetatable(setmetatable({}, self), {__index = self})
      self.stateClass  = stateClass
@@ -76,7 +83,7 @@ function SkinNotes:new(stateClass, statePaths, statePrefix)
      return self
 end
 
---- Loads multiple-unique data to the class itself, to be used later.
+--- Loads multiple attribute properties (including its save data) for the class, used after initialization.
 ---@return nil
 function SkinNotes:load()
      self.totalSkins     = states.getTotalSkins(self.stateClass, false)
@@ -160,8 +167,7 @@ function SkinNotes:load()
      self.searchAnimationObjectMissing = table.new(16, 0)
 end
 
---- Checks if the any of skin states' data misaligned with each other.
---- If found it will reset the skin states' data to its default.
+--- Checks for any error(s) within the classes' attribute properties, resetting to default if found.
 ---@return nil
 function SkinNotes:load_preventError()
      local stateSkinTotalPath = setmetatable(states.getTotalSkins(self.stateClass, true), {
@@ -195,8 +201,27 @@ function SkinNotes:load_preventError()
      end
 end
 
---- Creates a 16 chunk display of the selected skins.
----@param index? integer The specified page index for the given chunk to display.
+--- Preloads multiple chunks by moving from page to page, which (might) improves optimization significantly.
+---@return nil
+function SkinNotes:preload()
+     for pages = self.totalSkinLimit, 1, -1 do
+          if pages == self.selectSkinPagePositionIndex then
+               self:create(pages)
+          end
+     end
+end
+
+--- Precaches the images within the note skin state, which improves optimization significantly.
+---@return nil
+function SkinNotes:precache()
+     for _, skins in pairs(states.getTotalSkins(self.stateClass, true)) do
+          precacheImage(skins)
+     end
+     precacheImage('ui/buttons/display_button')
+end
+ 
+--- Creates a chunk to display to selected specific skins to choose from.
+---@param index? integer The given page-index for the chunk to display, if it exists.
 ---@return nil
 function SkinNotes:create(index)
      local index = index == nil and 1 or index
@@ -282,27 +307,7 @@ function SkinNotes:create(index)
      self:save_selection()
 end
 
---- Preloads multiple existing chunks by creating and deleting, "improves optimization significantly".
----@return nil
-function SkinNotes:preload()
-     for pages = self.totalSkinLimit, 1, -1 do
-          if pages == self.selectSkinPagePositionIndex then
-               self:create(pages)
-          end
-     end
-end
-
---- Precaches the total amount of skin images for optimization purposes.
----@return nil
-function SkinNotes:precache()
-     for _, skins in pairs(states.getTotalSkins(self.stateClass, true)) do
-          precacheImage(skins)
-     end
-     precacheImage('ui/buttons/display_button')
-end
-
---- Removes all the sprites in the given state.
---- Only used for switching states.
+--- Destroys a chunk of the note skin state (page-index dependent), used only for switching states.
 ---@return nil
 function SkinNotes:destroy()
      local curPage = self.selectSkinPagePositionIndex
@@ -339,14 +344,14 @@ function SkinNotes:destroy()
      callOnScripts('skinSearchInput_callResetSearch')
 end
 
---- Saves the data when exiting.
+--- Saves the attributes current properties when exiting the main skin state.
 ---@return nil
 function SkinNotes:save()
      if keyboardJustConditionPressed('ONE',    not getVar('skinSearchInputFocus')) then SkinNoteSave:flush() end
      if keyboardJustConditionPressed('ESCAPE', not getVar('skinSearchInputFocus')) then SkinNoteSave:flush() end
 end
 
---- Loads the save data from the current class state.
+--- Loads the saved attribute properties and other elements for graphical correction.
 ---@return nil
 function SkinNotes:save_load()
      self:create(self.selectSkinPagePositionIndex)
@@ -361,7 +366,7 @@ function SkinNotes:save_load()
      setTextString('genInfoStateName', ' '..self.stateClass:upperAtStart())
 end
 
---- Loads and syncs the saved selected skin.
+--- Loads and syncs the saved selected highlight. 
 ---@return nil
 function SkinNotes:save_selection()
      if self.selectSkinPreSelectedIndex == 0 then
