@@ -2,8 +2,8 @@ luaDebugMode = true
 
 local SkinSaves    = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinSaves'
 local SkinStates   = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinStates'
-local SkinSplashes = require 'mods.NoteSkin Selector Remastered.api.classes.skins.SkinSplashes'
-local SkinNotes    = require 'mods.NoteSkin Selector Remastered.api.classes.skins.SkinNotes'
+local SkinNotes    = require 'mods.NoteSkin Selector Remastered.api.classes.skins.notes.SkinNotes'
+local SkinSplashes = require 'mods.NoteSkin Selector Remastered.api.classes.skins.splashes.SkinSplashes'
 
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'

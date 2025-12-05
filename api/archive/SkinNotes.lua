@@ -23,12 +23,11 @@ local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 local keyboardJustConditionPress    = funkinlua.keyboardJustConditionPress
 local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
--- TODO: This class sucks cuz it violates the single responsibility principle
--- TODO: handling everthing instead of each module responsible for only one aspect
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 ---@class SkinNotes
 local SkinNotes = {}
+
 --- Initializes the creation of a skin state to display skins.
 ---@param stateClass string The given tag for the class to inherit.
 ---@param statePath string The corresponding image path to display its skins.
@@ -2128,7 +2127,7 @@ function SkinNotes:search_selection_cursor()
      end
 end
 
---- Sabes the data when exiting.
+--- Saves the data when exiting.
 ---@return nil
 function SkinNotes:save()
      if keyboardJustConditionPressed('ONE',    not getVar('skinSearchInputFocus')) then SkinNoteSave:flush() end
