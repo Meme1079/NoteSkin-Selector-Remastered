@@ -25,6 +25,8 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
+local MAX_NUMBER_CHUNK = 16
+
 --- Childclass extension, main saving data component functionality for the note skin state.
 ---@class SkinNotesSave
 local SkinNotesSave = {}
@@ -63,7 +65,7 @@ function SkinNotesSave:save_selection()
      if luaSpriteExists(displaySkinIconButton) == true then
           playAnim(displaySkinIconButton, 'selected', true)
 
-          local curIndex = self.selectSkinCurSelectedIndex - (16 * (self.selectSkinPagePositionIndex - 1))
+          local curIndex = self.selectSkinCurSelectedIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
           self.totalSkinObjectSelected[self.selectSkinPagePositionIndex][curIndex] = true
      end
 end

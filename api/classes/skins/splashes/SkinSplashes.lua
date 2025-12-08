@@ -25,6 +25,8 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinSplashSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
+local MAX_NUMBER_CHUNK = 16
+
 ---@alias ParentClasses
 ---| 'inherit' # The child class to inherit and derived from its based parent class.
 ---| 'extends' # The extension properties of this class. 
@@ -109,8 +111,8 @@ function SkinSplashes:load()
      
      -- Search Properties --
 
-     self.searchSkinObjectIndex = table.new(16, 0)
-     self.searchSkinObjectPage  = table.new(16, 0)
+     self.searchSkinObjectIndex = table.new(MAX_NUMBER_CHUNK, 0)
+     self.searchSkinObjectPage  = table.new(MAX_NUMBER_CHUNK, 0)
 
      -- Slider Properties --
 

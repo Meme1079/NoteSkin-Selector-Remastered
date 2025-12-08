@@ -23,6 +23,8 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
+local MAX_NUMBER_CHUNK = 16
+
 --- Childclass extension, main selecting component functionality for the note skin state.
 ---@class SkinNotesSelection
 local SkinNotesSelection = {}
@@ -50,7 +52,7 @@ function SkinNotesSelection:selection_byclick()
      end
 
      for curIndex = skinObjectsPerIDs[1], skinObjectsPerIDs[#skinObjectsPerIDs] do
-          local curSkinIndex = curIndex - (16 * (self.selectSkinPagePositionIndex - 1))
+          local curSkinIndex = curIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
 
           local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = curIndex}
           local displaySkinIconButton   = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplate)
@@ -149,7 +151,7 @@ function SkinNotesSelection:selection_byclick()
                self.selectSkinInitSelectedIndex = 0
                SkinNoteSave:set('selectSkinInitSelectedIndex', self.stateClass, self.selectSkinInitSelectedIndex)
 
-               local curSelectSkinIndex = self.selectSkinCurSelectedIndex - (16 * (self.selectSkinPagePositionIndex - 1))
+               local curSelectSkinIndex = self.selectSkinCurSelectedIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
                if curSkinIndex ~= curSelectSkinIndex then -- fuck you bug
                     skinObjectsPerSelected[curSkinIndex] = false
                end
@@ -172,7 +174,7 @@ function SkinNotesSelection:selection_byhover()
 
      local skinHighlightName = ''
      for curIndex = skinObjectsPerIDs[1], skinObjectsPerIDs[#skinObjectsPerIDs] do
-          local curSkinIndex = curIndex - (16 * (self.selectSkinPagePositionIndex - 1))
+          local curSkinIndex = curIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
 
           local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = curIndex}
           local displaySkinIconButton   = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplate)
@@ -251,7 +253,7 @@ function SkinNotesSelection:selection_bycursor()
      end
      
      for curIndex = skinObjectsPerIDs[1], skinObjectsPerIDs[#skinObjectsPerIDs] do
-          local curSkinIndex = curIndex - (16 * (self.selectSkinPagePositionIndex - 1))
+          local curSkinIndex = curIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
 
           local previewObjectCurAnim        = self.previewAnimationObjectPrevAnims[self.previewAnimationObjectIndex]
           local previewObjectMissingAnim    = self.previewAnimationObjectMissing[self.selectSkinPagePositionIndex][curSkinIndex]

@@ -20,6 +20,8 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinSplashSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
+local MAX_NUMBER_CHUNK = 16
+
 --- Childclass extension, main search component functionality for the splash skin state.
 ---@class SkinSplashesSearch
 local SkinSplashesSearch = {}
@@ -57,44 +59,59 @@ function SkinSplashesSearch:search_create()
           end
      end
 
-     --- Searches the closest skin name it can possibly find
-     ---@param list table[string] The given list of skins for the algorithm to do its work.
-     ---@param input string The given input to search the closest skins.
-     ---@param element string What element it can return either its 'id' or 'skins'.
-     ---@param match string The prefix of the skin to match.
-     ---@param allowPath? boolean Wheather it will include a path or not.
-     ---@return table
-     local function filter_search(list, input, element, match, allowPath)
-          local search_result = {}
-          for i = 1, #list, 1 do
-               local startName   = list[i]:match(match..'(.+)')  == nil and 'funkin' or list[i]:match(match..'(.+)')
-               local startFolder = list[i]:match('(.+/)'..match) == nil and ''       or list[i]:match('(.+/)'..match)
+     ---@alias SkinData
+     ---| 'ids'   # The ID of the skin.
+     ---| 'names' # The name of the skin.
 
-               local startPos = startName:upper():find(input:gsub('([%%%.%$%^%(%[])', '%%%1'):upper())
-               local wordPos  = startPos == nil and -1 or startPos
-               if wordPos > -1 and #search_result < 16 then
-                    local p = allowPath == true and startFolder..match:gsub('%%%-', '-')..startName or startName
-                    search_result[i] = p:match(match..'funkin') == nil and p or match:gsub('%%%-', '')
+     --- The heart of this method, see the method's description for reference.
+     ---@param skinData SkinData The present searched skin data to be used, either its: ID or name data.
+     ---@param skinPath? boolean Include the skins relative file path or not.
+     ---@return table The present skins from the given search input.
+     local function calculateSearch(skinData, skinPath)
+          local skinListTotal    = self.totalSkins
+          local skinMatchPattern = self.statePrefix..'%-'
+          local skinInputContent = skinSearchInput_textContent
+
+          local skinSearchResult = {}
+          for skinListTotalID = 1, #skinListTotal do
+               local skinRawName   = skinListTotal[skinListTotalID]:match(skinMatchPattern..'(.+)')
+               local skinRawFolder = skinListTotal[skinListTotalID]:match('(%w+/)'..skinMatchPattern)
+               local skinName   = skinRawName   == nil and 'funkin' or skinRawName
+               local skinFolder = skinRawFolder == nil and ''       or skinRawFolder
+
+               local skinInputContentFilter = skinInputContent:gsub('([%%%.%$%^%(%[])', '%%%1'):upper()
+               local skinCapPatStartPos     = skinName:upper():find(skinInputContentFilter)
+               if skinCapPatStartPos ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
+                    local skinFilePathName = skinFolder..skinMatchPattern:gsub('%%%-', '-')..skinName
+                    local skinFileName     = skinPath == true and skinFilePathName or skinName
+
+                    local skinDefMatch   = skinFileName:match(skinMatchPattern..'funkin')
+                    local skinFileFilter = skinDefMatch == nil and skinFileName or match:gsub('%%%-', '')
+                    skinSearchResult[skinListTotalID] = skinFileFilter
                end
           end
 
-          local search_resultFilter = {}
-          for ids, skins in pairs(search_result) do
-               if skins ~= nil and #search_resultFilter < 16 then
-                    if element == 'skins' then
-                         search_resultFilter[#search_resultFilter + 1] = skins
-                    elseif element == 'ids' then
-                         search_resultFilter[#search_resultFilter + 1] = ids
-                    end
+          local skinSearchResultData = {}
+          for ids, names in pairs(skinSearchResult) do
+               if names ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
+                    local skinDataValues = {["ids"] = ids, ["names"] = names}
+                    local skinDataMeta   = {
+                         __index = function() 
+                              return error("Invalid parameter value, either use: \"ids\" or \"names\"", 3)
+                         end
+                    }
+                    skinSearchResultData[#skinSearchResultData+1] = setmetatable(skinDataValues, skinDataMeta)[skinData]
                end
           end 
-          return search_resultFilter
+          return skinSearchResultData
      end
 
+     --- Calculates the display skins position.
+     ---@return table[number]
      local function displaySkinPositions()
           local displaySkinIndexes   = {x = 0, y = 0}
           local displaySkinPositions = {}
-          for displays = 1, 16 do
+          for displays = 1, MAX_NUMBER_CHUNK do
                if (displays-1) % 4 == 0 then
                     displaySkinIndexes.x = 0
                     displaySkinIndexes.y = displaySkinIndexes.y + 1
@@ -110,19 +127,19 @@ function SkinSplashesSearch:search_create()
      end
 
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent')
-     local filterSearchByID   = filter_search(self.totalSkins, skinSearchInput_textContent or '', 'ids', self.statePrefix..'%-', false)
-     local filterSearchByName = filter_search(self.totalSkins, skinSearchInput_textContent or '', 'skins', self.statePrefix..'%-', false)
-     local filterSearchBySkin = filter_search(self.totalSkins, skinSearchInput_textContent or '', 'skins', self.statePrefix..'%-', true)
+     local filterSearchByID   = calculateSearch('ids',   false)
+     local filterSearchByName = calculateSearch('names', false)
+     local filterSearchBySkin = calculateSearch('names', true)
 
-     local currenMinPage = (self.selectSkinPagePositionIndex - 1) * 16
+     local currenMinPage = (self.selectSkinPagePositionIndex - 1) * MAX_NUMBER_CHUNK
      local currenMinPageIndex = currenMinPage == 0 and 1 or currenMinPage
-     local currenMaxPageIndex = self.selectSkinPagePositionIndex * 16
+     local currenMaxPageIndex = self.selectSkinPagePositionIndex * MAX_NUMBER_CHUNK
 
      local searchFilterSkinsDefault = table.tally(currenMinPageIndex, currenMaxPageIndex)
      local searchFilterSkinsTyped   = table.singularity(table.merge(filterSearchByID, searchFilterSkinsDefault), false)
 
-     local searchFilterSkinsSubDefault = table.sub(searchFilterSkinsDefault, 1, 16)
-     local searchFilterSkinsSubTyped   = table.sub(searchFilterSkinsTyped, 1, 16)
+     local searchFilterSkinsSubDefault = table.sub(searchFilterSkinsDefault, 1, MAX_NUMBER_CHUNK)
+     local searchFilterSkinsSubTyped   = table.sub(searchFilterSkinsTyped, 1, MAX_NUMBER_CHUNK)
      local searchFilterSkins = #filterSearchByID == 0 and searchFilterSkinsSubDefault or searchFilterSkinsSubTyped
      for ids, displays in pairs(searchFilterSkins) do
           if #filterSearchByID    == 0 then return end -- !DO NOT DELETE
@@ -188,7 +205,7 @@ function SkinSplashesSearch:search_create()
                     removeLuaSprite(displaySkinIconButton, true)
                     removeLuaSprite(displaySkinIconSkin, true)
                end
-               if ids == 16 then 
+               if ids == MAX_NUMBER_CHUNK then 
                     return 
                end
           end

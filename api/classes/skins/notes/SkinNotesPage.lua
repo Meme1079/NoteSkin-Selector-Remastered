@@ -23,6 +23,8 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
+local MAX_NUMBER_CHUNK = 16
+
 --- Childclass extension, main page component functionality for the note skin state.
 ---@class SkinNotesPage
 local SkinNotesPage = {}
@@ -162,7 +164,7 @@ function SkinNotesPage:page_moved()
      end
 
      local skinObjectsPerClicked = self.totalSkinObjectClicked[self.selectSkinPagePositionIndex]
-     local curPage = self.selectSkinPreSelectedIndex - (16 * (self.selectSkinPagePositionIndex - 1))
+     local curPage = self.selectSkinPreSelectedIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
      if conditionPressedUp and self.selectSkinPagePositionIndex > 1 then
           self.sliderPageIndex             = self.sliderPageIndex - 1
           self.selectSkinPagePositionIndex = self.selectSkinPagePositionIndex - 1
