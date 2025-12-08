@@ -20,11 +20,11 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinSplashSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Subclass dedicated for the search component for the splash skin state.
+--- Childclass extension, main search component functionality for the splash skin state.
 ---@class SkinSplashesSearch
 local SkinSplashesSearch = {}
 
---- Creates a 16 chunk display of the selected search skins.
+--- Creates a chunk gallery of available display skins to select from when searching.
 ---@return nil
 function SkinSplashesSearch:search_create()
      local justReleased = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
@@ -196,7 +196,7 @@ function SkinSplashesSearch:search_create()
      end
 end
 
---- Creates and loads the selected search skin's preview strums.
+--- Creates the preview splashes' graphic sprites and its text when searching.
 ---@return nil
 function SkinSplashesSearch:search_preview()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''

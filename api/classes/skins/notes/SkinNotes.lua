@@ -6,6 +6,7 @@ local SkinNotesSelection = require 'mods.NoteSkin Selector Remastered.api.classe
 local SkinNotesPreview   = require 'mods.NoteSkin Selector Remastered.api.classes.skins.notes.SkinNotesPreview'
 local SkinNotesCheckbox  = require 'mods.NoteSkin Selector Remastered.api.classes.skins.notes.SkinNotesCheckbox'
 local SkinNotesSearch    = require 'mods.NoteSkin Selector Remastered.api.classes.skins.notes.SkinNotesSearch'
+local SkinNotesSave      = require 'mods.NoteSkin Selector Remastered.api.classes.skins.notes.SkinNotesSave'
 
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
@@ -31,8 +32,8 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 ---@alias ParentClasses
----| 'extends' # The classes' extension from itself, not related from the superclass.
----| 'inherit' # The superclass that will be derived from this subclass.
+---| 'inherit' # The child class to inherit and derived from its based parent class.
+---| 'extends' # The extension properties of this class. 
 
 --- Allows for the classes inherit multiple parent classes either as an inherit or extension.
 ---@param parentClasses ParentClasses The multiple classes to inherit.
@@ -64,9 +65,9 @@ local function inheritedClasses(parentClasses)
 end
 
 --- Main class for the note skin state inherited by many of its extended subclasses.
----@class SkinNotes: SkinNotesPage, SkinNotesSelection, SkinNotesPreview, SkinNotesCheckbox, SkinNotesSearch
+---@class SkinNotes: SkinNotesPage, SkinNotesSelection, SkinNotesPreview, SkinNotesCheckbox, SkinNotesSearch, SkinNotesSave
 local SkinNotes = inheritedClasses({
-     extends = {SkinNotesPage, SkinNotesSelection, SkinNotesPreview, SkinNotesCheckbox, SkinNotesSearch}
+     extends = {SkinNotesPage, SkinNotesSelection, SkinNotesPreview, SkinNotesCheckbox, SkinNotesSearch, SkinNotesSave}
 })
 
 --- Initializes the attributes for the note skin state to use.
@@ -220,7 +221,7 @@ function SkinNotes:precache()
      precacheImage('ui/buttons/display_button')
 end
  
---- Creates a chunk to display to selected specific skins to choose from.
+--- Creates a chunk gallery of available display skins to select from.
 ---@param index? integer The given page-index for the chunk to display, if it exists.
 ---@return nil
 function SkinNotes:create(index)
@@ -342,45 +343,6 @@ function SkinNotes:destroy()
           removeSectionSliderMarks('semiInterval', semiIntervalIndex)
      end
      callOnScripts('skinSearchInput_callResetSearch')
-end
-
---- Saves the attributes current properties when exiting the main skin state.
----@return nil
-function SkinNotes:save()
-     if keyboardJustConditionPressed('ONE',    not getVar('skinSearchInputFocus')) then SkinNoteSave:flush() end
-     if keyboardJustConditionPressed('ESCAPE', not getVar('skinSearchInputFocus')) then SkinNoteSave:flush() end
-end
-
---- Loads the saved attribute properties and other elements for graphical correction.
----@return nil
-function SkinNotes:save_load()
-     self:create(self.selectSkinPagePositionIndex)
-     self:checkbox_sync()
-
-     if math.isReal(self.sliderTrackIntervals[self.selectSkinPagePositionIndex]) == true then
-          setProperty('displaySliderIcon.y', self.sliderTrackIntervals[self.selectSkinPagePositionIndex])
-     else
-          setProperty('displaySliderIcon.y', 0)
-     end
-     playAnim('displaySliderIcon', 'static')
-     setTextString('genInfoStateName', ' '..self.stateClass:upperAtStart())
-end
-
---- Loads and syncs the saved selected highlight. 
----@return nil
-function SkinNotes:save_selection()
-     if self.selectSkinPreSelectedIndex == 0 then
-          return
-     end
-
-     local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = self.selectSkinPreSelectedIndex}
-     local displaySkinIconButton   = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplate)
-     if luaSpriteExists(displaySkinIconButton) == true then
-          playAnim(displaySkinIconButton, 'selected', true)
-
-          local curIndex = self.selectSkinCurSelectedIndex - (16 * (self.selectSkinPagePositionIndex - 1))
-          self.totalSkinObjectSelected[self.selectSkinPagePositionIndex][curIndex] = true
-     end
 end
 
 return SkinNotes

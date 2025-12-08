@@ -23,11 +23,11 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Subclass dedicated for the selection component for the note skin state.
+--- Childclass extension, main selecting component functionality for the note skin state.
 ---@class SkinNotesSelection
 local SkinNotesSelection = {}
 
---- Collection of similair methods of the selection function.
+--- Collection group of selection methods.
 ---@return nil
 function SkinNotesSelection:selection()
      self:selection_byclick()
@@ -35,8 +35,8 @@ function SkinNotesSelection:selection()
      self:selection_bycursor()
 end
 
---- Main click functionality when interacting any skins when selecting one.
---- Allows the selection of skins alongs with its display skin button animations.
+--- Main display skin button clicking functionality and animations.
+--- Allowing the selecting of the corresponding skin in gameplay.
 ---@return nil
 function SkinNotesSelection:selection_byclick()
      local skinObjectsPerIDs      = self.totalSkinObjectID[self.selectSkinPagePositionIndex]
@@ -157,8 +157,8 @@ function SkinNotesSelection:selection_byclick()
      end
 end
 
---- Main hovering functionality when interacting any skins when selecting any.
---- Allows the display skin button to have a hover animation.
+--- Main display skin button hovering functionality and animations.
+--- Allowing the cursor's sprite to change its corresponding sprite when hovering for visual aid.
 ---@return nil
 function SkinNotesSelection:selection_byhover()
      local skinObjectsPerIDs      = self.totalSkinObjectID[self.selectSkinPagePositionIndex]
@@ -215,8 +215,8 @@ function SkinNotesSelection:selection_byhover()
      end
 end
 
---- Main cursor functionality when interacting any skins when selecting any.
---- Changes the cursor's texture depending on its interaction (i.e. selecting and hovering).
+--- Main cursor functionality for the displau skin and its animations.
+--- Allowing the cursor's sprite to change depending on its interaction (i.e. selecting and hovering).
 ---@return nil
 function SkinNotesSelection:selection_bycursor()
      local skinObjectsPerIDs      = self.totalSkinObjectID[self.selectSkinPagePositionIndex]

@@ -23,11 +23,13 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Subclass dedicated for the search component for the note skin state.
+local MAX_NUMBER_CHUNK = 16
+
+--- Childclass extension, main searching component functionality for the note skin state.
 ---@class SkinNotesSearch
 local SkinNotesSearch = {}
 
---- Collection of similair methods of the search functions.
+--- Collection group of search methods.
 ---@return nil
 function SkinNotesSearch:search()
      self:search_create()
@@ -36,7 +38,7 @@ function SkinNotesSearch:search()
      self:search_checkbox_sync()
 end
 
---- Calculates and loads the nearest total amount of searched skins.
+--- Calculates and searches the nearest skin from the given input to be loaded.
 ---@return nil
 function SkinNotesSearch:search_skins()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -49,56 +51,70 @@ function SkinNotesSearch:search_skins()
           return
      end
 
-     --- Searches the closest skin name it can possibly find
-     ---@param list table[string] The given list of skins for the algorithm to do its work.
-     ---@param input string The given input to search the closest skins.
-     ---@param element string What element it can return either its 'id' or 'skins'.
-     ---@param match string The prefix of the skin to match.
-     ---@param allowPath? boolean Wheather it will include a path or not.
-     ---@return table
-     local function filter_search(list, input, element, match, allowPath)
-          local search_result = {}
-          for i = 1, #list, 1 do
-               local startName   = list[i]:match(match..'(.+)')   == nil and 'funkin' or list[i]:match(match..'(.+)')
-               local startFolder = list[i]:match('(%w+/)'..match) == nil and ''       or list[i]:match('(%w+/)'..match)
+     ---@alias SkinData
+     ---| 'ids'   # The ID of the skin.
+     ---| 'names' # The name of the skin.
 
-               local startPos = startName:upper():find(input:gsub('([%%%.%$%^%(%[])', '%%%1'):upper())
-               local wordPos  = startPos == nil and -1 or startPos
-               if wordPos >= 1 and #table.keys(search_result) <= 16 then
-                    local p = allowPath == true and startFolder..match:gsub('%%%-', '-')..startName or startName
-                    search_result[i] = p:match(match..'funkin') == nil and p or match:gsub('%%%-', '')
+     --- The heart of this method, see the method's description for reference.
+     ---@param skinData SkinData The present searched skin data to be used, either its: ID or name data.
+     ---@param skinPath? boolean Include the skins relative file path or not.
+     ---@return table The present skins from the given search input.
+     local function calculateSearch(skinData, skinPath)
+          local skinListTotal    = self.totalSkins
+          local skinMatchPattern = self.statePrefix..'%-'
+          local skinInputContent = skinSearchInput_textContent
+
+          local skinSearchResult = {}
+          for skinListTotalID = 1, #skinListTotal do
+               local skinRawName   = skinListTotal[skinListTotalID]:match(skinMatchPattern..'(.+)')
+               local skinRawFolder = skinListTotal[skinListTotalID]:match('(%w+/)'..skinMatchPattern)
+               local skinName   = skinRawName   == nil and 'funkin' or skinRawName
+               local skinFolder = skinRawFolder == nil and ''       or skinRawFolder
+
+               local skinInputContentFilter = skinInputContent:gsub('([%%%.%$%^%(%[])', '%%%1'):upper()
+               local skinCapPatStartPos     = skinName:upper():find(skinInputContentFilter)
+               if skinCapPatStartPos ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
+                    local skinFilePathName = skinFolder..skinMatchPattern:gsub('%%%-', '-')..skinName
+                    local skinFileName     = skinPath == true and skinFilePathName or skinName
+
+                    local skinDefMatch   = skinFileName:match(skinMatchPattern..'funkin')
+                    local skinFileFilter = skinDefMatch == nil and skinFileName or match:gsub('%%%-', '')
+                    skinSearchResult[skinListTotalID] = skinFileFilter
                end
           end
 
-          local search_resultFilter = {}
-          for ids, skins in pairs(search_result) do
-               if skins ~= nil and #table.keys(search_result) <= 16 then
-                    if element == 'skins' then
-                         search_resultFilter[#search_resultFilter + 1] = skins
-                    elseif element == 'ids' then
-                         search_resultFilter[#search_resultFilter + 1] = ids
-                    end
+          local skinSearchResultData = {}
+          for ids, names in pairs(skinSearchResult) do
+               if names ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
+                    local skinDataValues = {["ids"] = ids, ["names"] = names}
+                    local skinDataMeta   = {
+                         __index = function() 
+                              return error("Invalid parameter value, either use: \"ids\" or \"names\"", 3)
+                         end
+                    }
+                    skinSearchResultData[#skinSearchResultData+1] = setmetatable(skinDataValues, skinDataMeta)[skinData]
                end
           end 
-          return search_resultFilter
+          return skinSearchResultData
      end
 
-     local skinSearchInput_textContent   = getVar('skinSearchInput_textContent')
-     local skinSearchInput_textContentID = filter_search(self.totalSkins, skinSearchInput_textContent or '', 'ids', self.statePrefix..'%-', false)
-     local searchSkinIndex = 0
-
+     local skinInputContent   = skinSearchInput_textContent
+     local skinInputContentID = calculateSearch('ids', false)
+     local skinSearchIndex = 0
      for searchPage = 1, #self.totalSkinObjectID do
           local totalSkinObjectIDs     = self.totalSkinObjectID[searchPage]
-          local totalSkinObjectPresent = table.singularity(table.merge(totalSkinObjectIDs, skinSearchInput_textContentID), true)
-          for curIndex = 1, #totalSkinObjectPresent do
-               searchSkinIndex = searchSkinIndex + 1
-               self.searchSkinObjectIndex[searchSkinIndex] = totalSkinObjectPresent[curIndex]
-               self.searchSkinObjectPage[searchSkinIndex]  = searchPage
+          local totalSkinObjectMerge   = table.merge(totalSkinObjectIDs, skinInputContentID)
+          local totalSkinObjectPresent = table.singularity(totalSkinObjectMerge, true)
+
+          for curPresentIndex = 1, #totalSkinObjectPresent do
+               skinSearchIndex = skinSearchIndex + 1
+               self.searchSkinObjectIndex[skinSearchIndex] = totalSkinObjectPresent[curPresentIndex]
+               self.searchSkinObjectPage[skinSearchIndex]  = searchPage
           end
      end
 end
 
---- Creates a 16 chunk display of the selected search skins.
+--- Creates a chunk gallery of available display skins to select from when searching.
 ---@return nil
 function SkinNotesSearch:search_create()
      local justReleased = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
@@ -131,44 +147,59 @@ function SkinNotesSearch:search_create()
           end
      end
 
-     --- Searches the closest skin name it can possibly find
-     ---@param list table[string] The given list of skins for the algorithm to do its work.
-     ---@param input string The given input to search the closest skins.
-     ---@param element string What element it can return either its 'id' or 'skins'.
-     ---@param match string The prefix of the skin to match.
-     ---@param allowPath? boolean Wheather it will include a path or not.
-     ---@return table
-     local function filter_search(list, input, element, match, allowPath)
-          local search_result = {}
-          for i = 1, #list, 1 do
-               local startName   = list[i]:match(match..'(.+)')  == nil and 'funkin' or list[i]:match(match..'(.+)')
-               local startFolder = list[i]:match('(.+/)'..match) == nil and ''       or list[i]:match('(.+/)'..match)
+     ---@alias SkinData
+     ---| 'ids'   # The ID of the skin.
+     ---| 'names' # The name of the skin.
 
-               local startPos = startName:upper():find(input:gsub('([%%%.%$%^%(%[])', '%%%1'):upper())
-               local wordPos  = startPos == nil and -1 or startPos
-               if wordPos > -1 and #table.keys(search_result) <= 16 then
-                    local p = allowPath == true and startFolder..match:gsub('%%%-', '-')..startName or startName
-                    search_result[tostring(i)] = p:match(match..'funkin') == nil and p or match:gsub('%%%-', '')
+     --- The heart of this method, see the method's description for reference.
+     ---@param skinData SkinData The present searched skin data to be used, either its: ID or name data.
+     ---@param skinPath? boolean Include the skins relative file path or not.
+     ---@return table The present skins from the given search input.
+     local function calculateSearch(skinData, skinPath)
+          local skinListTotal    = self.totalSkins
+          local skinMatchPattern = self.statePrefix..'%-'
+          local skinInputContent = skinSearchInput_textContent
+
+          local skinSearchResult = {}
+          for skinListTotalID = 1, #skinListTotal do
+               local skinRawName   = skinListTotal[skinListTotalID]:match(skinMatchPattern..'(.+)')
+               local skinRawFolder = skinListTotal[skinListTotalID]:match('(%w+/)'..skinMatchPattern)
+               local skinName   = skinRawName   == nil and 'funkin' or skinRawName
+               local skinFolder = skinRawFolder == nil and ''       or skinRawFolder
+
+               local skinInputContentFilter = skinInputContent:gsub('([%%%.%$%^%(%[])', '%%%1'):upper()
+               local skinCapPatStartPos     = skinName:upper():find(skinInputContentFilter)
+               if skinCapPatStartPos ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
+                    local skinFilePathName = skinFolder..skinMatchPattern:gsub('%%%-', '-')..skinName
+                    local skinFileName     = skinPath == true and skinFilePathName or skinName
+
+                    local skinDefMatch   = skinFileName:match(skinMatchPattern..'funkin')
+                    local skinFileFilter = skinDefMatch == nil and skinFileName or match:gsub('%%%-', '')
+                    skinSearchResult[skinListTotalID] = skinFileFilter
                end
           end
 
-          local search_resultFilter = {}
-          for ids, skins in pairs(search_result) do
-               if skins ~= nil and #table.keys(search_result) <= 16 then
-                    if element == 'skins' then
-                         search_resultFilter[#search_resultFilter + 1] = skins
-                    elseif element == 'ids' then
-                         search_resultFilter[#search_resultFilter + 1] = ids
-                    end
+          local skinSearchResultData = {}
+          for ids, names in pairs(skinSearchResult) do
+               if names ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
+                    local skinDataValues = {["ids"] = ids, ["names"] = names}
+                    local skinDataMeta   = {
+                         __index = function() 
+                              return error("Invalid parameter value, either use: \"ids\" or \"names\"", 3)
+                         end
+                    }
+                    skinSearchResultData[#skinSearchResultData+1] = setmetatable(skinDataValues, skinDataMeta)[skinData]
                end
           end 
-          return search_resultFilter
+          return skinSearchResultData
      end
 
+     --- Calculates the display skins position.
+     ---@return table[number]
      local function displaySkinPositions()
           local displaySkinIndexes   = {x = 0, y = 0}
           local displaySkinPositions = {}
-          for displays = 1, 16 do
+          for displays = 1, MAX_NUMBER_CHUNK do
                if (displays-1) % 4 == 0 then
                     displaySkinIndexes.x = 0
                     displaySkinIndexes.y = displaySkinIndexes.y + 1
@@ -184,19 +215,19 @@ function SkinNotesSearch:search_create()
      end
 
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent')
-     local filterSearchByID   = filter_search(self.totalSkins, skinSearchInput_textContent or '', 'ids', self.statePrefix..'%-', false)
-     local filterSearchByName = filter_search(self.totalSkins, skinSearchInput_textContent or '', 'skins', self.statePrefix..'%-', false)
-     local filterSearchBySkin = filter_search(self.totalSkins, skinSearchInput_textContent or '', 'skins', self.statePrefix..'%-', true)
+     local filterSearchByID   = calculateSearch('ids',   false)
+     local filterSearchByName = calculateSearch('names', false)
+     local filterSearchBySkin = calculateSearch('names', true)
 
-     local currenMinPage = (self.selectSkinPagePositionIndex - 1) * 16
+     local currenMinPage = (self.selectSkinPagePositionIndex - 1) * MAX_NUMBER_CHUNK
      local currenMinPageIndex = currenMinPage == 0 and 1 or currenMinPage
-     local currenMaxPageIndex = self.selectSkinPagePositionIndex * 16
+     local currenMaxPageIndex = self.selectSkinPagePositionIndex * MAX_NUMBER_CHUNK
 
      local searchFilterSkinsDefault = table.tally(currenMinPageIndex, currenMaxPageIndex)
      local searchFilterSkinsTyped   = table.singularity(table.merge(filterSearchByID, searchFilterSkinsDefault), false)
 
-     local searchFilterSkinsSubDefault = table.sub(searchFilterSkinsDefault, 1, 16)
-     local searchFilterSkinsSubTyped   = table.sub(searchFilterSkinsTyped, 1, 16)
+     local searchFilterSkinsSubDefault = table.sub(searchFilterSkinsDefault, 1, MAX_NUMBER_CHUNK)
+     local searchFilterSkinsSubTyped   = table.sub(searchFilterSkinsTyped, 1, MAX_NUMBER_CHUNK)
      local searchFilterSkins = #filterSearchByID == 0 and searchFilterSkinsSubDefault or searchFilterSkinsSubTyped
      for ids, displays in pairs(searchFilterSkins) do
           if #filterSearchByID    == 0 then return end -- !DO NOT DELETE
@@ -262,7 +293,7 @@ function SkinNotesSearch:search_create()
                     removeLuaSprite(displaySkinIconButton, true)
                     removeLuaSprite(displaySkinIconSkin, true)
                end
-               if ids == 16 then 
+               if ids == MAX_NUMBER_CHUNK then 
                     return 
                end
           end
@@ -270,7 +301,7 @@ function SkinNotesSearch:search_create()
      end
 end
 
---- Creates and loads the selected search skin's preview strums.
+--- Creates the preview strums' graphic sprites and its text when searching.
 ---@return nil
 function SkinNotesSearch:search_preview()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -433,7 +464,7 @@ function SkinNotesSearch:search_preview()
      self:preview_animation(true)
 end
 
---- Syncs the display highlights when searching for skins, obviously for visual purposes.
+--- Syncing of the position and offset of the selection highlight when searching, obviously for visual purposes.
 ---@return nil
 function SkinNotesSearch:search_checkbox_sync()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -488,7 +519,7 @@ function SkinNotesSearch:search_checkbox_sync()
      end
 end
 
---- Collection of similair methods of the search selection functions.
+--- Collection group of search selection methods.
 ---@return nil
 function SkinNotesSearch:search_selection()
      self:search_selection_byclick()
@@ -496,8 +527,8 @@ function SkinNotesSearch:search_selection()
      self:search_selection_cursor()
 end
 
---- Main click functionality when interacting any searched skins when selecting one.
---- Allows the selection of the searched skins alongs with its display skin button animations.
+--- Main display skin button clicking functionality and animations.
+--- Allowing the selecting of the corresponding skin in gameplay.
 ---@return nil
 function SkinNotesSearch:search_selection_byclick()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -614,8 +645,8 @@ function SkinNotesSearch:search_selection_byclick()
      end
 end
 
---- Main hovering functionality when interacting any searched skins when selecting any.
---- Allows the display button to have a hover animation.
+--- Main display skin button hovering functionality and animations.
+--- Allowing the cursor's sprite to change its corresponding sprite when hovering for visual aid.
 ---@return nil
 function SkinNotesSearch:search_selection_byhover()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -662,8 +693,8 @@ function SkinNotesSearch:search_selection_byhover()
      end
 end
 
---- Main cursor functionality when interacting any searched skins when selecting any.
---- Changes the cursor's texture depending on it interaction (i.e. selecting and hovering).
+--- Main cursor functionality for the display skin button and its animations.
+--- Allowing the cursor's sprite to change depending on its interaction (i.e. selecting and hovering).
 ---@return nil
 function SkinNotesSearch:search_selection_cursor()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''

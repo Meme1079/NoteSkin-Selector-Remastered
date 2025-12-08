@@ -66,7 +66,7 @@ function SkinStates:switch()
           for skins, states in pairs(self.stateSkins) do
                if skins ~= self.stateSkinNames[self.stateSkinIndex] then
                     states:destroy()
-                    states:checkbox_remove()
+                    states:checkbox_destroy()
                end
           end
           self:create()

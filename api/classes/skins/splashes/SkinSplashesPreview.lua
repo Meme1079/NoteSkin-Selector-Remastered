@@ -20,11 +20,11 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinSplashSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Subclass dedicated for the preview splashes component for the splash skin state.
+--- Childclass extension, main preview splashes component functionality for the splash skin state.
 ---@class SkinSplashesPreview
 local SkinSplashesPreview = {}
 
---- Creates the selected skin's preview splashes.
+--- Creates the preview splashes' graphic sprites and its text.
 ---@return nil
 function SkinSplashesPreview:preview()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -139,7 +139,7 @@ function SkinSplashesPreview:preview()
      self:preview_animation(true)
 end
 
---- Creates the current selected note skin within the splash skin state.
+--- Creates and applies the currently selected note skin to display in this state.
 ---@return nil
 function SkinSplashesPreview:preview_notes()
      for strums = 1, 4 do
@@ -206,8 +206,8 @@ function SkinSplashesPreview:preview_notes()
      end
 end
 
---- Creates and loads the selected skin's preview animations.
----@param loadAnim? boolean Will only load the current skin's preview animations or not, bug fixing purposes.
+--- Creates the preview splashes' animations.
+---@param loadAnim? boolean Forcefully load the current skin animations, mainly for visual fixing purposes.
 ---@return nil
 function SkinSplashesPreview:preview_animation(loadAnim)
      local loadAnim = loadAnim ~= nil and true or false
@@ -293,8 +293,9 @@ function SkinSplashesPreview:preview_animation(loadAnim)
      end
 end
 
-local previewSelectionToggle = false -- * ok who gaf
---- Changes the skin's preview animations by using keyboard keys.
+local previewSelectionToggle = false -- * Important, but ignore this lmao
+--- Main preview splashes animation selecting functionality.
+--- Allowing the selecting of specific splashes animations, for visual aid purposes.
 ---@return nil
 function SkinSplashesPreview:preview_selection_moved()
      local conditionPressedLeft  = keyboardJustConditionPressed('Z', not getVar('skinSearchInputFocus'))

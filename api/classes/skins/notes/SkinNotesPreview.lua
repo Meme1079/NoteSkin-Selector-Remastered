@@ -23,11 +23,11 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Subclass dedicated for the preview strums component for the note skin state.
+--- Childclass extension, main preview strums component functionality for the note skin state.
 ---@class SkinNotesPreview
 local SkinNotesPreview = {}
 
---- Creates the selected skin's preview strums.
+--- Creates the preview strums' graphic sprites and its text.
 ---@return nil
 function SkinNotesPreview:preview()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -175,8 +175,8 @@ function SkinNotesPreview:preview()
      self:preview_animation(true)
 end
 
---- Creates and loads the selected skin's preview animations.
----@param loadAnim? boolean Will only load the current skin's preview animations or not, bug fixing purposes.
+--- Creates the preview strums' animations.
+---@param loadAnim? boolean Forcefully load the current skin animations, mainly for visual fixing purposes.
 ---@return nil
 function SkinNotesPreview:preview_animation(loadAnim)
      local loadAnim = loadAnim ~= nil and true or false
@@ -287,7 +287,7 @@ function SkinNotesPreview:preview_animation(loadAnim)
      end
 end
 
---- Collection of similair methods of the preview selection function.
+--- Collection group of preview strum selection methods.
 ---@return nil
 function SkinNotesPreview:preview_selection()
      self:preview_selection_moved()
@@ -296,8 +296,9 @@ function SkinNotesPreview:preview_selection()
      self:preview_selection_bycursor()
 end
 
-local previewSelectionToggle = false -- * ok who gaf
---- Changes the skin's preview animations by using keyboard keys.
+local previewSelectionToggle = false -- * Important, but ignore this lmao
+--- Main preview strum animation selecting functionality.
+--- Allowing the selecting of specific strum animations, for visual aid purposes.
 ---@return nil
 function SkinNotesPreview:preview_selection_moved()
      local conditionPressedLeft  = keyboardJustConditionPressed('Z', not getVar('skinSearchInputFocus'))
@@ -345,8 +346,8 @@ function SkinNotesPreview:preview_selection_moved()
      setTextString('previewSkinButtonSelectionText', previewMetadataObjectAnims:upperAtStart())
 end
 
---- Main click functionality when interacting any preview buttons when selecting one.
---- Allows the skin's preview animations along with the preview buttons displaying its animations.
+--- Main preview strum button clicking functionality and animations.
+--- Allowing the selecting of the corresponding skin in gameplay.
 ---@return nil
 function SkinNotesPreview:preview_selection_byclick()
      local function previewSelectionButtonClick(index, direct, value)
@@ -380,8 +381,8 @@ function SkinNotesPreview:preview_selection_byclick()
      end
 end
 
---- Main hovering functionality when interacting any preview buttons when selecting any.
---- Allows the preview buttons to have a hover animation.
+--- Main preview strum button hovering functionality and animations.
+--- Allowing the cursor's sprite to change its corresponding sprite when hovering for visual aid.
 ---@return nil
 function SkinNotesPreview:preview_selection_byhover()
      local function previewSelectionButtonHover(index, direct, value)
@@ -421,8 +422,8 @@ function SkinNotesPreview:preview_selection_byhover()
      end
 end
 
---- Main cursor functionality when interacting any preview buttons when selecting any.
---- Changes the cursor's texture depending on its interaction (i.e. selecting and hovering).
+--- Main cursor functionality for the preview strum and its animations.
+--- Allowing the cursor's sprite to change depending on its interaction (i.e. selecting and hovering).
 ---@return nil
 function SkinNotesPreview:preview_selection_bycursor()
      for previewObjects = 1, 2 do

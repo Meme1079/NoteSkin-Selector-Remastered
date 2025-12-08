@@ -26,8 +26,8 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 local SkinSplashSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 ---@alias ParentClasses
----| 'extends' # The classes' extension from itself, not related from the superclass.
----| 'inherit' # The superclass that will be derived from this subclass.
+---| 'inherit' # The child class to inherit and derived from its based parent class.
+---| 'extends' # The extension properties of this class. 
 
 --- Allows for the classes inherit multiple parent classes either as an inherit or extension.
 ---@param parentClasses ParentClasses The multiple classes to inherit.
@@ -65,7 +65,7 @@ local SkinSplashes = inheritedClasses({
      extends = {SkinSplashesPreview, SkinSplashesSearch}
 })
 
---- Initializes the attributes for the splash skin state to use.
+--- Main class for the splash skin state inherited by many of its extended subclasses.
 ---@param stateClass string The corresponding name for this skin state.
 ---@param statePath string The corresponding image path to display for this skin state.
 ---@param statePrefix string the corresponding image prefix name for this skin state. 
@@ -180,7 +180,7 @@ function SkinSplashes:load()
      self.noteStaticPreviewSkinImagePath          = previewSkinImagePath
 end
 
---- Creates a chunk to display to selected specific skins to choose from.
+--- Creates a chunk gallery of available display skins to select from.
 ---@param index? integer The given page-index for the chunk to display, if it exists.
 ---@return nil
 function SkinSplashes:create(index)

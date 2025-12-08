@@ -1,3 +1,7 @@
+## Version 3.0.0
+### Additions/Changes
+- Organizing the main source code to prevent shitty spaghetti code.
+
 ## Version 2.1.0
 ### Additions/Changes
 - Added support to Psych Engine v0.7.3.
@@ -19,7 +23,7 @@
 ## Version 2.0.0
 ### Additions/Changes
 - Overhual the main GUI with a new redesign, cuz it looks cool. _(inspired by OreUI from Minecraft)_
-- Overhual the main source-code of the mod for organization and an ability to soft-code new skin selection states.
+- Overhual the main source code of the mod for organization and an ability to soft-code new skin selection states.
      - Classes to create custom states for different skins by using inheritance and polymorphism stuff.
      - Loads separated chunks of object sprites of the skins when switching pages.
 - Additions/Changes on the skin selection states.

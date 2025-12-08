@@ -23,12 +23,12 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Subclass dedicated for the checkboxes component for the note skin state.
+--- Childclass extension, main checkbox component functionality for the note skin state.
 ---@class SkinNotesCheckbox
 local SkinNotesCheckbox = {}
 
---- Creates the checkboxes to select the skins you want.
---- The selection highlight are also created here.
+--- Creates the checkboxes graphic sprites and its text.
+--- Additionally the selection highlight are also created here.
 ---@return nil
 function SkinNotesCheckbox:checkbox_create()
      local checkboxSkinData = {
@@ -82,9 +82,10 @@ function SkinNotesCheckbox:checkbox_create()
      end
 end
 
---- Removes the checkboxes and the selection highlight when switching through different states.
+--- Destroys the checkboxes graphic sprites and its text, used only for switching states.
+--- Additionally the selection highlight are also destroyed here. (very important information)
 ---@return nil
-function SkinNotesCheckbox:checkbox_remove()
+function SkinNotesCheckbox:checkbox_destroy()
      for checkboxIndex = 1, #self.checkboxSkinObjectType do
           local checkboxName  = self.checkboxSkinObjectType[checkboxIndex]
 
@@ -97,7 +98,8 @@ function SkinNotesCheckbox:checkbox_remove()
      end
 end
 
---- Checkbox functionality, selecting certain skins for the player or opponent.
+--- The checkboxes main checking functionality and animation.
+--- Selecting its current skins for its corresponding state to be used in gameplay.
 ---@return nil
 function SkinNotesCheckbox:checkbox_checking()
      for checkboxIndex = 1, #self.checkboxSkinObjectType do
@@ -126,7 +128,7 @@ function SkinNotesCheckbox:checkbox_checking()
      end
 end
 
---- Syncs the display highlights for visual purposes.
+--- Syncing of the position and offset of the selection highlight, obviously for visual purposes.
 ---@return nil
 function SkinNotesCheckbox:checkbox_sync()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -158,7 +160,7 @@ function SkinNotesCheckbox:checkbox_sync()
      end
 end
 
---- Collection of similair methods of the checkbox selection functions.
+--- Collection group of checkbox selection methods.
 ---@return nil
 function SkinNotesCheckbox:checkbox_selection()
      self:checkbox_selection_byclick()
@@ -166,8 +168,8 @@ function SkinNotesCheckbox:checkbox_selection()
      self:checkbox_selection_bycursor()
 end
 
---- Main click functionality when interacting any checkbox buttons when selecting one.
---- Allows to select the skin to either the player or opponent along side displaying its animations.
+--- Main checkbox clicking functionality and animations.
+--- Allowing the selecting of the corresponding skin in gameplay.
 ---@return nil
 function SkinNotesCheckbox:checkbox_selection_byclick()
      local function checkboxSelectionButtonClick(index, skin)
@@ -220,8 +222,8 @@ function SkinNotesCheckbox:checkbox_selection_byclick()
      end
 end
 
---- Main hovering functionality when interacting any checkbox buttons when selecting any.
---- Allows the support of the cursor's sprite changing when hovering any checkbox buttons.
+--- Main checkbox hovering functionality and animations.
+--- Allowing the cursor's sprite to change its corresponding sprite when hovering for visual aid.
 ---@return nil
 function SkinNotesCheckbox:checkbox_selection_byhover()
      local function checkboxSelectionButtonHover(index, skin)
@@ -243,8 +245,8 @@ function SkinNotesCheckbox:checkbox_selection_byhover()
      end
 end
 
---- Main cursor functionality when interacting any checkbox buttons when selecting any.
---- Changes the cursor's texture depending on its interaction (i.e. selecting and hovering).
+--- Main cursor functionality for the checkboxes and its animations.
+--- Allowing the cursor's sprite to change depending on its interaction (i.e. selecting and hovering).
 ---@return nil
 function SkinNotesCheckbox:checkbox_selection_bycursor()
      for checkboxIndex = 1, #self.checkboxSkinObjectType do

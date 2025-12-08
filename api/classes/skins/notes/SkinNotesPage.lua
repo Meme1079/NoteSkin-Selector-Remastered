@@ -23,12 +23,12 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Subclass dedicated for the page component for the note skin state.
+--- Childclass extension, main page component functionality for the note skin state.
 ---@class SkinNotesPage
 local SkinNotesPage = {}
 
---- Slider functionality for switching to multiple pages.
----@param snapToPage? boolean Whether allow slider snapping to the nearest page.
+--- Main page slider functionality for switching throughout multiple pages.
+---@param snapToPage? boolean Allows the scrollbar thumb to snap to its nearest page-index.
 ---@return nil
 function SkinNotesPage:page_slider(snapToPage)
      local snapToPage = snapToPage == nil and true or false
@@ -124,7 +124,7 @@ function SkinNotesPage:page_slider(snapToPage)
      sliderTrackSnapPage()
 end
 
---- Creates a slider marks of each page intervals, for visual aid purposes.
+--- Creates slider-marks to each corresponding page within the slider track, for visual aid purposes.
 ---@return nil
 function SkinNotesPage:page_slider_marks()
      local function sectionSliderMarks(tag, color, width, offsetTrackX, sliderTracks, sliderTrackIndex)
@@ -149,7 +149,7 @@ function SkinNotesPage:page_slider_marks()
      end
 end
 
---- Changes the page index by using keyboard keys.
+--- Main page moving functionality for switching throughout multiple pages.
 ---@return nil
 function SkinNotesPage:page_moved()
      if self.sliderTrackThumbPressed == true then return end
