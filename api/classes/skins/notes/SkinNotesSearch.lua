@@ -44,6 +44,7 @@ end
 --- Calculates and searches the nearest skin from the given input to be loaded.
 ---@return nil
 function SkinNotesSearch:search_skins()
+     local SKIN_STATECLASS  = self.stateClass
      local SKIN_STATEPREFIX = self.statePrefix
 
      local TOTAL_SKIN                = self.totalSkins
@@ -58,7 +59,7 @@ function SkinNotesSearch:search_skins()
      end
 
      local skinInputContent   = SEARCH_INPUT_CONTENT
-     local skinInputContentID = states.calculateSearch(self.stateClass, SKIN_STATEPREFIX, 'ids', false) -- to clear previous search results
+     local skinInputContentID = states.calculateSearch(SKIN_STATECLASS, SKIN_STATEPREFIX, 'ids', false) -- to clear previous search results
      local skinSearchIndex = 0
      for searchPage = 1, #TOTAL_SKIN_OBJECTS_ID do
           local totalSkinObjectIDs     = TOTAL_SKIN_OBJECTS_ID[searchPage]
@@ -76,8 +77,9 @@ end
 --- Creates a chunk gallery of available display skins to select from when searching.
 ---@return nil
 function SkinNotesSearch:search_create()
-     local SKIN_STATENAME_UPPER       = self.stateClass:upperAtStart()
-     local SKIN_STATEPREFIX           = self.statePrefix
+     local SKIN_STATECLASS      = self.stateClass
+     local SKIN_STATENAME_UPPER = self.stateClass:upperAtStart()
+     local SKIN_STATEPREFIX     = self.statePrefix
 
      local TOTAL_SKIN                  = self.totalSkins
      local TOTAL_SKIN_LIMIT            = self.totalSkinLimit
@@ -125,7 +127,7 @@ function SkinNotesSearch:search_create()
           local displaySkinIconPosY = 0
 
           local SKIN_ROW_MAX_LENGTH    = 4
-          local SKIN_SEARCH_MAX_LENGTH = states.calculateSearch(self.stateClass, SKIN_STATEPREFIX, 'names', true)
+          local SKIN_SEARCH_MAX_LENGTH = states.calculateSearch(SKIN_STATECLASS, SKIN_STATEPREFIX, 'names', true)
           for skinDisplays = 1, #SKIN_SEARCH_MAX_LENGTH do
                if (skinDisplays - 1) % SKIN_ROW_MAX_LENGTH == 0 then
                     displaySkinIconPosY = displaySkinIconPosY + 1
@@ -146,9 +148,9 @@ function SkinNotesSearch:search_create()
           return displaySkinIconPositions
      end
 
-     local filterSearchByID   = states.calculateSearch(self.stateClass, SKIN_STATEPREFIX, 'ids', false)
-     local filterSearchByName = states.calculateSearch(self.stateClass, SKIN_STATEPREFIX, 'names', false)
-     local filterSearchBySkin = states.calculateSearch(self.stateClass, SKIN_STATEPREFIX, 'names', true)
+     local filterSearchByID   = states.calculateSearch(SKIN_STATECLASS, SKIN_STATEPREFIX, 'ids', false)
+     local filterSearchByName = states.calculateSearch(SKIN_STATECLASS, SKIN_STATEPREFIX, 'names', false)
+     local filterSearchBySkin = states.calculateSearch(SKIN_STATECLASS, SKIN_STATEPREFIX, 'names', true)
 
      local currenMinPageRange = (CURRENT_PAGE_INDEX - 1) * MAX_NUMBER_CHUNK
      local currenMaxPageRange = CURRENT_PAGE_INDEX       * MAX_NUMBER_CHUNK
