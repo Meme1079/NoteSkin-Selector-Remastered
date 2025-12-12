@@ -107,6 +107,7 @@ NoteSkin Selector Remastered © 2024 by Meme1079 is licensed under CC BY-NC-ND 4
 <!-- - [MathParser](https://github.com/bytexenon/MathParser.lua) - bytexenon -->
 - [Lua Pretty JSON](https://github.com/xiedacon/lua-pretty-json) - xiedaco
 - [Lua Easing Library](https://github.com/EmmanuelOga/easing) - EmmanuelOga
+- [Lua F-Strings](https://github.com/hishamhm/f-strings) - Hisham Muhammad
 
 ## Other
 - Cursor - [Sonic Legacy](https://gamebanana.com/mods/496733)

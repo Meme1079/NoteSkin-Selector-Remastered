@@ -2,6 +2,7 @@ luaDebugMode = true
 
 local SkinSaves = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinSaves'
 
+local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
 local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
@@ -9,6 +10,8 @@ local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
 local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
+
+require 'table.new'
 
 local switch            = global.switch
 local createTimer       = funkinlua.createTimer
@@ -41,75 +44,31 @@ end
 --- Calculates and searches the nearest skin from the given input to be loaded.
 ---@return nil
 function SkinNotesSearch:search_skins()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent <= 0 then
+     local SKIN_STATEPREFIX = self.statePrefix
+
+     local TOTAL_SKIN                = self.totalSkins
+     local TOTAL_SKIN_OBJECTS_ID     = self.totalSkinObjectID
+     local SEARCH_SKIN_OBJECTS_INDEX = self.searchSkinObjectIndex
+     local SEARCH_SKIN_OBJECTS_PAGE  = self.searchSkinObjectPage
+
+     local SEARCH_INPUT_CONTENT = getVar('skinSearchInput_textContent') or ''
+     local FIRST_JUST_RELEASED  = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
+     if FIRST_JUST_RELEASED == -1 or getVar('skinSearchInputFocus') == false then -- optimization purposes
           return
      end
 
-     local justReleased = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
-     if not (justReleased ~= -1 and justReleased ~= nil and getVar('skinSearchInputFocus') == true) then
-          return
-     end
-
-     ---@alias SkinData
-     ---| 'ids'   # The ID of the skin.
-     ---| 'names' # The name of the skin.
-
-     --- The heart of this method, see the method's description for reference.
-     ---@param skinData SkinData The present searched skin data to be used, either its: ID or name data.
-     ---@param skinPath? boolean Include the skins relative file path or not.
-     ---@return table The present skins from the given search input.
-     local function calculateSearch(skinData, skinPath)
-          local skinListTotal    = self.totalSkins
-          local skinMatchPattern = self.statePrefix..'%-'
-          local skinInputContent = skinSearchInput_textContent
-
-          local skinSearchResult = {}
-          for skinListTotalID = 1, #skinListTotal do
-               local skinRawName   = skinListTotal[skinListTotalID]:match(skinMatchPattern..'(.+)')
-               local skinRawFolder = skinListTotal[skinListTotalID]:match('(%w+/)'..skinMatchPattern)
-               local skinName   = skinRawName   == nil and 'funkin' or skinRawName
-               local skinFolder = skinRawFolder == nil and ''       or skinRawFolder
-
-               local skinInputContentFilter = skinInputContent:gsub('([%%%.%$%^%(%[])', '%%%1'):upper()
-               local skinCapPatStartPos     = skinName:upper():find(skinInputContentFilter)
-               if skinCapPatStartPos ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
-                    local skinFilePathName = skinFolder..skinMatchPattern:gsub('%%%-', '-')..skinName
-                    local skinFileName     = skinPath == true and skinFilePathName or skinName
-
-                    local skinDefMatch   = skinFileName:match(skinMatchPattern..'funkin')
-                    local skinFileFilter = skinDefMatch == nil and skinFileName or match:gsub('%%%-', '')
-                    skinSearchResult[skinListTotalID] = skinFileFilter
-               end
-          end
-
-          local skinSearchResultData = {}
-          for ids, names in pairs(skinSearchResult) do
-               if names ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
-                    local skinDataValues = {["ids"] = ids, ["names"] = names}
-                    local skinDataMeta   = {
-                         __index = function() 
-                              return error("Invalid parameter value, either use: \"ids\" or \"names\"", 3)
-                         end
-                    }
-                    skinSearchResultData[#skinSearchResultData+1] = setmetatable(skinDataValues, skinDataMeta)[skinData]
-               end
-          end 
-          return skinSearchResultData
-     end
-
-     local skinInputContent   = skinSearchInput_textContent
-     local skinInputContentID = calculateSearch('ids', false)
+     local skinInputContent   = SEARCH_INPUT_CONTENT
+     local skinInputContentID = states.calculateSearch(self.stateClass, SKIN_STATEPREFIX, 'ids', false) -- to clear previous search results
      local skinSearchIndex = 0
-     for searchPage = 1, #self.totalSkinObjectID do
-          local totalSkinObjectIDs     = self.totalSkinObjectID[searchPage]
+     for searchPage = 1, #TOTAL_SKIN_OBJECTS_ID do
+          local totalSkinObjectIDs     = TOTAL_SKIN_OBJECTS_ID[searchPage]
           local totalSkinObjectMerge   = table.merge(totalSkinObjectIDs, skinInputContentID)
           local totalSkinObjectPresent = table.singularity(totalSkinObjectMerge, true)
 
           for curPresentIndex = 1, #totalSkinObjectPresent do
                skinSearchIndex = skinSearchIndex + 1
-               self.searchSkinObjectIndex[skinSearchIndex] = totalSkinObjectPresent[curPresentIndex]
-               self.searchSkinObjectPage[skinSearchIndex]  = searchPage
+               SEARCH_SKIN_OBJECTS_INDEX[skinSearchIndex] = totalSkinObjectPresent[curPresentIndex]
+               SEARCH_SKIN_OBJECTS_PAGE[skinSearchIndex]  = searchPage
           end
      end
 end
@@ -117,33 +76,44 @@ end
 --- Creates a chunk gallery of available display skins to select from when searching.
 ---@return nil
 function SkinNotesSearch:search_create()
-     local justReleased = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
-     if not (justReleased ~= -1 and justReleased ~= nil and getVar('skinSearchInputFocus') == true) then
+     local SKIN_STATENAME_UPPER       = self.stateClass:upperAtStart()
+     local SKIN_STATEPREFIX           = self.statePrefix
+
+     local TOTAL_SKIN                  = self.totalSkins
+     local TOTAL_SKIN_LIMIT            = self.totalSkinLimit
+     local TOTAL_SKIN_OBJECTS          = self.totalSkinObjects
+     local TOTAL_SKIN_OBJECTS_ID       = self.totalSkinObjectID
+     local TOTAL_META_OBJECTS_DISPLAY  = self.totalMetadataObjectDisplay
+     local TOTAL_META_OREDERED_DISPLAY = self.totalMetadataOrderedDisplay
+     local CURRENT_PAGE_INDEX          = self.selectSkinPagePositionIndex -- current page position
+
+     local SEARCH_INPUT_CONTENT = getVar('skinSearchInput_textContent') or ''
+     local SEARCH_INPUT_FOCUS   = getVar('skinSearchInputFocus') or false
+     local FIRST_JUST_RELEASED  = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
+     if FIRST_JUST_RELEASED == -1 or SEARCH_INPUT_FOCUS == false then  -- optimization purposes
           return
      end
-
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent')
-     if skinSearchInput_textContent == '' and getVar('skinSearchInputFocus') == true then
-          self:create(self.selectSkinPagePositionIndex)
+     if SEARCH_INPUT_CONTENT == '' and SEARCH_INPUT_FOCUS == true then -- optimization purposes
+          self:create(CURRENT_PAGE_INDEX)
           self:page_text()
           self:save_selection()
           return
      end
-
-     for pages = 1, self.totalSkinLimit do
-          for displays = 1, #self.totalSkinObjects[pages] do
-               if pages == index then
-                    goto continue_removeNonCurrentPages
+     
+     for skinPages = 1, TOTAL_SKIN_LIMIT do
+          for skinDisplays = 1, #TOTAL_SKIN_OBJECTS[skinPages] do
+               if skinPages == skinIndex then
+                    goto SKIP_CURRENT_PAGE_INDEX
                end
 
-               local displaySkinIconTemplates = {state = (self.stateClass):upperAtStart(), ID = self.totalSkinObjectID[pages][displays]}
-               local displaySkinIconButton = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplates)
-               local displaySkinIconSkin   = ('displaySkinIconSkin${state}-${ID}'):interpol(displaySkinIconTemplates)
-               if luaSpriteExists(displaySkinIconButton) == true and luaSpriteExists(displaySkinIconSkin) == true then
-                    removeLuaSprite(displaySkinIconButton, true)
-                    removeLuaSprite(displaySkinIconSkin, true)
+               local skinObjectID = TOTAL_SKIN_OBJECTS_ID[skinPages][skinDisplays]
+               local displaySkinIconTagButton = F"displaySkinIconButton{SKIN_STATENAME_UPPER}-{skinObjectID}"
+               local displaySkinIconTagSkin   = F"displaySkinIconSkin{SKIN_STATENAME_UPPER}-{skinObjectID}"
+               if luaSpriteExists(displaySkinIconTagButton) == true and luaSpriteExists(displaySkinIconTagSkin) == true then
+                    removeLuaSprite(displaySkinIconTagButton, true)
+                    removeLuaSprite(displaySkinIconTagSkin, true)
                end
-               ::continue_removeNonCurrentPages::
+               ::SKIP_CURRENT_PAGE_INDEX::
           end
      end
 
@@ -156,14 +126,14 @@ function SkinNotesSearch:search_create()
      ---@param skinPath? boolean Include the skins relative file path or not.
      ---@return table The present skins from the given search input.
      local function calculateSearch(skinData, skinPath)
-          local skinListTotal    = self.totalSkins
-          local skinMatchPattern = self.statePrefix..'%-'
-          local skinInputContent = skinSearchInput_textContent
+          local skinListTotal    = TOTAL_SKIN
+          local skinMatchPattern = SKIN_STATEPREFIX..'%-'
+          local skinInputContent = SEARCH_INPUT_CONTENT
 
-          local skinSearchResult = {}
+          local skinSearchResult = table.new(0xff, 0)
           for skinListTotalID = 1, #skinListTotal do
-               local skinRawName   = skinListTotal[skinListTotalID]:match(skinMatchPattern..'(.+)')
-               local skinRawFolder = skinListTotal[skinListTotalID]:match('(%w+/)'..skinMatchPattern)
+               local skinRawName   = skinListTotal[skinListTotalID]:match(F"{skinMatchPattern}(.+)")
+               local skinRawFolder = skinListTotal[skinListTotalID]:match(F"(%w+/){skinMatchPattern}")
                local skinName   = skinRawName   == nil and 'funkin' or skinRawName
                local skinFolder = skinRawFolder == nil and ''       or skinRawFolder
 
@@ -173,128 +143,122 @@ function SkinNotesSearch:search_create()
                     local skinFilePathName = skinFolder..skinMatchPattern:gsub('%%%-', '-')..skinName
                     local skinFileName     = skinPath == true and skinFilePathName or skinName
 
-                    local skinDefMatch   = skinFileName:match(skinMatchPattern..'funkin')
-                    local skinFileFilter = skinDefMatch == nil and skinFileName or match:gsub('%%%-', '')
+                    local skinDefMatch   = skinFileName:match(F"{skinMatchPattern}funkin")
+                    local skinFileFilter = skinDefMatch == nil and skinFileName or skinMatchPattern:gsub('%%%-', '')
                     skinSearchResult[skinListTotalID] = skinFileFilter
                end
           end
 
-          local skinSearchResultData = {}
+          local skinSearchResultData = table.new(0xff, 0)
           for ids, names in pairs(skinSearchResult) do
                if names ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
-                    local skinDataValues = {["ids"] = ids, ["names"] = names}
-                    local skinDataMeta   = {
-                         __index = function() 
-                              return error("Invalid parameter value, either use: \"ids\" or \"names\"", 3)
-                         end
-                    }
-                    skinSearchResultData[#skinSearchResultData+1] = setmetatable(skinDataValues, skinDataMeta)[skinData]
+                    local skinDataValues    = {["ids"] = ids, ["names"] = names}
+                    local skinDataMetatable = {}
+                    function skinDataMetatable:__index()
+                         return error("Invalid parameter value, either use: \"ids\" or \"names\"", 3)
+                    end
+                    skinSearchResultData[#skinSearchResultData+1] = setmetatable(skinDataValues, skinDataMetatable)[skinData]
                end
           end 
           return skinSearchResultData
      end
 
-     --- Calculates the display skins position.
+     --- Calculates the positions of each display skins to be shown within the chunk gallery.
      ---@return table[number]
-     local function displaySkinPositions()
-          local displaySkinIndexes   = {x = 0, y = 0}
-          local displaySkinPositions = {}
-          for displays = 1, MAX_NUMBER_CHUNK do
-               if (displays-1) % 4 == 0 then
-                    displaySkinIndexes.x = 0
-                    displaySkinIndexes.y = displaySkinIndexes.y + 1
+     local function displaySkinIconPositions()
+          local displaySkinIconPositions = {}
+          local displaySkinIconPosX = 0
+          local displaySkinIconPosY = 0
+
+          local SKIN_ROW_MAX_LENGTH    = 4
+          local SKIN_SEARCH_MAX_LENGTH = calculateSearch('names', true)
+          for skinDisplays = 1, #SKIN_SEARCH_MAX_LENGTH do
+               if (skinDisplays - 1) % SKIN_ROW_MAX_LENGTH == 0 then
+                    displaySkinIconPosY = displaySkinIconPosY + 1
+                    displaySkinIconPosX = 0
                else
-                    displaySkinIndexes.x = displaySkinIndexes.x + 1
+                    displaySkinIconPosX = displaySkinIconPosX + 1
                end
 
-               local displaySkinPositionX = 20  + (170 * displaySkinIndexes.x) - (25 * displaySkinIndexes.x)
-               local displaySkinPositionY = -20 + (180 * displaySkinIndexes.y) - (30 * displaySkinIndexes.y)
-               displaySkinPositions[#displaySkinPositions + 1] = {displaySkinPositionX, displaySkinPositionY}
+               local DISPLAY_SKIN_OFFSET_X =  20
+               local DISPLAY_SKIN_OFFSET_Y = -20
+               local DISPLAY_SKIN_DISTRIBUTION_OFFSET_X = 145
+               local DISPLAY_SKIN_DISTRIBUTION_OFFSET_Y = 150
+
+               local DISPLAY_SKIN_POSITION_X = DISPLAY_SKIN_OFFSET_X + (DISPLAY_SKIN_DISTRIBUTION_OFFSET_X * displaySkinIconPosX)
+               local DISPLAY_SKIN_POSITION_Y = DISPLAY_SKIN_OFFSET_Y + (DISPLAY_SKIN_DISTRIBUTION_OFFSET_Y * displaySkinIconPosY)
+               displaySkinIconPositions[#displaySkinIconPositions+1] = {DISPLAY_SKIN_POSITION_X, DISPLAY_SKIN_POSITION_Y}
           end
-          return displaySkinPositions
+          return displaySkinIconPositions
      end
 
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent')
-     local filterSearchByID   = calculateSearch('ids',   false)
-     local filterSearchByName = calculateSearch('names', false)
-     local filterSearchBySkin = calculateSearch('names', true)
+     local filterSearchByID   = states.calculateSearch(self.stateClass, SKIN_STATEPREFIX, 'ids', false)
+     local filterSearchByName = states.calculateSearch(self.stateClass, SKIN_STATEPREFIX, 'names', false)
+     local filterSearchBySkin = states.calculateSearch(self.stateClass, SKIN_STATEPREFIX, 'names', true)
 
-     local currenMinPage = (self.selectSkinPagePositionIndex - 1) * MAX_NUMBER_CHUNK
-     local currenMinPageIndex = currenMinPage == 0 and 1 or currenMinPage
-     local currenMaxPageIndex = self.selectSkinPagePositionIndex * MAX_NUMBER_CHUNK
+     local currenMinPageRange = (CURRENT_PAGE_INDEX - 1) * MAX_NUMBER_CHUNK
+     local currenMaxPageRange = CURRENT_PAGE_INDEX       * MAX_NUMBER_CHUNK
+     currenMinPageRange = (currenMinPageRange == 0) and 1 or currenMinPageRange -- adjust for 1-based index
 
-     local searchFilterSkinsDefault = table.tally(currenMinPageIndex, currenMaxPageIndex)
-     local searchFilterSkinsTyped   = table.singularity(table.merge(filterSearchByID, searchFilterSkinsDefault), false)
+     local searchFilterSkinPageRange = table.tally(currenMinPageRange, currenMaxPageRange)
+     local searchFilterSkinPresent   = table.singularity(table.merge(filterSearchByID, searchFilterSkinPageRange), false)
+     local searchFilterSkinRange     = table.sub(searchFilterSkinPresent, 1, #filterSearchByName) -- adjust for present skins only
+     for skinSearchIndex, skinSearchIDs in pairs(searchFilterSkinRange) do
+          local displaySkinIconTagButton = F"displaySkinIconButton{SKIN_STATENAME_UPPER}-{skinSearchIDs}"
+          local displaySkinIconTagSkin   = F"displaySkinIconSkin{SKIN_STATENAME_UPPER}-{skinSearchIDs}"
+          local displaySkinIconPosX = displaySkinIconPositions()[skinSearchIndex][1]
+          local displaySkinIconPosY = displaySkinIconPositions()[skinSearchIndex][2]
+          makeAnimatedLuaSprite(displaySkinIconTagButton, 'ui/buttons/display_button', displaySkinIconPosX, displaySkinIconPosY)
+          addAnimationByPrefix(displaySkinIconTagButton, 'static', 'static')
+          addAnimationByPrefix(displaySkinIconTagButton, 'selected', 'selected')
+          addAnimationByPrefix(displaySkinIconTagButton, 'blocked', 'blocked')
+          addAnimationByPrefix(displaySkinIconTagButton, 'hover', 'hovered-static')
+          addAnimationByPrefix(displaySkinIconTagButton, 'pressed', 'hovered-pressed')
+          playAnim(displaySkinIconTagButton, 'static', true)
+          scaleObject(displaySkinIconTagButton, 0.8, 0.8)
+          setObjectCamera(displaySkinIconTagButton, 'camHUD')
+          setProperty(F"{displaySkinIconTagButton}.antialiasing", false)
+          addLuaSprite(displaySkinIconTagButton)
 
-     local searchFilterSkinsSubDefault = table.sub(searchFilterSkinsDefault, 1, MAX_NUMBER_CHUNK)
-     local searchFilterSkinsSubTyped   = table.sub(searchFilterSkinsTyped, 1, MAX_NUMBER_CHUNK)
-     local searchFilterSkins = #filterSearchByID == 0 and searchFilterSkinsSubDefault or searchFilterSkinsSubTyped
-     for ids, displays in pairs(searchFilterSkins) do
-          if #filterSearchByID    == 0 then return end -- !DO NOT DELETE
-          if #filterSearchByName < ids then return end -- !DO NOT DELETE
-
-          local displaySkinIconTemplates = {state = (self.stateClass):upperAtStart(), ID = displays}
-          local displaySkinIconButton = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplates)
-          local displaySkinIconSkin   = ('displaySkinIconSkin${state}-${ID}'):interpol(displaySkinIconTemplates)
-
-          local displaySkinPositionX = displaySkinPositions()[ids][1]
-          local displaySkinPositionY = displaySkinPositions()[ids][2]
-          makeAnimatedLuaSprite(displaySkinIconButton, 'ui/buttons/display_button', displaySkinPositionX, displaySkinPositionY)
-          addAnimationByPrefix(displaySkinIconButton, 'static', 'static')
-          addAnimationByPrefix(displaySkinIconButton, 'selected', 'selected')
-          addAnimationByPrefix(displaySkinIconButton, 'blocked', 'blocked')
-          addAnimationByPrefix(displaySkinIconButton, 'hover', 'hovered-static')
-          addAnimationByPrefix(displaySkinIconButton, 'pressed', 'hovered-pressed')
-          playAnim(displaySkinIconButton, 'static', true)
-          scaleObject(displaySkinIconButton, 0.8, 0.8)
-          setObjectCamera(displaySkinIconButton, 'camHUD')
-          setProperty(displaySkinIconButton..'.antialiasing', false)
-          addLuaSprite(displaySkinIconButton)
-
-          local displaySkinMetadataJSON = self.totalMetadataOrderedDisplay[tonumber(displays)]
-          local displaySkinMetadata_frames   = displaySkinMetadataJSON == '@void' and 24           or (displaySkinMetadataJSON.frames   or 24)
-          local displaySkinMetadata_prefixes = displaySkinMetadataJSON == '@void' and 'arrowUP'    or (displaySkinMetadataJSON.prefixes or 'arrowUP')
-          local displaySkinMetadata_size     = displaySkinMetadataJSON == '@void' and {0.55, 0.55} or (displaySkinMetadataJSON.size     or {0.55, 0.55})
-          local displaySkinMetadata_offsets  = displaySkinMetadataJSON == '@void' and {0, 0}       or (displaySkinMetadataJSON.offsets  or {0, 0})
-
-          local displaySkinImageTemplate = {path = self.statePaths, skin = filterSearchBySkin[ids]}
-          local displaySkinImage         = ('${path}/${skin}'):interpol(displaySkinImageTemplate)
-
-          local displaySkinImagePositionX = displaySkinPositionX + 16.5
-          local displaySkinImagePositionY = displaySkinPositionY + 12
-          makeAnimatedLuaSprite(displaySkinIconSkin, displaySkinImage, displaySkinImagePositionX, displaySkinImagePositionY)
-          scaleObject(displaySkinIconSkin, displaySkinMetadata_size[1], displaySkinMetadata_size[2])
-          addAnimationByPrefix(displaySkinIconSkin, 'static', displaySkinMetadata_prefixes, displaySkinMetadata_frames, true)
-
-          local curOffsetX = getProperty(displaySkinIconSkin..'.offset.x')
-          local curOffsetY = getProperty(displaySkinIconSkin..'.offset.y')
-          addOffset(displaySkinIconSkin, 'static', curOffsetX - displaySkinMetadata_offsets[1], curOffsetY + displaySkinMetadata_offsets[2])
-          playAnim(displaySkinIconSkin, 'static')
-          setObjectCamera(displaySkinIconSkin, 'camHUD')
-          addLuaSprite(displaySkinIconSkin)
-
-          if ids > #filterSearchBySkin then
-               if luaSpriteExists(displaySkinIconButton) == true and luaSpriteExists(displaySkinIconSkin) == true then
-                    removeLuaSprite(displaySkinIconButton, true)
-                    removeLuaSprite(displaySkinIconSkin, true)
-               end
+          --- Gets the skins' display metadata value, acts as a helper function.
+          --- Checks for any missing values and replaces it with its default value.
+          ---@param metadata string The metadata element to get its value.
+          ---@param constant any The constant default value, if the metadata element is missing.
+          ---@return any
+          local function displaySkinMetadata(metadata, constant)
+               local metaObjectsDisplay = TOTAL_META_OREDERED_DISPLAY[tonumber(skinSearchIDs)]
+               if metaObjectsDisplay           == '@void' then return constant end
+               if metaObjectsDisplay[metadata] == nil     then return constant end
+               return metaObjectsDisplay[metadata]
           end
+          local displaySkinMetadataFrames   = displaySkinMetadata('frames',   24)
+          local displaySkinMetadataPrefixes = displaySkinMetadata('prefixes', 'arrowUP')
+          local displaySkinMetadataSize     = displaySkinMetadata('size',     {0.55, 0.55})
+          local displaySkinMetadataOffsets  = displaySkinMetadata('offsets',  {0, 0})
 
-          if #filterSearchBySkin == 0 then
+          local DISPLAY_SKIN_POSITION_OFFSET_X = 16.5
+          local DISPLAY_SKIN_POSITION_OFFSET_Y = 12
+          local displaySkinIconPosOffsetX = displaySkinIconPosX + DISPLAY_SKIN_POSITION_OFFSET_X
+          local displaySkinIconPosOffsetY = displaySkinIconPosY + DISPLAY_SKIN_POSITION_OFFSET_Y
+
+          local displaySkinIconSkinSprite = F"{self.statePaths}/{filterSearchBySkin[skinSearchIndex]}"
+          makeAnimatedLuaSprite(displaySkinIconTagSkin, displaySkinIconSkinSprite, displaySkinIconPosOffsetX, displaySkinIconPosOffsetY)
+          scaleObject(displaySkinIconTagSkin, displaySkinMetadataSize[1], displaySkinMetadataSize[2])
+          addAnimationByPrefix(displaySkinIconTagSkin, 'static', displaySkinMetadataPrefixes, displaySkinMetadataFrames, true)
+
+          local DISPLAY_SKIN_OFFSET_X = getProperty(F"{displaySkinIconTagSkin}.offset.x")
+          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"{displaySkinIconTagSkin}.offset.y")
+          local displaySkinIconOffsetX = DISPLAY_SKIN_OFFSET_X - displaySkinMetadataOffsets[1]
+          local displaySkinIconOffsetY = DISPLAY_SKIN_OFFSET_Y + displaySkinMetadataOffsets[2]
+          addOffset(displaySkinIconTagSkin, 'static', displaySkinIconOffsetX, displaySkinIconOffsetY)
+          playAnim(displaySkinIconTagSkin, 'static')
+          setObjectCamera(displaySkinIconTagSkin, 'camHUD')
+          addLuaSprite(displaySkinIconTagSkin)
+
+          if skinSearchIndex > #filterSearchBySkin then
                if luaSpriteExists(displaySkinIconButton) == true and luaSpriteExists(displaySkinIconSkin) == true then
-                    return
-               end
-               
-               for _ in pairs(searchFilterSkins) do -- lmao
-                    local displaySkinIconTemplates = {state = (self.stateClass):upperAtStart(), ID = displays}
-                    local displaySkinIconButton = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplates)
-                    local displaySkinIconSkin   = ('displaySkinIconSkin${state}-${ID}'):interpol(displaySkinIconTemplates)
-
                     removeLuaSprite(displaySkinIconButton, true)
                     removeLuaSprite(displaySkinIconSkin, true)
-               end
-               if ids == MAX_NUMBER_CHUNK then 
-                    return 
                end
           end
           self:save_selection()

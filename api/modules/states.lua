@@ -1,8 +1,11 @@
+local F       = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string  = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local json    = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 local global  = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 require 'table.new'
+
+local MAX_NUMBER_CHUNK = 16
 
 local states = {}
 states.notes    = {prefix = 'NOTE_assets',  folder = 'noteSkins'}
@@ -397,6 +400,54 @@ function states.getPreviewObjectMissingAnims(previewSkinAnim, previewSkinObjects
           end
      end
      return totalPreviewMissingAnims
+end
+
+---@alias SkinData
+---| 'ids'   # The ID of the skin.
+---| 'names' # The name of the skin.
+
+--- The heart of this method, see the method's description for reference.
+---@param skin string The specified skin to find the total amount it currently has.
+---@param skinPrefix string The specified skin prefix to be used for searching.
+---@param skinData SkinData The present searched skin data to be used, either its: ID or name data.
+---@param skinPath? boolean Include the skins relative file path or not.
+---@return table The present skins from the given search input.
+function states.calculateSearch(skin, skinPrefix, skinData, skinPath)
+     local skinListTotal    = states.getTotalSkins(skin, false)
+     local skinInputContent = getVar('skinSearchInput_textContent') or ''
+     local skinMatchPattern = F"{skinPrefix}%-"
+
+     local skinSearchResult = table.new(0xff, 0)
+     for skinListTotalID = 1, #skinListTotal do
+          local skinRawName   = skinListTotal[skinListTotalID]:match(F"{skinMatchPattern}(.+)")
+          local skinRawFolder = skinListTotal[skinListTotalID]:match(F"(%w+/){skinMatchPattern}")
+          local skinName   = skinRawName   == nil and 'funkin' or skinRawName
+          local skinFolder = skinRawFolder == nil and ''       or skinRawFolder
+
+          local skinInputContentFilter = skinInputContent:gsub('([%%%.%$%^%(%[])', '%%%1'):upper()
+          local skinCapPatStartPos     = skinName:upper():find(skinInputContentFilter)
+          if skinCapPatStartPos ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
+               local skinFilePathName = skinFolder..skinMatchPattern:gsub('%%%-', '-')..skinName
+               local skinFileName     = skinPath == true and skinFilePathName or skinName
+
+               local skinDefMatch   = skinFileName:match(F"{skinMatchPattern}funkin")
+               local skinFileFilter = skinDefMatch == nil and skinFileName or skinMatchPattern:gsub('%%%-', '')
+               skinSearchResult[skinListTotalID] = skinFileFilter
+          end
+     end
+
+     local skinSearchResultData = table.new(0xff, 0)
+     for ids, names in pairs(skinSearchResult) do
+          if names ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
+               local skinDataValues    = {["ids"] = ids, ["names"] = names}
+               local skinDataMetatable = {}
+               function skinDataMetatable:__index()
+                    return error("Invalid parameter value, either use: \"ids\" or \"names\"", 3)
+               end
+               skinSearchResultData[#skinSearchResultData+1] = setmetatable(skinDataValues, skinDataMetatable)[skinData]
+          end
+     end 
+     return skinSearchResultData
 end
 
 return states

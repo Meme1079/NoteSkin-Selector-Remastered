@@ -84,7 +84,8 @@ end
 --- Loads multiple attribute properties (including its save data) for the class, used after initialization.
 ---@return nil
 function SkinSplashes:load()
-     self.totalSkins     = states.getTotalSkins(self.stateClass, self.statePaths)
+     self.totalSkins     = states.getTotalSkins(self.stateClass, false)
+     self.totalSkinPaths = states.getTotalSkins(self.stateClass, true)
      self.totalSkinNames = states.getTotalSkinNames(self.stateClass)
 
      -- Object Properties --
