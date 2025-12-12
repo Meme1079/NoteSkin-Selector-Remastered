@@ -117,52 +117,6 @@ function SkinNotesSearch:search_create()
           end
      end
 
-     ---@alias SkinData
-     ---| 'ids'   # The ID of the skin.
-     ---| 'names' # The name of the skin.
-
-     --- The heart of this method, see the method's description for reference.
-     ---@param skinData SkinData The present searched skin data to be used, either its: ID or name data.
-     ---@param skinPath? boolean Include the skins relative file path or not.
-     ---@return table The present skins from the given search input.
-     local function calculateSearch(skinData, skinPath)
-          local skinListTotal    = TOTAL_SKIN
-          local skinMatchPattern = SKIN_STATEPREFIX..'%-'
-          local skinInputContent = SEARCH_INPUT_CONTENT
-
-          local skinSearchResult = table.new(0xff, 0)
-          for skinListTotalID = 1, #skinListTotal do
-               local skinRawName   = skinListTotal[skinListTotalID]:match(F"{skinMatchPattern}(.+)")
-               local skinRawFolder = skinListTotal[skinListTotalID]:match(F"(%w+/){skinMatchPattern}")
-               local skinName   = skinRawName   == nil and 'funkin' or skinRawName
-               local skinFolder = skinRawFolder == nil and ''       or skinRawFolder
-
-               local skinInputContentFilter = skinInputContent:gsub('([%%%.%$%^%(%[])', '%%%1'):upper()
-               local skinCapPatStartPos     = skinName:upper():find(skinInputContentFilter)
-               if skinCapPatStartPos ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
-                    local skinFilePathName = skinFolder..skinMatchPattern:gsub('%%%-', '-')..skinName
-                    local skinFileName     = skinPath == true and skinFilePathName or skinName
-
-                    local skinDefMatch   = skinFileName:match(F"{skinMatchPattern}funkin")
-                    local skinFileFilter = skinDefMatch == nil and skinFileName or skinMatchPattern:gsub('%%%-', '')
-                    skinSearchResult[skinListTotalID] = skinFileFilter
-               end
-          end
-
-          local skinSearchResultData = table.new(0xff, 0)
-          for ids, names in pairs(skinSearchResult) do
-               if names ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
-                    local skinDataValues    = {["ids"] = ids, ["names"] = names}
-                    local skinDataMetatable = {}
-                    function skinDataMetatable:__index()
-                         return error("Invalid parameter value, either use: \"ids\" or \"names\"", 3)
-                    end
-                    skinSearchResultData[#skinSearchResultData+1] = setmetatable(skinDataValues, skinDataMetatable)[skinData]
-               end
-          end 
-          return skinSearchResultData
-     end
-
      --- Calculates the positions of each display skins to be shown within the chunk gallery.
      ---@return table[number]
      local function displaySkinIconPositions()
@@ -171,7 +125,7 @@ function SkinNotesSearch:search_create()
           local displaySkinIconPosY = 0
 
           local SKIN_ROW_MAX_LENGTH    = 4
-          local SKIN_SEARCH_MAX_LENGTH = calculateSearch('names', true)
+          local SKIN_SEARCH_MAX_LENGTH = states.calculateSearch(self.stateClass, SKIN_STATEPREFIX, 'names', true)
           for skinDisplays = 1, #SKIN_SEARCH_MAX_LENGTH do
                if (skinDisplays - 1) % SKIN_ROW_MAX_LENGTH == 0 then
                     displaySkinIconPosY = displaySkinIconPosY + 1
