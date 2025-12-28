@@ -1,0 +1,60 @@
+{
+     "names": {
+          "confirm": [
+               "left_confirm",
+               "down_confirm",
+               "up_confirm",
+               "right_confirm"
+          ],
+          "pressed": [
+               "left_pressed",
+               "down_pressed",
+               "up_pressed",
+               "right_pressed"
+          ],
+          "colored": [
+               "left_colored",
+               "down_colored",
+               "up_colored",
+               "right_colored"
+          ],
+          "strums": [
+               "left",
+               "down",
+               "up",
+               "right"
+          ]
+     },
+     "prefixes": {
+          "confirm": [
+               "left confirm",
+               "down confirm",
+               "up confirm",
+               "right confirm"
+          ],
+          "pressed": [
+               "left press",
+               "down press",
+               "up press",
+               "right press"
+          ],
+          "colored": [
+               "purple0",
+               "blue0",
+               "green0",
+               "red0"
+          ],
+          "strums": [
+               "arrowLEFT",
+               "arrowDOWN",
+               "arrowUP",
+               "arrowRIGHT"
+          ]
+     },
+     "frames": {
+          "confirm": 24,
+          "pressed": 24,
+          "colored": 24,
+          "strums": 24
+     }
+}

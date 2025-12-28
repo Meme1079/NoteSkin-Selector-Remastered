@@ -12,8 +12,6 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
 local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
-require 'table.new'
-
 local switch         = global.switch
 local createTimer    = funkinlua.createTimer
 local clickObject    = funkinlua.clickObject
@@ -138,9 +136,11 @@ function SkinSplashes:load()
 
      -- Preview Animation Properties --
 
-     self.previewStaticDataDisplay = json.parse(getTextFromFile('json/splashes/default static data/dsd_display.json'))
-     self.previewStaticDataPreview = json.parse(getTextFromFile('json/splashes/default static data/dsd_preview.json'))
-     self.previewNoteStaticDataPreview = json.parse(getTextFromFile('json/notes/default static data/dsd_preview.json'))
+     self.previewStaticDataDisplay = json.parse(getTextFromFile('json/splashes/constant/display.json'))
+     self.previewStaticDataPreview = json.parse(getTextFromFile('json/splashes/constant/preview.json'))
+     self.previewStaticDataSkins   = json.parse(getTextFromFile('json/splashes/constant/skins.json'))
+     self.previewNoteStaticDataPreview = json.parse(getTextFromFile('json/notes/constant/preview.json'))
+     self.previewConstDataPreviewAnims = json.parse(getTextFromFile('json/splashes/constant/preview_anims.json'))
 
      self.previewAnimationObjectHovered = {false, false}
      self.previewAnimationObjectClicked = {false, false}

@@ -1,0 +1,34 @@
+{
+     "left": {
+          "prefix": "arrowLEFT",
+          "name": "left",
+          "offsets": [
+               0,
+               0
+          ]
+     },
+     "down": {
+          "prefix": "arrowDOWN",
+          "name": "down",
+          "offsets": [
+               0,
+               0
+          ]
+     },
+     "up": {
+          "prefix": "arrowUP",
+          "name": "up",
+          "offsets": [
+               0,
+               0
+          ]
+     },
+     "right": {
+          "prefix": "arrowRIGHT",
+          "name": "right",
+          "offsets": [
+               0,
+               0
+          ]
+     }
+}

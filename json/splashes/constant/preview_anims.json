@@ -1,0 +1,14 @@
+{
+     "names": {
+          "note_splash1": ["left_splash1", "down_splash1", "up_splash1", "right_splash1"],
+          "note_splash2": ["left_splash2", "down_splash2", "up_splash2", "right_splash2"]
+     },
+     "prefixes": {
+          "note_splash1": ["note splash purple 1", "note splash blue 1", "note splash green 1", "note splash red 1"],
+          "note_splash2": ["note splash purple 2", "note splash blue 2", "note splash green 2", "note splash red 2"]
+     },
+     "frames": {
+          "note_splash1": 24,
+          "note_splash2": 24
+     }
+}

@@ -10,8 +10,6 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
 local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
-require 'table.new'
-
 local switch            = global.switch
 local createTimer       = funkinlua.createTimer
 local hoverObject       = funkinlua.hoverObject

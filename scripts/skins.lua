@@ -23,8 +23,8 @@ local stateSave_checkboxNoteIndexPlayer   = SkinStateSave:get('checkboxSkinObjec
 local stateSave_checkboxNoteIndexOpponent = SkinStateSave:get('checkboxSkinObjectIndexOpponent', 'notes', 0)
 local stateSave_checkboxSplashIndexPlayer = SkinStateSave:get('checkboxSkinObjectIndexPlayer', 'splashes', 0)
 
-local skinStaticDataNotes    = json.parse(getTextFromFile('json/notes/default static data/dsd_skins.json'))
-local skinStaticDataSplashes = json.parse(getTextFromFile('json/splashes/default static data/dsd_skins.json'))
+local skinStaticDataNotes    = json.parse(getTextFromFile('json/notes/constant/skins.json'))
+local skinStaticDataSplashes = json.parse(getTextFromFile('json/splashes/constant/skins.json'))
 
 local getTotalSkinNotes       = setmetatable(states.getTotalSkins('notes', true), stateSkinMetadata)
 local getTotalSkinSplashes    = setmetatable(states.getTotalSkins('splashes', true), stateSkinMetadata)

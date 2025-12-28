@@ -17,8 +17,6 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
 local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
-require 'table.new'
-
 local switch            = global.switch
 local createTimer       = funkinlua.createTimer
 local hoverObject       = funkinlua.hoverObject
@@ -131,7 +129,8 @@ function SkinNotes:load()
      local selectInitSelectedIndex = SkinNoteSave:get('selectSkinInitSelectedIndex', self.stateClass, 1)
      local selectPreSelectedIndex  = SkinNoteSave:get('selectSkinPreSelectedIndex',  self.stateClass, 1)
      local selectCurSelectedIndex  = SkinNoteSave:get('selectSkinCurSelectedIndex',  self.stateClass, 1)
-     self.selectSkinPagePositionIndex = selectPagePositionIndex -- current page index
+
+     self.selectSkinPagePositionIndex = selectCurSelectedIndex -- current page index
      self.selectSkinInitSelectedIndex = selectInitSelectedIndex -- current pressed selected skin
      self.selectSkinPreSelectedIndex  = selectPreSelectedIndex  -- highlighting the current selected skin
      self.selectSkinCurSelectedIndex  = selectCurSelectedIndex  -- current selected skin index
@@ -139,9 +138,10 @@ function SkinNotes:load()
 
      -- Preview Animation Properties --
 
-     self.previewStaticDataDisplay = json.parse(getTextFromFile('json/notes/default static data/dsd_display.json'))
-     self.previewStaticDataPreview = json.parse(getTextFromFile('json/notes/default static data/dsd_preview.json'))
-     self.previewStaticDataSkins   = json.parse(getTextFromFile('json/notes/default static data/dsd_skins.json'))
+     self.previewStaticDataDisplay = json.parse(getTextFromFile('json/notes/constant/display.json'))
+     self.previewStaticDataPreview = json.parse(getTextFromFile('json/notes/constant/preview.json'))
+     self.previewStaticDataSkins   = json.parse(getTextFromFile('json/notes/constant/skins.json'))
+     self.previewConstDataPreviewAnims = json.parse(getTextFromFile('json/notes/constant/preview_anims.json'))
 
      self.previewAnimationObjectHovered = {false, false}
      self.previewAnimationObjectClicked = {false, false}
@@ -175,19 +175,6 @@ end
 --- Checks for any error(s) within the classes' attribute properties, resetting to default if found.
 ---@return nil
 function SkinNotes:load_preventError()
-     local SKIN_STATENAME   = self.stateClass
-     local TOTAL_SKIN_PATHS = self.totalSkinPaths
-     local TOTAL_SKIN_LIMIT = self.totalSkinLimit
-
-     local CURRENT_PAGE_INDEX      = self.selectSkinPagePositionIndex -- current page position
-     local SLIDER_PAGE_INDEX       = self.sliderPageIndex
-     local SLIDER_TRACK_PAGE_INDEX = self.sliderTrackPageIndex
-
-     local PREVIEW_ANIMATION_OBJECT           = self.previewAnimationObjectIndex
-     local PREVIEW_ANIMATION_OBJECT_PREVANIMS = self.previewAnimationObjectPrevAnims
-     local CHECKBOX_SKIN_OBJECT_PLAYER   = self.checkboxSkinObjectIndex.player
-     local CHECKBOX_SKIN_OBJECT_OPPONENT = self.checkboxSkinObjectIndex.opponent
-
      local skinTotalSkinMetatable = {}
      function skinTotalSkinMetatable:__index(index)
           if index == 0 then
@@ -196,26 +183,26 @@ function SkinNotes:load_preventError()
           return '@error', index
      end
 
-     local skinTotalSkinPaths = setmetatable(TOTAL_SKIN_PATHS, skinTotalSkinMetatable)
-     if skinTotalSkinPaths[CHECKBOX_SKIN_OBJECT_PLAYER]   == '@error' then
+     local skinTotalSkinPaths = setmetatable(self.totalSkinPaths, skinTotalSkinMetatable)
+     if skinTotalSkinPaths[self.checkboxSkinObjectIndex.player]   == '@error' then
           self.checkboxSkinObjectIndex.player = 0
-          SkinNoteSave:set('checkboxSkinObjectIndexPlayer', SKIN_STATENAME, 0)
+          SkinNoteSave:set('checkboxSkinObjectIndexPlayer', self.stateClass, 0)
      end
-     if skinTotalSkinPaths[CHECKBOX_SKIN_OBJECT_OPPONENT] == '@error' then
+     if skinTotalSkinPaths[self.checkboxSkinObjectIndex.opponent] == '@error' then
           self.checkboxSkinObjectIndex.opponent = 0
-          SkinNoteSave:set('checkboxSkinObjectIndexOpponent', SKIN_STATENAME, 0)
+          SkinNoteSave:set('checkboxSkinObjectIndexOpponent', self.stateClass, 0)
      end
 
-     if CURRENT_PAGE_INDEX <= 0 or CURRENT_PAGE_INDEX > TOTAL_SKIN_LIMIT then
+     if self.selectSkinPagePositionIndex <= 0 or self.selectSkinPagePositionIndex > self.totalSkinLimit then
           self.sliderPageIndex      = 1
           self.sliderTrackPageIndex = 1
 
           self.selectSkinPagePositionIndex = 1
-          SkinNoteSave:set('selectSkinPagePositionIndex', SKIN_STATENAME, 1)
+          SkinNoteSave:set('selectSkinPagePositionIndex', self.stateClass, 1)
      end
-     if PREVIEW_ANIMATION_OBJECT <= 0 or PREVIEW_ANIMATION_OBJECT > #PREVIEW_ANIMATION_OBJECT_PREVANIMS then
+     if self.previewAnimationObjectIndex <= 0 or self.previewAnimationObjectIndex > #self.previewAnimationObjectPrevAnims then
           self.previewAnimationObjectIndex = 1
-          SkinNoteSave:set('previewObjectIndex', SKIN_STATENAME, 1)
+          SkinNoteSave:set('previewObjectIndex', self.stateClass, 1)
      end
 end
 
@@ -243,26 +230,21 @@ end
 ---@return nil
 function SkinNotes:create(skinIndex)
      local skinIndex = (skinIndex == nil) and 1 or skinIndex
-     local SKIN_STATENAME_UPPER       = self.stateClass:upperAtStart()
 
-     local TOTAL_SKIN_LIMIT           = self.totalSkinLimit
-     local TOTAL_SKIN_OBJECTS         = self.totalSkinObjects
-     local TOTAL_SKIN_OBJECTS_ID      = self.totalSkinObjectID
-     local TOTAL_META_OBJECTS_DISPLAY = self.totalMetadataObjectDisplay
-     for skinPages = 1, TOTAL_SKIN_LIMIT do
-          for skinDisplays = 1, #TOTAL_SKIN_OBJECTS[skinPages] do
+     for skinPages = 1, self.totalSkinLimit do
+          for skinDisplays = 1, #self.totalSkinObjects[skinPages] do
                if skinPages == skinIndex then
-                    goto SKIP_CURRENT_PAGE_INDEX
+                    goto SKIP_SKIN_PAGE
                end
 
-               local skinObjectID = TOTAL_SKIN_OBJECTS_ID[skinPages][skinDisplays]
-               local displaySkinIconTagButton = F"displaySkinIconButton{SKIN_STATENAME_UPPER}-{skinObjectID}"
-               local displaySkinIconTagSkin   = F"displaySkinIconSkin{SKIN_STATENAME_UPPER}-{skinObjectID}"
+               local skinObjectID = self.totalSkinObjectID[skinPages][skinDisplays]
+               local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
+               local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
                if luaSpriteExists(displaySkinIconTagButton) == true and luaSpriteExists(displaySkinIconTagSkin) == true then
                     removeLuaSprite(displaySkinIconTagButton, true)
                     removeLuaSprite(displaySkinIconTagSkin, true)
                end
-               ::SKIP_CURRENT_PAGE_INDEX::
+               ::SKIP_SKIN_PAGE::
           end
      end
 
@@ -274,7 +256,7 @@ function SkinNotes:create(skinIndex)
           local displaySkinIconPosY = 0
 
           local SKIN_ROW_MAX_LENGTH = 4
-          for skinDisplays = 1, #TOTAL_SKIN_OBJECTS[skinIndex] do
+          for skinDisplays = 1, #self.totalSkinObjects[skinIndex] do
                if (skinDisplays - 1) % SKIN_ROW_MAX_LENGTH == 0 then
                     displaySkinIconPosY = displaySkinIconPosY + 1
                     displaySkinIconPosX = 0
@@ -294,12 +276,12 @@ function SkinNotes:create(skinIndex)
           return displaySkinIconPositions
      end
 
-     for skinDisplays = 1, #TOTAL_SKIN_OBJECTS[skinIndex] do
-          local skinObjectsID = TOTAL_SKIN_OBJECTS_ID[skinIndex][skinDisplays]
-          local skinObjects   = TOTAL_SKIN_OBJECTS[skinIndex][skinDisplays]
+     for skinDisplays = 1, #self.totalSkinObjects[skinIndex] do
+          local skinObjectsID = self.totalSkinObjectID[skinIndex][skinDisplays]
+          local skinObjects   = self.totalSkinObjects[skinIndex][skinDisplays]
 
-          local displaySkinIconTagButton = F"displaySkinIconButton{SKIN_STATENAME_UPPER}-{skinObjectsID}"
-          local displaySkinIconTagSkin   = F"displaySkinIconSkin{SKIN_STATENAME_UPPER}-{skinObjectsID}"
+          local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectsID}"
+          local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectsID}"
           local displaySkinIconPosX = displaySkinIconPositions()[skinDisplays][1]
           local displaySkinIconPosY = displaySkinIconPositions()[skinDisplays][2]
           makeAnimatedLuaSprite(displaySkinIconTagButton, 'ui/buttons/display_button', displaySkinIconPosX, displaySkinIconPosY)
@@ -320,7 +302,7 @@ function SkinNotes:create(skinIndex)
           ---@param constant any The constant default value, if the metadata element is missing.
           ---@return any
           local function displaySkinMetadata(metadata, constant)
-               local metaObjectsDisplay = TOTAL_META_OBJECTS_DISPLAY[skinIndex][skinDisplays] 
+               local metaObjectsDisplay = self.totalMetadataObjectDisplay[skinIndex][skinDisplays] 
                if metaObjectsDisplay           == '@void' then return constant end
                if metaObjectsDisplay[metadata] == nil     then return constant end
                return metaObjectsDisplay[metadata]
@@ -332,11 +314,11 @@ function SkinNotes:create(skinIndex)
 
           local DISPLAY_SKIN_POSITION_OFFSET_X = 16.5
           local DISPLAY_SKIN_POSITION_OFFSET_Y = 12
-          local displaySkinIconPosOffsetX = displaySkinIconPosX + DISPLAY_SKIN_POSITION_OFFSET_X
-          local displaySkinIconPosOffsetY = displaySkinIconPosY + DISPLAY_SKIN_POSITION_OFFSET_Y
+          local displaySkinIconPositionX = displaySkinIconPosX + DISPLAY_SKIN_POSITION_OFFSET_X
+          local displaySkinIconPositionY = displaySkinIconPosY + DISPLAY_SKIN_POSITION_OFFSET_Y
 
-          local displaySkinIconSkinSprite = F"{self.statePaths}/{skinObjects}"
-          makeAnimatedLuaSprite(displaySkinIconTagSkin, displaySkinIconSkinSprite, displaySkinIconPosOffsetX, displaySkinIconPosOffsetY)
+          local displaySkinIconSprite = F"{self.statePaths}/{skinObjects}"
+          makeAnimatedLuaSprite(displaySkinIconTagSkin, displaySkinIconSprite, displaySkinIconPositionX, displaySkinIconPositionY)
           scaleObject(displaySkinIconTagSkin, displaySkinMetadataSize[1], displaySkinMetadataSize[2])
           addAnimationByPrefix(displaySkinIconTagSkin, 'static', displaySkinMetadataPrefixes, displaySkinMetadataFrames, true)
 
@@ -357,25 +339,16 @@ end
 --- Destroys a chunk of the note skin state (page-index dependent), used only for switching states.
 ---@return nil
 function SkinNotes:destroy()
-     local SKIN_STATENAME_UPPER       = self.stateClass:upperAtStart()
+     for skinDisplays = 1, #self.totalSkinObjects[self.selectSkinPagePositionIndex] do
+          local skinObjectID = self.totalSkinObjectID[self.selectSkinPagePositionIndex][skinDisplays]
+          local skinObjects  = self.totalSkinObjects[self.selectSkinPagePositionIndex][skinDisplays]
 
-     local TOTAL_SKIN_OBJECTS         = self.totalSkinObjects
-     local TOTAL_SKIN_OBJECTS_ID      = self.totalSkinObjectID
-     local TOTAL_META_OBJECTS_DISPLAY = self.totalMetadataObjectDisplay
-
-     local CURRENT_PAGE_INDEX          = self.selectSkinPagePositionIndex -- current page position
-     local SLIDER_TRACK_INTERVALS      = self.sliderTrackIntervals
-     local SLIDER_TRACK_SEMI_INTERVALS = self.sliderTrackSemiIntervals
-     for skinDisplays = 1, #TOTAL_SKIN_OBJECTS[CURRENT_PAGE_INDEX] do
-          local skinObjectID = TOTAL_SKIN_OBJECTS_ID[CURRENT_PAGE_INDEX][skinDisplays]
-          local skinObjects  = TOTAL_SKIN_OBJECTS[CURRENT_PAGE_INDEX][skinDisplays]
-
-          local displaySkinIconTagButton = F"displaySkinIconButton{SKIN_STATENAME_UPPER}-{skinObjectID}"
-          local displaySkinIconTagSkin   = F"displaySkinIconSkin{SKIN_STATENAME_UPPER}-{skinObjectID}"
-          local displaySkinGraphicImage  = F"{self.statePaths}/{skinObjects}"
+          local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
+          local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
+          local displaySkinIconSprite    = F"{self.statePaths}/{skinObjects}"
           removeLuaSprite(displaySkinIconTagButton, true)
           removeLuaSprite(displaySkinIconTagSkin, true)
-          removeLuaSprite(displaySkinGraphicImage, true)
+          removeLuaSprite(displaySkinIconSprite, true)
      end
 
      --- Destroyes the slider marks within sliderbar tracks.
@@ -386,18 +359,18 @@ function SkinNotes:destroy()
           local INTERVAL_TYPE_UPPER = intervalType:upperAtStart()
           local INTERVAL_PAGE_INDEX = intervalPageIndex
 
-          local displaySliderMarkTag = F"displaySliderMark{SKIN_STATENAME_UPPER}{INTERVAL_TYPE_UPPER}{INTERVAL_PAGE_INDEX}"
+          local displaySliderMarkTag = F"displaySliderMark{self.stateClass:upperAtStart()}{INTERVAL_TYPE_UPPER}{INTERVAL_PAGE_INDEX}"
           removeLuaSprite(displaySliderMarkTag, true)
      end
-     for intervalIndex = 1, #SLIDER_TRACK_INTERVALS do
+     for intervalIndex = 1, #self.sliderTrackIntervals do
           destroySliderMarkObjects('interval', intervalIndex)
      end
-     for semiIntervalIndex = 2, #SLIDER_TRACK_SEMI_INTERVALS do
+     for semiIntervalIndex = 2, #self.sliderTrackSemiIntervals do
           destroySliderMarkObjects('semiInterval', semiIntervalIndex)
      end
 
      for skinPreviewStrums = 1, 4 do
-          local previewSkinGroup = F"previewSkinGroup{SKIN_STATENAME_UPPER}{skinPreviewStrums}"          
+          local previewSkinGroup = F"previewSkinGroup{self.stateClass:upperAtStart()}{skinPreviewStrums}"          
           removeLuaSprite(previewSkinGroup, true)
      end
      callOnScripts('skinSearchInput_callResetSearch')
