@@ -1,6 +1,10 @@
 ## Version 3.0.0
 ### Additions/Changes
-- Organizing the main source code to prevent shitty spaghetti code.
+- Refactor the main source code to prevent shitty spaghetti code.
+     - Skin Classes have been split into multiple subclasses each corresponding to their functions.
+- Optimize checkboxes
+     - Syncing only checks for checking interactions not in every updated frame.
+     - Clicking only checks for its interactions not in every updated frame.
 
 ## Version 2.1.0
 ### Additions/Changes

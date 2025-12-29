@@ -1,0 +1,56 @@
+{
+     "SKINS": {
+          "NOTES_SELECT_SKIN_PAGE_INDEX": 1,
+          "NOTES_SELECT_SKIN_INIT_SELECTION_INDEX": true,
+          "NOTES_SELECT_SKIN_PRE_SELECTION_INDEX": 17,
+          "NOTES_SELECT_SKIN_CUR_SELECTION_INDEX": 17,
+          "NOTES_PREVIEW_SKIN_OBJECT_INDEX": 1
+     },
+     "GENERAL": {
+          "GAME_SONG_NAME": "Bopeebo",
+          "GAME_DIFFICULTY_ID": "2",
+          "GAME_DIFFICULTY_LISTS": [
+               "Easy",
+               "Normal",
+               "Hard"
+          ]
+     },
+     "PREVIEW": {
+          "PREVIEW_NOTES_SKIN_METAOBJ_STRUMS_PATH": "noteSkins/NOTE_assets-Tabi",
+          "PREVIEW_NOTES_SKIN_METAOBJ_STRUMS_FRAMES": 24,
+          "PREVIEW_NOTES_SKIN_METAOBJ_STRUMS_SIZE": [
+               0.65,
+               0.65
+          ],
+          "PREVIEW_NOTES_SKIN_METAOBJ_STRUMS": {
+               "left": {
+                    "prefix": "arrowLEFT",
+                    "offsets": [
+                         0,
+                         0
+                    ]
+               },
+               "down": {
+                    "prefix": "arrowDOWN",
+                    "offsets": [
+                         0,
+                         0
+                    ]
+               },
+               "up": {
+                    "prefix": "arrowUP",
+                    "offsets": [
+                         0,
+                         0
+                    ]
+               },
+               "right": {
+                    "prefix": "arrowRIGHT",
+                    "offsets": [
+                         0,
+                         0
+                    ]
+               }
+          }
+     }
+}

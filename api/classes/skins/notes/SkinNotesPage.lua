@@ -36,7 +36,7 @@ function SkinNotesPage:page_slider(snapToPage)
      local snapToPage = snapToPage == nil and true or false
 
      local function sliderTrackThumbAnimations()
-          if self.totalSkinLimit < 2 then
+          if self.TOTAL_SKIN_LIMIT < 2 then
                return
           end
 
@@ -46,16 +46,16 @@ function SkinNotesPage:page_slider(snapToPage)
           end
           if mouseReleased('left') then
                playAnim('displaySliderIcon', 'static')
-               self.sliderTrackThumbPressed = false 
+               self.SCROLLBAR_TRACK_THUMB_PRESSED = false 
           end
      end
      if clickObject('displaySliderIcon', 'camHUD') then
-          self.sliderTrackThumbPressed = true
+          self.SCROLLBAR_TRACK_THUMB_PRESSED = true
      end
-     if self.sliderTrackThumbPressed == true then
+     if self.SCROLLBAR_TRACK_THUMB_PRESSED == true then
           sliderTrackThumbAnimations()
      end
-     if self.totalSkinLimit < 2 then
+     if self.TOTAL_SKIN_LIMIT < 2 then
           playAnim('displaySliderIcon', 'unscrollable')
      end
 
@@ -68,9 +68,9 @@ function SkinNotesPage:page_slider(snapToPage)
 
      local function sliderTrackCurrentPageIndex()
           local displaySliderIconPositionY = getProperty('displaySliderIcon.y')
-          for positionIndex = 2, #self.sliderTrackIntervals do
-               local sliderTrackBehindIntervals     = self.sliderTrackIntervals[positionIndex-1]
-               local sliderTrackBehindSemiIntervals = self.sliderTrackSemiIntervals[positionIndex-1]
+          for positionIndex = 2, #self.SCROLLBAR_TRACK_MAJOR_SNAP do
+               local sliderTrackBehindIntervals     = self.SCROLLBAR_TRACK_MAJOR_SNAP[positionIndex-1]
+               local sliderTrackBehindSemiIntervals = self.SCROLLBAR_TRACK_MINOR_SNAP[positionIndex-1]
 
                local checkSliderTrackIntervalsByPosition     = sliderTrackBehindIntervals > displaySliderIconPositionY
                local checkSliderTrackSemiIntervalsByPosition = displaySliderIconPositionY <= sliderTrackBehindSemiIntervals
@@ -83,15 +83,16 @@ function SkinNotesPage:page_slider(snapToPage)
 
      local sliderTrackCurrentPageIndex = sliderTrackCurrentPageIndex()
      local function sliderTrackSwitchPage()
-          local sliderTrackThumbPressed  = sliderTrackCurrentPageIndex ~= false and self.sliderTrackToggle == false
-          local sliderTrackThumbReleased = sliderTrackCurrentPageIndex == false and self.sliderTrackToggle == true
-          if sliderTrackThumbPressed and sliderTrackCurrentPageIndex ~= self.sliderPageIndex then
-               if self.sliderTrackThumbPressed == true then
-                    self.selectSkinPagePositionIndex = sliderTrackCurrentPageIndex
-                    self.sliderPageIndex             = sliderTrackCurrentPageIndex
+          local sliderTrackThumbPressed  = sliderTrackCurrentPageIndex ~= false and self.SCROLLBAR_TRACK_TOGGLE == false
+          local sliderTrackThumbReleased = sliderTrackCurrentPageIndex == false and self.SCROLLBAR_TRACK_TOGGLE == true
+          if sliderTrackThumbPressed and sliderTrackCurrentPageIndex ~= self.SCROLLBAR_PAGE_INDEX then
+               if self.SCROLLBAR_TRACK_THUMB_PRESSED == true then
+                    self.SELECT_SKIN_PAGE_INDEX = sliderTrackCurrentPageIndex
+                    self.SCROLLBAR_PAGE_INDEX             = sliderTrackCurrentPageIndex
                     self:create(sliderTrackCurrentPageIndex)
+                    self:checkbox_sync()
 
-                    if self.sliderPageIndex == self.totalSkinLimit then
+                    if self.SCROLLBAR_PAGE_INDEX == self.TOTAL_SKIN_LIMIT then
                          setTextColor('genInfoStatePage', 'ff0000')
                     else
                          setTextColor('genInfoStatePage', 'ffffff')
@@ -99,26 +100,26 @@ function SkinNotesPage:page_slider(snapToPage)
 
                     playSound('ding', 0.5)
                     callOnScripts('skinSearchInput_callResetSearch')
-                    SkinNoteSave:set('selectSkinPagePositionIndex', self.stateClass, self.selectSkinPagePositionIndex)
+                    SkinNoteSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
                end
                
-               self.sliderTrackPageIndex = sliderTrackCurrentPageIndex
-               self.sliderTrackToggle    = true
+               self.SCROLLBAR_TRACK_PAGE_INDEX = sliderTrackCurrentPageIndex
+               self.SCROLLBAR_TRACK_TOGGLE    = true
           end
-          if sliderTrackThumbReleased or sliderTrackCurrentPageIndex == self.sliderTrackPageIndex then
-               self.sliderTrackToggle = false
+          if sliderTrackThumbReleased or sliderTrackCurrentPageIndex == self.SCROLLBAR_TRACK_PAGE_INDEX then
+               self.SCROLLBAR_TRACK_TOGGLE = false
           end
      end
      local function sliderTrackSnapPage()
           if snapToPage == false     then return end
-          if self.totalSkinLimit < 2 then return end -- fixes a weird bug
+          if self.TOTAL_SKIN_LIMIT < 2 then return end -- fixes a weird bug
 
-          if self.sliderTrackThumbPressed == false and mouseReleased('left') then
-               if sliderTrackCurrentPageIndex == self.totalSkinLimit then
+          if self.SCROLLBAR_TRACK_THUMB_PRESSED == false and mouseReleased('left') then
+               if sliderTrackCurrentPageIndex == self.TOTAL_SKIN_LIMIT then
                     setProperty('displaySliderIcon.y', 643)
                     return
                end
-               setProperty('displaySliderIcon.y', self.sliderTrackIntervals[sliderTrackCurrentPageIndex])
+               setProperty('displaySliderIcon.y', self.SCROLLBAR_TRACK_MAJOR_SNAP[sliderTrackCurrentPageIndex])
           end
      end
 
@@ -143,18 +144,18 @@ function SkinNotesPage:page_slider_marks()
           addLuaSprite(sectionSliderMarksTag)
      end
 
-     for intervalIndex = 1, #self.sliderTrackIntervals do
-          sectionSliderMarks('interval', '3b8527', 12 * 2, 12 / 2, self.sliderTrackIntervals, intervalIndex)
+     for intervalIndex = 1, #self.SCROLLBAR_TRACK_MAJOR_SNAP do
+          sectionSliderMarks('interval', '3b8527', 12 * 2, 12 / 2, self.SCROLLBAR_TRACK_MAJOR_SNAP, intervalIndex)
      end
-     for semiIntervalIndex = 2, #self.sliderTrackSemiIntervals do
-          sectionSliderMarks('semiInterval', '847500', 12 * 1.5, 12 / 4, self.sliderTrackSemiIntervals, semiIntervalIndex)
+     for semiIntervalIndex = 2, #self.SCROLLBAR_TRACK_MINOR_SNAP do
+          sectionSliderMarks('semiInterval', '847500', 12 * 1.5, 12 / 4, self.SCROLLBAR_TRACK_MINOR_SNAP, semiIntervalIndex)
      end
 end
 
 --- Main page moving functionality for switching throughout multiple pages.
 ---@return nil
 function SkinNotesPage:page_moved()
-     if self.sliderTrackThumbPressed == true then return end
+     if self.SCROLLBAR_TRACK_THUMB_PRESSED == true then return end
      local conditionPressedDown = keyboardJustConditionPressed('E', getVar('skinSearchInputFocus') == false)
      local conditionPressedUp   = keyboardJustConditionPressed('Q', getVar('skinSearchInputFocus') == false)
 
@@ -163,30 +164,44 @@ function SkinNotesPage:page_moved()
           return
      end
 
-     local skinObjectsPerClicked = self.totalSkinObjectClicked[self.selectSkinPagePositionIndex]
-     local curPage = self.selectSkinPreSelectedIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
-     if conditionPressedUp and self.selectSkinPagePositionIndex > 1 then
-          self.sliderPageIndex             = self.sliderPageIndex - 1
-          self.selectSkinPagePositionIndex = self.selectSkinPagePositionIndex - 1
-          self:create(self.selectSkinPagePositionIndex)
-
-          playSound('ding', 0.5)
-          setProperty('displaySliderIcon.y', self.sliderTrackIntervals[self.selectSkinPagePositionIndex])
-          callOnScripts('skinSearchInput_callResetSearch')
-          SkinNoteSave:set('selectSkinPagePositionIndex', self.stateClass, self.selectSkinPagePositionIndex)
-     end
-     if conditionPressedDown and self.selectSkinPagePositionIndex < self.totalSkinLimit then
-          self.sliderPageIndex             = self.sliderPageIndex + 1
-          self.selectSkinPagePositionIndex = self.selectSkinPagePositionIndex + 1
-          self:create(self.selectSkinPagePositionIndex)
-
-          playSound('ding', 0.5)
-          setProperty('displaySliderIcon.y', self.sliderTrackIntervals[self.selectSkinPagePositionIndex])
-          callOnScripts('skinSearchInput_callResetSearch')
-          SkinNoteSave:set('selectSkinPagePositionIndex', self.stateClass, self.selectSkinPagePositionIndex)
+     local curPage = self.SELECT_SKIN_PRE_SELECTION_INDEX - (MAX_NUMBER_CHUNK * (self.SELECT_SKIN_PAGE_INDEX - 1))
+     local skinObjectsPerClicked = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SELECT_SKIN_PAGE_INDEX]
+     if not (skinObjectsPerClicked[curPage] == nil or skinObjectsPerClicked[curPage] == false) then
+          if conditionPressedUp and self.SELECT_SKIN_PAGE_INDEX > 1 then
+               setTextColor('genInfoStatePage', 'f0b72f')
+               playSound('cancel')
+          end
+          if conditionPressedDown and self.SELECT_SKIN_PAGE_INDEX < self.TOTAL_SKIN_LIMIT then
+               setTextColor('genInfoStatePage', 'f0b72f')
+               playSound('cancel')
+          end
+          return
      end
 
-     if self.selectSkinPagePositionIndex == self.totalSkinLimit then
+     if conditionPressedUp and self.SELECT_SKIN_PAGE_INDEX > 1 then
+          self.SCROLLBAR_PAGE_INDEX   = self.SCROLLBAR_PAGE_INDEX - 1
+          self.SELECT_SKIN_PAGE_INDEX = self.SELECT_SKIN_PAGE_INDEX - 1
+          self:create(self.SELECT_SKIN_PAGE_INDEX)
+          self:checkbox_sync()
+
+          playSound('ding', 0.5)
+          setProperty('displaySliderIcon.y', self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SELECT_SKIN_PAGE_INDEX])
+          callOnScripts('skinSearchInput_callResetSearch')
+          SkinNoteSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
+     end
+     if conditionPressedDown and self.SELECT_SKIN_PAGE_INDEX < self.TOTAL_SKIN_LIMIT then
+          self.SCROLLBAR_PAGE_INDEX   = self.SCROLLBAR_PAGE_INDEX + 1
+          self.SELECT_SKIN_PAGE_INDEX = self.SELECT_SKIN_PAGE_INDEX + 1
+          self:create(self.SELECT_SKIN_PAGE_INDEX)
+          self:checkbox_sync()
+
+          playSound('ding', 0.5)
+          setProperty('displaySliderIcon.y', self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SELECT_SKIN_PAGE_INDEX])
+          callOnScripts('skinSearchInput_callResetSearch')
+          SkinNoteSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
+     end
+
+     if self.SELECT_SKIN_PAGE_INDEX == self.TOTAL_SKIN_LIMIT then
           setTextColor('genInfoStatePage', 'ff0000')
      else
           setTextColor('genInfoStatePage', 'ffffff')
@@ -196,8 +211,8 @@ end
 --- Updates the current page text, that is literally it.
 ---@return nil
 function SkinNotesPage:page_text()
-     local currentPage = ('%.3d'):format(self.selectSkinPagePositionIndex)
-     local maximumPage = ('%.3d'):format(self.totalSkinLimit)
+     local currentPage = ('%.3d'):format(self.SELECT_SKIN_PAGE_INDEX)
+     local maximumPage = ('%.3d'):format(self.TOTAL_SKIN_LIMIT)
      setTextString('genInfoStatePage', (' Page ${cur} / ${max}'):interpol({cur = currentPage, max = maximumPage}))
 end
 

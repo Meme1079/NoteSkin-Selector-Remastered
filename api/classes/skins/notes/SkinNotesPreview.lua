@@ -24,6 +24,12 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
+---@enum DIRECTION
+local DIRECTION = {
+     LEFT  = 1,
+     RIGHT = 2
+}
+
 --- Childclass extension, main preview strums component functionality for the note skin state.
 ---@class SkinNotesPreview
 local SkinNotesPreview = {}
@@ -40,22 +46,22 @@ function SkinNotesPreview:preview()
      ---@param skinObjects table The object to retreive its data.
      ---@return any
      local function currentPreviewSkinData(skinObjects)
-          if self.selectSkinCurSelectedIndex == 0 or self.totalSkins[self.selectSkinCurSelectedIndex] == nil then
+          if self.SELECT_SKIN_CUR_SELECTION_INDEX == 0 or self.TOTAL_SKINS[self.SELECT_SKIN_CUR_SELECTION_INDEX] == nil then
                return skinObjects[1][1] -- default value
           end
 
-          for skinPages = 1, self.totalSkinLimit do -- checks if each page has an existing skin object
-               local selectedSkinPage  = self.totalSkinObjectIndexes[skinPages]
-               local selectedSkinIndex = table.find(selectedSkinPage, self.selectSkinCurSelectedIndex)
+          for skinPages = 1, self.TOTAL_SKIN_LIMIT do -- checks if each page has an existing skin object
+               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_INDICES[skinPages]
+               local selectedSkinIndex = table.find(selectedSkinPage, self.SELECT_SKIN_CUR_SELECTION_INDEX)
                if selectedSkinIndex ~= nil then
                     return skinObjects[skinPages][selectedSkinIndex]
                end
           end
      end
 
-     local currentPreviewDataSkins    = currentPreviewSkinData(self.totalSkinObjects)
-     local currentPreviewDataNames    = currentPreviewSkinData(self.totalSkinObjectNames)
-     local currentPreviewMetadataPrev = currentPreviewSkinData(self.totalMetadataObjectPreview)
+     local currentPreviewDataSkins    = currentPreviewSkinData(self.TOTAL_SKIN_OBJECTS)
+     local currentPreviewDataNames    = currentPreviewSkinData(self.TOTAL_SKIN_OBJECTS_NAMES)
+     local currentPreviewMetadataPrev = currentPreviewSkinData(self.TOTAL_SKIN_METAOBJ_PREVIEW)
 
      --- Gets the skin's preview metadata object from its JSON.
      ---@param metadataName string The name of the metadata to be fetch.
@@ -64,7 +70,7 @@ function SkinNotesPreview:preview()
           local metadataSkinPrevObj         = currentPreviewMetadataPrev
           local metadataSkinPrevObjElements = currentPreviewMetadataPrev[metadataName]
           if metadataSkinPrevObj == '@void' or metadataSkinPrevObjElements == nil then
-               return self.previewStaticDataPreview[metadataName]
+               return self.PREVIEW_CONST_METADATA_PREVIEW[metadataName]
           end
           return metadataSkinPrevObjElements
      end
@@ -72,14 +78,14 @@ function SkinNotesPreview:preview()
      --- Same as the previous function above, helper function; this retreives mainly its animation from its JSON.
      ---@param animationName string The name of the animation metadata to be fetch.
      ---@param strumIndex number The strum index number to cycle each value.
-     ---@param ?byAnimationGroup boolean Whether it will retreive by group or not.
+     ---@param byAnimationGroup? boolean Whether it will retreive by group or not.
      ---@return table
      local function previewMetadataObjectAnims(animationName, strumIndex, byAnimationGroup)
           local metadataSkinPrevObj     = currentPreviewMetadataPrev
           local metadataSkinPrevObjAnim = currentPreviewMetadataPrev.animations
 
-          local constantSkinPrevObjAnimNames = self.previewConstDataPreviewAnims['names'][animationName]
-          local constantSkinPrevObjAnim      = self.previewStaticDataPreview.animation
+          local constantSkinPrevObjAnimNames = self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS['names'][animationName]
+          local constantSkinPrevObjAnim      = self.PREVIEW_CONST_METADATA_PREVIEW.animation
           if byAnimationGroup == true then
                if metadataSkinPrevObj == '@void' or metadataSkinPrevObjAnim == nil then
                     return constantSkinPrevObjAnim[animationName]
@@ -152,7 +158,7 @@ function SkinNotesPreview:preview()
           addOffset(previewSkinGroupTag, metadataPreviewPressedAnim.name, addMetadataPreviewOffset(metadataPreviewPressedAnim))
           addOffset(previewSkinGroupTag, metadataPreviewColoredAnim.name, addMetadataPreviewOffset(metadataPreviewColoredAnim))
           addOffset(previewSkinGroupTag, metadataPreviewStrumsAnim.name,  addMetadataPreviewOffset(metadataPreviewStrumsAnim))
-          playAnim(previewSkinGroupTag, self.previewConstDataPreviewAnims['names']['strums'][strumIndex])
+          playAnim(previewSkinGroupTag, self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS['names']['strums'][strumIndex])
           setObjectCamera(previewSkinGroupTag, 'camHUD')
           addLuaSprite(previewSkinGroupTag)
 
@@ -184,13 +190,13 @@ function SkinNotesPreview:preview_animation(loadAnim)
      ---@param skinObjects table The object to retreive its data.
      ---@return any
      local function currentPreviewSkinData(skinObjects)
-          if self.selectSkinCurSelectedIndex == 0 or self.totalSkins[self.selectSkinCurSelectedIndex] == nil then
+          if self.SELECT_SKIN_CUR_SELECTION_INDEX == 0 or self.TOTAL_SKINS[self.SELECT_SKIN_CUR_SELECTION_INDEX] == nil then
                return skinObjects[1][1] -- default value
           end
 
-          for skinPages = 1, self.totalSkinLimit do -- checks if each page has an existing skin object
-               local selectedSkinPage  = self.totalSkinObjectIndexes[skinPages]
-               local selectedSkinIndex = table.find(selectedSkinPage, self.selectSkinCurSelectedIndex)
+          for skinPages = 1, self.TOTAL_SKIN_LIMIT do -- checks if each page has an existing skin object
+               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_INDICES[skinPages]
+               local selectedSkinIndex = table.find(selectedSkinPage, self.SELECT_SKIN_CUR_SELECTION_INDEX)
                if selectedSkinIndex ~= nil then
                     return skinObjects[skinPages][selectedSkinIndex]
                end
@@ -199,7 +205,7 @@ function SkinNotesPreview:preview_animation(loadAnim)
 
      local conditionPressedLeft  = keyboardJustConditionPressed('Z', not getVar('skinSearchInputFocus'))
      local conditionPressedRight = keyboardJustConditionPressed('X', not getVar('skinSearchInputFocus'))
-     local currentPreviewMetadataPrev = currentPreviewSkinData(self.totalMetadataObjectPreview)
+     local currentPreviewMetadataPrev = currentPreviewSkinData(self.TOTAL_SKIN_METAOBJ_PREVIEW)
 
      --- Same as the previous function above, helper function; this retreives mainly its animation from its JSON.
      ---@param animationName string The name of the animation metadata to be fetch.
@@ -209,8 +215,8 @@ function SkinNotesPreview:preview_animation(loadAnim)
           local metadataSkinPrevObj     = currentPreviewMetadataPrev
           local metadataSkinPrevObjAnim = currentPreviewMetadataPrev.animations
           
-          local constantSkinPrevObjAnimNames = self.previewConstDataPreviewAnims['names'][animationName]
-          local constantSkinPrevObjAnim      = self.previewStaticDataPreview.animations
+          local constantSkinPrevObjAnimNames = self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS['names'][animationName]
+          local constantSkinPrevObjAnim      = self.PREVIEW_CONST_METADATA_PREVIEW.animations
 
           local skinPrevAnimElements = constantSkinPrevObjAnimNames[strumIndex]
           if metadataSkinPrevObj == '@void' or metadataSkinPrevObjAnim == nil then
@@ -232,7 +238,7 @@ function SkinNotesPreview:preview_animation(loadAnim)
           }
 
           local previewSkinGroupTag   = F"previewSkinGroup{self.stateClass:upperAtStart()}-{strumIndex}"
-          local previewSkinAnimations = self.previewAnimationObjectPrevAnims[self.previewAnimationObjectIndex]
+          local previewSkinAnimations = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
 
           if previewSkinAnimations == 'colored' then
                playAnim(previewSkinGroupTag, metadataPreviewAnimations['colored']['name'], true)
@@ -280,21 +286,21 @@ function SkinNotesPreview:preview_selection_moved()
      local conditionPressedLeft  = keyboardJustConditionPressed('Z', not getVar('skinSearchInputFocus'))
      local conditionPressedRight = keyboardJustConditionPressed('X', not getVar('skinSearchInputFocus'))
 
-     local previewAnimationMinIndex = self.previewAnimationObjectIndex > 1
-     local previewAnimationMaxIndex = self.previewAnimationObjectIndex < #self.previewAnimationObjectPrevAnims
+     local previewAnimationMinIndex = self.PREVIEW_SKIN_OBJECT_INDEX > 1
+     local previewAnimationMaxIndex = self.PREVIEW_SKIN_OBJECT_INDEX < #self.PREVIEW_SKIN_OBJECT_ANIMS
      if conditionPressedLeft and previewAnimationMinIndex then
-          self.previewAnimationObjectIndex = self.previewAnimationObjectIndex - 1
+          self.PREVIEW_SKIN_OBJECT_INDEX = self.PREVIEW_SKIN_OBJECT_INDEX - 1
           previewSelectionToggle  = true
 
           playSound('ding', 0.5)
-          SkinNoteSave:set('previewObjectIndex', self.stateClass, self.previewAnimationObjectIndex)
+          SkinNoteSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
      end
      if conditionPressedRight and previewAnimationMaxIndex then
-          self.previewAnimationObjectIndex = self.previewAnimationObjectIndex + 1
+          self.PREVIEW_SKIN_OBJECT_INDEX = self.PREVIEW_SKIN_OBJECT_INDEX + 1
           previewSelectionToggle  = true
 
           playSound('ding', 0.5)
-          SkinNoteSave:set('previewObjectIndex', self.stateClass, self.previewAnimationObjectIndex)
+          SkinNoteSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
      end
      
      if previewSelectionToggle == true then --! DO NOT DELETE
@@ -315,7 +321,7 @@ function SkinNotesPreview:preview_selection_moved()
           playAnim('previewSkinInfoIconRight', 'right', true)
      end
 
-     local previewSkinAnimations = self.previewAnimationObjectPrevAnims[self.previewAnimationObjectIndex]
+     local previewSkinAnimations = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
      setTextString('previewSkinButtonSelectionText', previewSkinAnimations:upperAtStart())
 end
 
@@ -323,35 +329,30 @@ end
 --- Allowing the selecting of the corresponding skin in gameplay.
 ---@return nil
 function SkinNotesPreview:preview_selection_byclick()
-     ---@enum DIRECTION
-     local DIRECTION = {
-          LEFT  = 1,
-          RIGHT = 2
-     }
      local function previewSelectionButtonClick(directIndex, directName, iteration)
           local previewSkinButtonTag = F"previewSkinButton{directName:upperAtStart()}"
 
           local byPreviewButtonClick   = clickObject(previewSkinButtonTag, 'camHUD')
           local byPreviewButtonRelease = mouseReleased('left')
           
-          if byPreviewButtonClick == true and self.previewAnimationObjectClicked[directIndex] == false then
+          if byPreviewButtonClick == true and self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] == false then
                playAnim(previewSkinButtonTag, 'hovered-pressed', true)
-               self.previewAnimationObjectClicked[directIndex] = true
+               self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] = true
           end
-          if byPreviewButtonRelease == true and self.previewAnimationObjectClicked[directIndex] == true then
+          if byPreviewButtonRelease == true and self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] == true then
                playAnim(previewSkinButtonTag, 'static', true)
                playSound('ding', 0.5)
 
-               self.previewAnimationObjectIndex          = self.previewAnimationObjectIndex + iteration
-               self.previewAnimationObjectClicked[directIndex] = false
+               self.PREVIEW_SKIN_OBJECT_INDEX          = self.PREVIEW_SKIN_OBJECT_INDEX + iteration
+               self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] = false
                self:preview_animation(true)
 
-               SkinNoteSave:set('previewObjectIndex', self.stateClass, self.previewAnimationObjectIndex)
+               SkinNoteSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
           end
      end
 
-     local previewAnimationMinIndex = self.previewAnimationObjectIndex > 1
-     local previewAnimationMaxIndex = self.previewAnimationObjectIndex < #self.previewAnimationObjectPrevAnims
+     local previewAnimationMinIndex = self.PREVIEW_SKIN_OBJECT_INDEX > 1
+     local previewAnimationMaxIndex = self.PREVIEW_SKIN_OBJECT_INDEX < #self.PREVIEW_SKIN_OBJECT_ANIMS
      if previewAnimationMinIndex == true then
           previewSelectionButtonClick(DIRECTION.LEFT, 'left', -1)
      end
@@ -364,45 +365,40 @@ end
 --- Allowing the cursor's sprite to change its corresponding sprite when hovering for visual aid.
 ---@return nil
 function SkinNotesPreview:preview_selection_byhover()
-     ---@enum DIRECTION
-     local DIRECTION = {
-          LEFT  = 1,
-          RIGHT = 2
-     }
      local function previewSelectionButtonHover(directIndex, directName)
           local previewSkinButtonTag = F"previewSkinButton{directName:upperAtStart()}"
-          if self.previewAnimationObjectClicked[directIndex] == true then
+          if self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] == true then
                return
           end
 
           if hoverObject(previewSkinButtonTag, 'camHUD') == true then
-               self.previewAnimationObjectHovered[directIndex] = true
+               self.PREVIEW_SKIN_OBJECT_ANIMS_HOVERED[directIndex] = true
           end
           if hoverObject(previewSkinButtonTag, 'camHUD') == false then
-               self.previewAnimationObjectHovered[directIndex] = false
+               self.PREVIEW_SKIN_OBJECT_ANIMS_HOVERED[directIndex] = false
           end
 
-          if self.previewAnimationObjectHovered[directIndex] == true then
+          if self.PREVIEW_SKIN_OBJECT_ANIMS_HOVERED[directIndex] == true then
                playAnim(previewSkinButtonTag, 'hovered-static', true)
           end
-          if self.previewAnimationObjectHovered[directIndex] == false then
+          if self.PREVIEW_SKIN_OBJECT_ANIMS_HOVERED[directIndex] == false then
                playAnim(previewSkinButtonTag, 'static', true)
           end
      end
 
-     local previewAnimationMinIndex = self.previewAnimationObjectIndex > 1
-     local previewAnimationMaxIndex = self.previewAnimationObjectIndex < #self.previewAnimationObjectPrevAnims
+     local previewAnimationMinIndex = self.PREVIEW_SKIN_OBJECT_INDEX > 1
+     local previewAnimationMaxIndex = self.PREVIEW_SKIN_OBJECT_INDEX < #self.PREVIEW_SKIN_OBJECT_ANIMS
      if previewAnimationMinIndex == true then
           previewSelectionButtonHover(DIRECTION.LEFT, 'left')
      else
           playAnim('previewSkinButtonLeft', 'hovered-blocked', true)
-          self.previewAnimationObjectHovered[DIRECTION.LEFT] = false
+          self.PREVIEW_SKIN_OBJECT_ANIMS_HOVERED[DIRECTION.LEFT] = false
      end
      if previewAnimationMaxIndex == true then
           previewSelectionButtonHover(DIRECTION.RIGHT, 'right')
      else
           playAnim('previewSkinButtonRight', 'hovered-blocked', true)
-          self.previewAnimationObjectHovered[DIRECTION.RIGHT] = false
+          self.PREVIEW_SKIN_OBJECT_ANIMS_HOVERED[DIRECTION.RIGHT] = false
      end
 end
 
@@ -411,11 +407,11 @@ end
 ---@return nil
 function SkinNotesPreview:preview_selection_bycursor()
      for previewObjects = 1, 2 do
-          if self.previewAnimationObjectClicked[previewObjects] == true then
+          if self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[previewObjects] == true then
                playAnim('mouseTexture', 'handClick', true)
                return
           end
-          if self.previewAnimationObjectHovered[previewObjects] == true then
+          if self.PREVIEW_SKIN_OBJECT_ANIMS_HOVERED[previewObjects] == true then
                playAnim('mouseTexture', 'hand', true)
                return
           end

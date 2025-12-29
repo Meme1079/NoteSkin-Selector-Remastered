@@ -29,8 +29,11 @@ function string:endsWith(endPattern)
 end
 
 --- Capitalize the first character of the string
+---@param force? boolean Forces all the non-first index characters into lowercase character. 
 ---@return string
-function string:upperAtStart()
+function string:upperAtStart(force)
+     local self = force == true and self:lower() or self
+
      local result = ''
      for chunks in self:gmatch('[%w%p%s]*') do
           result = result .. chunks:sub(1,1):upper()..chunks:sub(2, #chunks)

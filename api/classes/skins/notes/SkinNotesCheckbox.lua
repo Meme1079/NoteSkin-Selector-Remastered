@@ -2,6 +2,7 @@ luaDebugMode = true
 
 local SkinSaves = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinSaves'
 
+local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
 local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
@@ -23,6 +24,12 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
 local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
+---@enum CHARACTERS
+local CHARACTERS = {
+     PLAYER   = 1,
+     OPPONENT = 2
+}
+
 --- Childclass extension, main checkbox component functionality for the note skin state.
 ---@class SkinNotesCheckbox
 local SkinNotesCheckbox = {}
@@ -31,70 +38,72 @@ local SkinNotesCheckbox = {}
 --- Additionally the selection highlight are also created here.
 ---@return nil
 function SkinNotesCheckbox:checkbox_create()
-     local checkboxSkinData = {
-          posX  = {player = 775 + 12, opponent = 775 + 12 + (80*2.9)},
-          color = {player = '31b0d1', opponent = 'af66ce'}
-     }
+     local CHECKBOX_SKIN_PLAYER_OFFSET_X   = 12
+     local CHECKBOX_SKIN_OPPONENT_OFFSET_X = 12 + 232
 
-     for checkboxIndex = 1, #self.checkboxSkinObjectType do
-          local checkboxName  = self.checkboxSkinObjectType[checkboxIndex]
-          local checkboxPosX  = checkboxSkinData['posX'][checkboxName]
-          local checkboxColor = checkboxSkinData['color'][checkboxName]
+     local CHECKBOX_SKIN_PLAYER_POSITION_X   = 775 + CHECKBOX_SKIN_PLAYER_OFFSET_X
+     local CHECKBOX_SKIN_OPPONENT_POSITION_X = 775 + CHECKBOX_SKIN_OPPONENT_OFFSET_X
 
-          local checkboxSkinTag  = 'selectionSkinButton'..checkboxName:upperAtStart()
-          makeAnimatedLuaSprite(checkboxSkinTag, 'checkboxanim', checkboxPosX, 330)
-          addAnimationByPrefix(checkboxSkinTag, 'check', 'checkbox finish0', 24, false)
-          addAnimationByPrefix(checkboxSkinTag, 'checking', 'checkbox anim0', 24, false)
-          addAnimationByPrefix(checkboxSkinTag, 'unchecking', 'checkbox anim reverse0', 24, false)
-          addAnimationByPrefix(checkboxSkinTag, 'uncheck', 'checkbox0', 24, false)
-          playAnim(checkboxSkinTag, 'uncheck')
-          scaleObject(checkboxSkinTag, 0.4, 0.4)
-          setObjectCamera(checkboxSkinTag, 'camHUD')
-          addOffset(checkboxSkinTag, 'check', 34.5, 36 + (math.pi - 3))
-          addOffset(checkboxSkinTag, 'checking', 48.5, 42)
-          addOffset(checkboxSkinTag, 'unchecking', 44.5, 44)
-          addOffset(checkboxSkinTag, 'uncheck', 33.3, 32.2)
-          setProperty(checkboxSkinTag..'.antialiasing', false)
-          addLuaSprite(checkboxSkinTag)
+     local checkboxSkinPositionX = {CHECKBOX_SKIN_PLAYER_POSITION_X, CHECKBOX_SKIN_OPPONENT_POSITION_X}
+     local checkboxSkinColors    = {'31b0d1', 'af66ce'}
+     for CharNames, CharValues in pairs(CHARACTERS) do
+          local checkboxSkinButtonTag    = F"selectionSkinButton{CharNames:upperAtStart(true)}"
+          local checkboxSkinTitleTag     = F"selectionSkinTextButton{CharNames:upperAtStart(true)}"
+          local checkboxSkinSelectionTag = F"displaySelection{CharNames:upperAtStart(true)}"
 
-          local checkboxTitleTag   = 'selectionSkinTextButton'..checkboxName:upperAtStart()
-          makeLuaText(checkboxTitleTag, checkboxName:upperAtStart(), 0, checkboxPosX + 60, 330 + 7)
-          setTextFont(checkboxTitleTag, 'sonic.ttf')
-          setTextSize(checkboxTitleTag, 30)
-          setTextColor(checkboxTitleTag, checkboxColor)
-          setObjectCamera(checkboxTitleTag, 'camHUD')
-          setProperty(checkboxTitleTag..'.antialiasing', false)
-          addLuaText(checkboxTitleTag)
+          makeAnimatedLuaSprite(checkboxSkinButtonTag, 'checkboxanim', checkboxSkinPositionX[CharValues], 330)
+          addAnimationByPrefix(checkboxSkinButtonTag, 'check', 'checkbox finish0', 24, false)
+          addAnimationByPrefix(checkboxSkinButtonTag, 'checking', 'checkbox anim0', 24, false)
+          addAnimationByPrefix(checkboxSkinButtonTag, 'unchecking', 'checkbox anim reverse0', 24, false)
+          addAnimationByPrefix(checkboxSkinButtonTag, 'uncheck', 'checkbox0', 24, false)
+          playAnim(checkboxSkinButtonTag, 'uncheck')
+          scaleObject(checkboxSkinButtonTag, 0.4, 0.4)
+          setObjectCamera(checkboxSkinButtonTag, 'camHUD')
+          addOffset(checkboxSkinButtonTag, 'check', 34.5, 36.1415926536) -- ignore that guy
+          addOffset(checkboxSkinButtonTag, 'checking', 48.5, 42)
+          addOffset(checkboxSkinButtonTag, 'unchecking', 44.5, 44)
+          addOffset(checkboxSkinButtonTag, 'uncheck', 33.3, 32.2)
+          setProperty(F"{checkboxSkinButtonTag}.antialiasing", false)
+          addLuaSprite(checkboxSkinButtonTag)
 
-          local selectionSkinTag = 'displaySelection'..checkboxName:upperAtStart()
-          makeAnimatedLuaSprite(selectionSkinTag, 'ui/display_selected', 0, 0)
-          scaleObject(selectionSkinTag, 0.8, 0.8)
-          addAnimationByPrefix(selectionSkinTag, 'player', 'selected-player', 24, false)
-          addAnimationByPrefix(selectionSkinTag, 'opponent', 'selected-opponent', 24, false)
+          local CHECKBOX_SKIN_TITLE_OFFSET_X   = 60
+          local CHECKBOX_SKIN_TITLE_POSITION_X = checkboxSkinPositionX[CharValues] + CHECKBOX_SKIN_TITLE_OFFSET_X
+          makeLuaText(checkboxSkinTitleTag, CharNames:upperAtStart(true), 0, CHECKBOX_SKIN_TITLE_POSITION_X, 337)
+          setTextFont(checkboxSkinTitleTag, 'sonic.ttf')
+          setTextSize(checkboxSkinTitleTag, 30)
+          setTextColor(checkboxSkinTitleTag, checkboxSkinColors[CharValues])
+          setObjectCamera(checkboxSkinTitleTag, 'camHUD')
+          setProperty(F"{checkboxSkinTitleTag}.antialiasing", false)
+          addLuaText(checkboxSkinTitleTag)
 
-          local displaySelectionOffsetX = getProperty(selectionSkinTag..'.offset.x')
-          local displaySelectionOffsetY = getProperty(selectionSkinTag..'.offset.y')
-          addOffset(selectionSkinTag, 'player', displaySelectionOffsetX + 5, displaySelectionOffsetY + 5)
-          addOffset(selectionSkinTag, 'opponent', displaySelectionOffsetX + 5, displaySelectionOffsetY + 5)
-          playAnim(selectionSkinTag, checkboxName)
-          setObjectCamera(selectionSkinTag, 'camHUD')
-          setProperty(selectionSkinTag..'.antialiasing', false)
+          makeAnimatedLuaSprite(checkboxSkinSelectionTag, 'ui/display_selected', 0, 0)
+          scaleObject(checkboxSkinSelectionTag, 0.8, 0.8)
+          addAnimationByPrefix(checkboxSkinSelectionTag, 'player', 'selected-player', 24, false)
+          addAnimationByPrefix(checkboxSkinSelectionTag, 'opponent', 'selected-opponent', 24, false)
+
+          local CHECKBOX_SKIN_SELECTION_MODIFY_OFFSET    = 5
+          local CHECKBOX_SKIN_SELECTION_CURRENT_OFFSET_X = getProperty(F"{checkboxSkinSelectionTag}.offset.x") + CHECKBOX_SKIN_SELECTION_MODIFY_OFFSET
+          local CHECKBOX_SKIN_SELECTION_CURRENT_OFFSET_Y = getProperty(F"{checkboxSkinSelectionTag}.offset.y") + CHECKBOX_SKIN_SELECTION_MODIFY_OFFSET
+          addOffset(checkboxSkinSelectionTag, 'player', CHECKBOX_SKIN_SELECTION_CURRENT_OFFSET_X, CHECKBOX_SKIN_SELECTION_CURRENT_OFFSET_Y)
+          addOffset(checkboxSkinSelectionTag, 'opponent', CHECKBOX_SKIN_SELECTION_CURRENT_OFFSET_X, CHECKBOX_SKIN_SELECTION_CURRENT_OFFSET_Y)
+          playAnim(checkboxSkinSelectionTag, CharNames:lower())
+          setObjectCamera(checkboxSkinSelectionTag, 'camHUD')
+          setProperty(F"{checkboxSkinSelectionTag}.antialiasing", false)
      end
+     self:checkbox_sync()
 end
 
 --- Destroys the checkboxes graphic sprites and its text, used only for switching states.
 --- Additionally the selection highlight are also destroyed here. (very important information)
 ---@return nil
 function SkinNotesCheckbox:checkbox_destroy()
-     for checkboxIndex = 1, #self.checkboxSkinObjectType do
-          local checkboxName  = self.checkboxSkinObjectType[checkboxIndex]
-
-          local checkboxSkinTag  = 'selectionSkinButton'..checkboxName:upperAtStart()
-          local checkboxTitleTag = 'selectionSkinTextButton'..checkboxName:upperAtStart()
-          local selectionSkinTag = 'displaySelection'..checkboxName:upperAtStart()
-          removeLuaSprite(checkboxSkinTag, true)
-          removeLuaSprite(checkboxTitleTag, true)
-          removeLuaSprite(selectionSkinTag, false)
+     for CharNames, _ in pairs(CHARACTERS) do
+          local checkboxSkinButtonTag    = F"selectionSkinButton{CharNames:upperAtStart(true)}"
+          local checkboxSkinTitleTag     = F"selectionSkinTextButton{CharNames:upperAtStart(true)}"
+          local checkboxSkinSelectionTag = F"displaySelection{CharNames:upperAtStart(true)}"
+          removeLuaSprite(checkboxSkinButtonTag, true)
+          removeLuaSprite(checkboxSkinTitleTag, true)
+          removeLuaSprite(checkboxSkinSelectionTag, false)
      end
 end
 
@@ -102,33 +111,31 @@ end
 --- Selecting its current skins for its corresponding state to be used in gameplay.
 ---@return nil
 function SkinNotesCheckbox:checkbox_checking()
-     for checkboxIndex = 1, #self.checkboxSkinObjectType do
-          local checkboxObjectTypes   = self.checkboxSkinObjectType[checkboxIndex]
-          local checkboxObjectTypeTag = self.checkboxSkinObjectType[checkboxIndex]:upperAtStart()
-
-          local checkboxSkinIndex      = self.checkboxSkinObjectIndex[checkboxObjectTypes:lower()]
-          local checkboxSkinCurrent    = checkboxSkinIndex == self.selectSkinCurSelectedIndex
-          local checkboxSkinNonCurrent = checkboxSkinIndex ~= self.selectSkinCurSelectedIndex
-          if self.selectSkinCurSelectedIndex == 0 and checkboxSkinCurrent == true then
+     for CharNames, CharValues in pairs(CHARACTERS) do
+          local checkboxSkinChars      = self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues]
+          local checkboxSkinCurrent    = checkboxSkinChars == self.SELECT_SKIN_CUR_SELECTION_INDEX
+          local checkboxSkinNonCurrent = checkboxSkinChars ~= self.SELECT_SKIN_CUR_SELECTION_INDEX
+          if self.SELECT_SKIN_CUR_SELECTION_INDEX == 0 and checkboxSkinCurrent == true then
                return
           end
-
-          local selectionSkinButton = 'selectionSkinButton'..checkboxObjectTypeTag
-          local selectionSkinButtonAnimFinish = getProperty(selectionSkinButton..'.animation.finished')
-          local selectionSkinButtonAnimName   = getProperty(selectionSkinButton..'.animation.curAnim.name')
-          local selectionSkinHasInstaSwitch   = self.selectSkinPreSelectedIndex ~= self.selectSkinCurSelectedIndex
-          if checkboxSkinCurrent == true and selectionSkinButtonAnimFinish == true or selectionSkinHasInstaSwitch then
-               self.checkboxSkinObjectToggle[checkboxObjectTypes:lower()] = true
-               playAnim(selectionSkinButton, 'check')
+          local checkboxSkinButtonTag        = F"selectionSkinButton{CharNames:upperAtStart(true)}"
+          local checkboxSkinButtonAnimName   = getProperty(F"{checkboxSkinButtonTag}.animation.curAnim.name")
+          local checkboxSkinButtonAnimFinish = getProperty(F"{checkboxSkinButtonTag}.animation.finished")
+     
+          local checkboxSkinButtonIsInstaSwitch = self.SELECT_SKIN_PRE_SELECTION_INDEX ~= self.SELECT_SKIN_CUR_SELECTION_INDEX
+          if checkboxSkinCurrent == true and checkboxSkinButtonAnimFinish == true or checkboxSkinButtonIsInstaSwitch then
+               self.CHECKBOX_SKIN_OBJECT_TOGGLE[CharValues] = true
+               playAnim(checkboxSkinButtonTag, 'check')
           end
-          if checkboxSkinNonCurrent == true and selectionSkinButtonAnimFinish == true or selectionSkinHasInstaSwitch then
-               self.checkboxSkinObjectToggle[checkboxObjectTypes:lower()] = false
-               playAnim(selectionSkinButton, 'uncheck')
+          if checkboxSkinNonCurrent == true and checkboxSkinButtonAnimFinish == true or checkboxSkinButtonIsInstaSwitch then
+               self.CHECKBOX_SKIN_OBJECT_TOGGLE[CharValues] = false
+               playAnim(checkboxSkinButtonTag, 'uncheck')
           end
      end
 end
 
 --- Syncing of the position and offset of the selection highlight, obviously for visual purposes.
+---@protected
 ---@return nil
 function SkinNotesCheckbox:checkbox_sync()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -136,26 +143,25 @@ function SkinNotesCheckbox:checkbox_sync()
           return
      end
 
-     local skinObjectsPerIDs = self.totalSkinObjectID[self.selectSkinPagePositionIndex]
-     for checkboxIndex = 1, #self.checkboxSkinObjectType do
-          local checkboxObjectTypes      = self.checkboxSkinObjectType[checkboxIndex]
-          local checkboxObjectTypeTag    = self.checkboxSkinObjectType[checkboxIndex]:upperAtStart()
-          local checkboxSkinIndex        = self.checkboxSkinObjectIndex[checkboxObjectTypes:lower()]
-          local checkboxSkinIndexPresent = table.find(skinObjectsPerIDs, checkboxSkinIndex)
+     local skinObjectsPerIDs = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX]
+     for CharNames, CharValues in pairs(CHARACTERS) do
+          local checkboxSkinChars = self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues]
+          local CHECK_CHECKBOX_SKIN_INDEX_IS_CURRENT = checkboxSkinChars == self.SELECT_SKIN_CUR_SELECTION_INDEX
+          local CHECK_CHECKBOX_SKIN_INDEX_IS_PRESENT = checkboxSkinChars == table.find(skinObjectsPerIDs, checkboxSkinChars) 
 
-          local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = checkboxSkinIndex}
-          local displaySkinIconButton   = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplate)
-          if checkboxSkinIndex == self.selectSkinCurSelectedIndex or checkboxSkinIndex == checkboxSkinIndexPresent or luaSpriteExists(displaySkinIconButton) == true then
-               local displaySelectionHighlightX = ('displaySelection${select}.x'):interpol({select = checkboxObjectTypeTag})
-               local displaySelectionHighlightY = ('displaySelection${select}.y'):interpol({select = checkboxObjectTypeTag})
-               setProperty(displaySelectionHighlightX, getProperty(displaySkinIconButton..'.x'))
-               setProperty(displaySelectionHighlightY, getProperty(displaySkinIconButton..'.y'))
+          local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{checkboxSkinChars}"
+          local checkboxSkinSelectionTag = F"displaySelection{CharNames:upperAtStart(true)}"
+          local checkboxSkinButtonTag    = F"selectionSkinButton{CharNames:upperAtStart(true)}"
+
+          if CHECK_CHECKBOX_SKIN_INDEX_IS_CURRENT or CHECK_CHECKBOX_SKIN_INDEX_IS_PRESENT or luaSpriteExists(displaySkinIconButtonTag) == true then
+               setProperty(F"{checkboxSkinSelectionTag}.x", getProperty(F"{displaySkinIconButtonTag}.x"))
+               setProperty(F"{checkboxSkinSelectionTag}.y", getProperty(F"{displaySkinIconButtonTag}.y"))
           end
 
-          if checkboxSkinIndex == 0 or luaSpriteExists(displaySkinIconButton) == false then
-               removeLuaSprite('displaySelection'..checkboxObjectTypeTag, false)
+          if checkboxSkinChars == 0 or luaSpriteExists(displaySkinIconButtonTag) == false then
+               removeLuaSprite(checkboxSkinSelectionTag, false)
           else
-               addLuaSprite('displaySelection'..checkboxObjectTypeTag, false)
+               addLuaSprite(checkboxSkinSelectionTag, false)
           end
      end
 end
@@ -172,53 +178,51 @@ end
 --- Allowing the selecting of the corresponding skin in gameplay.
 ---@return nil
 function SkinNotesCheckbox:checkbox_selection_byclick()
-     local function checkboxSelectionButtonClick(index, skin)
-          if self.selectSkinCurSelectedIndex == 0 then
-               return
+     for CharNames, CharValues in pairs(CHARACTERS) do
+          local checkboxSkinButtonTag     = F"selectionSkinButton{CharNames:upperAtStart(true)}"
+          local checkboxSkinButtonClicked = clickObject(checkboxSkinButtonTag, 'camHUD')
+          local checkboxSkinButtonIsInteract = checkboxSkinButtonClicked == true or mouseReleased('left') == true
+          if not checkboxSkinButtonIsInteract or self.SELECT_SKIN_CUR_SELECTION_INDEX == 0 then
+               goto SKIP_NO_INTERACTION_BYCLICK
           end
-          
-          local selectionSkinButton = 'selectionSkinButton'..skin:upperAtStart()
-          local selectionSkinButtonClick    = clickObject(selectionSkinButton, 'camHUD')
-          local selectionSkinButtonReleased = mouseReleased('left')
-          if selectionSkinButtonClick == true and self.checkboxSkinObjectClicked[index] == false then
-               self.checkboxSkinObjectClicked[index] = true
+          if checkboxSkinButtonClicked == true and self.CHECKBOX_SKIN_OBJECT_CLICKED[CharValues] == false then
+               self.CHECKBOX_SKIN_OBJECT_CLICKED[CharValues] = true
           end
 
-          if selectionSkinButtonReleased == true and self.checkboxSkinObjectClicked[index] == true then
-               if self.checkboxSkinObjectToggle[skin:lower()] == false then
-                    self.checkboxSkinObjectIndex[skin:lower()] = self.selectSkinCurSelectedIndex
-                    playAnim(selectionSkinButton, 'checking')
-     
-                    local checkboxSkinIndexField = 'checkboxSkinObjectIndex'..skin:upperAtStart()
-                    SkinNoteSave:set(checkboxSkinIndexField, self.stateClass, self.checkboxSkinObjectIndex[skin:lower()])
+          if mouseReleased('left') == true and self.CHECKBOX_SKIN_OBJECT_CLICKED[CharValues] == true then
+               if self.CHECKBOX_SKIN_OBJECT_TOGGLE[CharValues] == false then
+                    self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues] = self.SELECT_SKIN_CUR_SELECTION_INDEX
+                    self:checkbox_sync()
+                    self:search_checkbox_sync()
+                    playAnim(checkboxSkinButtonTag, 'checking')
+                    
+                    local CHECKBOX_SKIN_OBJECT_CHARS = F"CHECKBOX_SKIN_OBJECT_CHARS_{CharNames:upperAtStart()}"
+                    SkinNoteSave:set(CHECKBOX_SKIN_OBJECT_CHARS, self.stateClass:upper(), self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues])
                end
-               if self.checkboxSkinObjectToggle[skin:lower()] == true then
-                    self.checkboxSkinObjectIndex[skin:lower()] = 0
-                    playAnim(selectionSkinButton, 'unchecking')
+               if self.CHECKBOX_SKIN_OBJECT_TOGGLE[CharValues] == true then
+                    self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues] = 0
+                    self:checkbox_sync()
+                    self:search_checkbox_sync()
+                    playAnim(checkboxSkinButtonTag, 'unchecking')
      
-                    local checkboxSkinIndexField = 'checkboxSkinObjectIndex'..skin:upperAtStart()
-                    SkinNoteSave:set(checkboxSkinIndexField, self.stateClass, self.checkboxSkinObjectIndex[skin:lower()])
+                    local CHECKBOX_SKIN_OBJECT_CHARS = F"CHECKBOX_SKIN_OBJECT_CHARS_{CharNames:upperAtStart()}"
+                    SkinNoteSave:set(CHECKBOX_SKIN_OBJECT_CHARS, self.stateClass:upper(), self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues])
                end
                playSound('remote_click')
 
-               self.checkboxSkinObjectToggle[skin:lower()] = not self.checkboxSkinObjectToggle[skin:lower()]
-               self.checkboxSkinObjectClicked[index]       = false
+               self.CHECKBOX_SKIN_OBJECT_TOGGLE[CharValues]  = not self.CHECKBOX_SKIN_OBJECT_TOGGLE[CharValues]
+               self.CHECKBOX_SKIN_OBJECT_CLICKED[CharValues] = false
           end
-
-          local selectionSkinButtonAnimFinish = getProperty(selectionSkinButton..'.animation.finished')
-          local selectionSkinButtonAnimName   = getProperty(selectionSkinButton..'.animation.curAnim.name')
-          if selectionSkinButtonAnimName == 'unchecking' and selectionSkinButtonAnimFinish == true then
-               playAnim(selectionSkinButton, 'uncheck')
-               return
+          
+          local checkboxSkinButtonAnimName   = getProperty(F"{checkboxSkinButtonTag}.animation.curAnim.name")
+          local checkboxSkinButtonAnimFinish = getProperty(F"{checkboxSkinButtonTag}.animation.finished")
+          if checkboxSkinButtonAnimName == 'unchecking' and checkboxSkinButtonAnimFinish == true then
+               playAnim(checkboxSkinButtonTag, 'uncheck')
           end
-          if selectionSkinButtonAnimName == 'checking' and selectionSkinButtonAnimFinish == true then
-               playAnim(selectionSkinButton, 'check')
-               return
+          if checkboxSkinButtonAnimName == 'checking' and checkboxSkinButtonAnimFinish == true then
+               playAnim(checkboxSkinButtonTag, 'check')
           end
-     end
-
-     for checkboxIndex = 1, #self.checkboxSkinObjectType do
-          checkboxSelectionButtonClick(checkboxIndex, tostring(self.checkboxSkinObjectType[checkboxIndex]))
+          ::SKIP_NO_INTERACTION_BYCLICK::
      end
 end
 
@@ -226,22 +230,18 @@ end
 --- Allowing the cursor's sprite to change its corresponding sprite when hovering for visual aid.
 ---@return nil
 function SkinNotesCheckbox:checkbox_selection_byhover()
-     local function checkboxSelectionButtonHover(index, skin)
-          local selectionSkinButton = 'selectionSkinButton'..skin:upperAtStart()
-          if self.checkboxSkinObjectClicked[index] == true then
+     for CharNames, CharValues in pairs(CHARACTERS) do
+          local checkboxSkinButtonTag = F"selectionSkinButton{CharNames:upperAtStart(true)}"
+          if self.CHECKBOX_SKIN_OBJECT_CLICKED[CharValues] == true then
                return
           end
 
-          if hoverObject(selectionSkinButton, 'camHUD') == true then
-               self.checkboxSkinObjectHovered[index] = true
+          if hoverObject(checkboxSkinButtonTag, 'camHUD') == true then
+               self.CHECKBOX_SKIN_OBJECT_HOVERED[CharValues] = true
           end
-          if hoverObject(selectionSkinButton, 'camHUD') == false then
-               self.checkboxSkinObjectHovered[index] = false
+          if hoverObject(checkboxSkinButtonTag, 'camHUD') == false then
+               self.CHECKBOX_SKIN_OBJECT_HOVERED[CharValues] = false
           end
-     end
-
-     for checkboxIndex = 1, #self.checkboxSkinObjectType do
-          checkboxSelectionButtonHover(checkboxIndex, tostring(self.checkboxSkinObjectType[checkboxIndex]))
      end
 end
 
@@ -249,10 +249,10 @@ end
 --- Allowing the cursor's sprite to change depending on its interaction (i.e. selecting and hovering).
 ---@return nil
 function SkinNotesCheckbox:checkbox_selection_bycursor()
-     for checkboxIndex = 1, #self.checkboxSkinObjectType do
-          local selectionSkinButtonTemplate = {type = tostring(self.checkboxSkinObjectType[checkboxIndex]):upperAtStart()}
-          local selectionSkinButton = ('selectionSkinButton${type}'):interpol(selectionSkinButtonTemplate)
-          if hoverObject(selectionSkinButton, 'camHUD') == true and self.selectSkinCurSelectedIndex == 0 then
+     for CharNames, CharValues in pairs(CHARACTERS) do
+          local checkboxSkinButtonTag     = F"selectionSkinButton{CharNames:upperAtStart(true)}"
+          local checkboxSkinButtonHovered = hoverObject(checkboxSkinButtonTag, 'camHUD')
+          if checkboxSkinButtonHovered == true and self.SELECT_SKIN_CUR_SELECTION_INDEX == 0 then
                if mouseClicked('left') or mousePressed('left') then 
                     playAnim('mouseTexture', 'disabledClick', true)
                else
@@ -262,18 +262,18 @@ function SkinNotesCheckbox:checkbox_selection_bycursor()
                if mouseClicked('left') then 
                     playSound('cancel') 
                end
-               goto skipCheckboxBlocked
+               goto SKIP_CHECKBOX_BLOCKED
           end
 
-          if self.checkboxSkinObjectClicked[checkboxIndex] == true then
+          if self.CHECKBOX_SKIN_OBJECT_CLICKED[CharValues] == true then
                playAnim('mouseTexture', 'handClick', true)
                return
           end
-          if self.checkboxSkinObjectHovered[checkboxIndex] == true then
+          if self.CHECKBOX_SKIN_OBJECT_HOVERED[CharValues] == true then
                playAnim('mouseTexture', 'hand', true)
                return
           end
-          ::skipCheckboxBlocked::
+          ::SKIP_CHECKBOX_BLOCKED::
      end
 end
 

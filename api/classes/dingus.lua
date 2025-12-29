@@ -44,11 +44,11 @@ function SkinNotes:load()
      local SELECT_SKIN_PRE_SELECTION_INDEX  = SkinNoteSave:get('SELECT_SKIN_PRE_SELECTION_INDEX',  self.stateClass:upper(), 1)
      local SELECT_SKIN_CUR_SELECTION_INDEX  = SkinNoteSave:get('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), 1)
 
-     self.SELECT_SKIN_PAGE_INDEX           = SELECT_SKIN_PAGE_INDEX             -- current page index
-     self.SELECT_SKIN_INIT_SELECTION_INDEX = SELECT_SKIN_INIT_SELECTION_INDEX   -- current pressed selected skin
-     self.SELECT_SKIN_PRE_SELECTION_INDEX  = SELECT_SKIN_PRE_SELECTION_INDEX    -- highlighting the current selected skin
-     self.SELECT_SKIN_CUR_SELECTION_INDEX  = SELECT_SKIN_CUR_SELECTION_INDEX    -- current selected skin index
-     self.SELECT_SKIN_CLICKED_SELECTION    = false                              -- whether the skin display has been clicked or not
+     self.SELECT_SKIN_PAGE_INDEX           = SELECT_SKIN_PAGE_INDEX           -- current page index
+     self.SELECT_SKIN_INIT_SELECTION_INDEX = SELECT_SKIN_INIT_SELECTION_INDEX -- current pressed selected skin
+     self.SELECT_SKIN_PRE_SELECTION_INDEX  = SELECT_SKIN_PRE_SELECTION_INDEX  -- highlighting the current selected skin
+     self.SELECT_SKIN_CUR_SELECTION_INDEX  = SELECT_SKIN_CUR_SELECTION_INDEX  -- current selected skin index
+     self.SELECT_SKIN_CLICKED_SELECTION    = false                            -- whether the skin display has been clicked or not
 
      -- Preview Animation Properties --
 
@@ -72,20 +72,19 @@ function SkinNotes:load()
 
      -- Checkbox Skin Properties --
 
-     local CHECKBOX_SKIN_OBJECT_INDEX_PLAYER   = SkinNoteSave:get('CHECKBOX_SKIN_OBJECT_INDEX_PLAYER',   self.stateClass:upper(), 0)
-     local CHECKBOX_SKIN_OBJECT_INDEX_OPPONENT = SkinNoteSave:get('CHECKBOX_SKIN_OBJECT_INDEX_OPPONENT', self.stateClass:upper(), 0)
+     local CHECKBOX_SKIN_OBJECT_CHARS_PLAYER   = SkinNoteSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER',   self.stateClass:upper(), 0)
+     local CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT = SkinNoteSave:get('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
 
      self.CHECKBOX_SKIN_OBJECT_HOVERED = {false, false}
      self.CHECKBOX_SKIN_OBJECT_CLICKED = {false, false}
 
-     self.CHECKBOX_SKIN_OBJECT_INDEX  = {CHECKBOX_SKIN_OBJECT_INDEX_PLAYER, CHECKBOX_SKIN_OBJECT_INDEX_OPPONENT}
+     self.CHECKBOX_SKIN_OBJECT_CHARS  = {CHECKBOX_SKIN_OBJECT_CHARS_PLAYER, CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT}
      self.CHECKBOX_SKIN_OBJECT_TOGGLE = {false, false}
-     self.CHECKBOX_SKIN_OBJECT_TYPE   = table.keys(self.CHECKBOX_SKIN_OBJECT_INDEX)
 
      -- Search Properties --
 
-     self.SEARCH_SKIN_OBJECT_INDEX         = table.new(MAX_NUMBER_CHUNK, 0)
-     self.SEARCH_SKIN_OBJECT_PAGE          = table.new(MAX_NUMBER_CHUNK, 0)
+     self.SEARCH_SKIN_OBJECT_IDS           = table.new(MAX_NUMBER_CHUNK, 0)
+     self.SEARCH_SKIN_OBJECT_PAGES         = table.new(MAX_NUMBER_CHUNK, 0)
      self.SEARCH_SKIN_OBJECT_ANIMS_MISSING = table.new(MAX_NUMBER_CHUNK, 0)
 end
 
@@ -174,19 +173,18 @@ function SkinSplashes:load()
 
      -- Checkbox Skin Properties --
 
-     local CHECKBOX_SKIN_OBJECT_INDEX_PLAYER   = SkinNoteSave:get('CHECKBOX_SKIN_OBJECT_INDEX_PLAYER',   self.stateClass:upper(), 0)
-     local CHECKBOX_SKIN_OBJECT_INDEX_OPPONENT = SkinNoteSave:get('CHECKBOX_SKIN_OBJECT_INDEX_OPPONENT', self.stateClass:upper(), 0)
+     local CHECKBOX_SKIN_OBJECT_CHARS_PLAYER   = SkinNoteSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER',   self.stateClass:upper(), 0)
+     local CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT = SkinNoteSave:get('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
 
      self.CHECKBOX_SKIN_OBJECT_HOVERED = {false, false}
      self.CHECKBOX_SKIN_OBJECT_CLICKED = {false, false}
 
-     self.CHECKBOX_SKIN_OBJECT_INDEX  = {CHECKBOX_SKIN_OBJECT_INDEX_PLAYER}
+     self.CHECKBOX_SKIN_OBJECT_CHARS  = {CHECKBOX_SKIN_OBJECT_CHARS_PLAYER}
      self.CHECKBOX_SKIN_OBJECT_TOGGLE = {false}
-     self.CHECKBOX_SKIN_OBJECT_TYPE   = table.keys(CHECKBOX_SKIN_OBJECT_INDEX)
 
      -- Search Properties --
 
-     self.SEARCH_SKIN_OBJECT_INDEX         = table.new(MAX_NUMBER_CHUNK, 0)
-     self.SEARCH_SKIN_OBJECT_PAGE          = table.new(MAX_NUMBER_CHUNK, 0)
+     self.SEARCH_SKIN_OBJECT_IDS           = table.new(MAX_NUMBER_CHUNK, 0)
+     self.SEARCH_SKIN_OBJECT_PAGES         = table.new(MAX_NUMBER_CHUNK, 0)
      self.SEARCH_SKIN_OBJECT_ANIMS_MISSING = table.new(MAX_NUMBER_CHUNK, 0)
 end

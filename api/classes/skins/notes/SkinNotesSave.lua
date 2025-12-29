@@ -2,6 +2,7 @@ luaDebugMode = true
 
 local SkinSaves = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinSaves'
 
+local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
 local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
@@ -39,11 +40,11 @@ end
 --- Loads the saved attribute properties and other elements for graphical correction.
 ---@return nil
 function SkinNotesSave:save_load()
-     self:create(self.selectSkinPagePositionIndex)
+     self:create(self.SELECT_SKIN_PAGE_INDEX)
      self:checkbox_sync()
 
-     if math.isReal(self.sliderTrackIntervals[self.selectSkinPagePositionIndex]) == true then
-          setProperty('displaySliderIcon.y', self.sliderTrackIntervals[self.selectSkinPagePositionIndex])
+     if math.isReal(self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SELECT_SKIN_PAGE_INDEX]) == true then
+          setProperty('displaySliderIcon.y', self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SELECT_SKIN_PAGE_INDEX])
      else
           setProperty('displaySliderIcon.y', 0)
      end
@@ -54,17 +55,16 @@ end
 --- Loads and syncs the saved selected highlight. 
 ---@return nil
 function SkinNotesSave:save_selection()
-     if self.selectSkinPreSelectedIndex == 0 then
+     if self.SELECT_SKIN_PRE_SELECTION_INDEX == 0 then
           return
      end
 
-     local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = self.selectSkinPreSelectedIndex}
-     local displaySkinIconButton   = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplate)
-     if luaSpriteExists(displaySkinIconButton) == true then
-          playAnim(displaySkinIconButton, 'selected', true)
+     local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}{self.SELECT_SKIN_PRE_SELECTION_INDEX}"
+     if luaSpriteExists(displaySkinIconButtonTag) == true then
+          playAnim(displaySkinIconButtonTag, 'selected', true)
 
-          local curIndex = self.selectSkinCurSelectedIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
-          self.totalSkinObjectSelected[self.selectSkinPagePositionIndex][curIndex] = true
+          local curIndex = self.SELECT_SKIN_CUR_SELECTION_INDEX - (MAX_NUMBER_CHUNK * (self.SELECT_SKIN_PAGE_INDEX - 1))
+          self.TOTAL_SKIN_OBJECTS_SELECTED[self.SELECT_SKIN_PAGE_INDEX][curIndex] = true
      end
 end
 

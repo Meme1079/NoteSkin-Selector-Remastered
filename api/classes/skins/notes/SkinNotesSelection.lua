@@ -41,10 +41,10 @@ end
 --- Allowing the selecting of the corresponding skin in gameplay.
 ---@return nil
 function SkinNotesSelection:selection_byclick()
-     local skinObjectsPerIDs      = self.totalSkinObjectID[self.selectSkinPagePositionIndex]
-     local skinObjectsPerHovered  = self.totalSkinObjectHovered[self.selectSkinPagePositionIndex]
-     local skinObjectsPerClicked  = self.totalSkinObjectClicked[self.selectSkinPagePositionIndex]
-     local skinObjectsPerSelected = self.totalSkinObjectSelected[self.selectSkinPagePositionIndex]
+     local skinObjectsPerIDs      = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX]
+     local skinObjectsPerHovered  = self.TOTAL_SKIN_OBJECTS_HOVERED[self.SELECT_SKIN_PAGE_INDEX]
+     local skinObjectsPerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SELECT_SKIN_PAGE_INDEX]
+     local skinObjectsPerSelected = self.TOTAL_SKIN_OBJECTS_SELECTED[self.SELECT_SKIN_PAGE_INDEX]
 
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
      if #skinSearchInput_textContent > 0 then
@@ -52,87 +52,87 @@ function SkinNotesSelection:selection_byclick()
      end
 
      for curIndex = skinObjectsPerIDs[1], skinObjectsPerIDs[#skinObjectsPerIDs] do
-          local curSkinIndex = curIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
+          local curSkinIndex = curIndex - (MAX_NUMBER_CHUNK * (self.SELECT_SKIN_PAGE_INDEX - 1))
 
           local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = curIndex}
           local displaySkinIconButton   = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplate)
           local function displaySkinSelect()
                local byClick   = clickObject(displaySkinIconButton, 'camHUD')
-               local byRelease = mouseReleased('left') and self.selectSkinPreSelectedIndex == curIndex
+               local byRelease = mouseReleased('left') and self.SELECT_SKIN_PRE_SELECTION_INDEX == curIndex
 
                if byClick == true and skinObjectsPerClicked[curSkinIndex] == false then
                     playAnim(displaySkinIconButton, 'pressed', true)
 
-                    self.selectSkinPreSelectedIndex = curIndex
-                    self.selectSkinHasBeenClicked   = true
+                    self.SELECT_SKIN_PRE_SELECTION_INDEX = curIndex
+                    self.SELECT_SKIN_CLICKED_SELECTION   = true
 
-                    SkinNoteSave:set('selectSkinPreSelectedIndex', self.stateClass, self.selectSkinPreSelectedIndex)
+                    SkinNoteSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                     skinObjectsPerClicked[curSkinIndex] = true
                end
 
                if byRelease == true and skinObjectsPerClicked[curSkinIndex] == true then
                     playAnim(displaySkinIconButton, 'selected', true)
      
-                    self.selectSkinInitSelectedIndex = self.selectSkinCurSelectedIndex
-                    self.selectSkinCurSelectedIndex  = curIndex
-                    self.selectSkinPagePositionIndex = self.selectSkinPagePositionIndex
-                    self.selectSkinHasBeenClicked    = false
+                    self.SELECT_SKIN_INIT_SELECTION_INDEX = self.SELECT_SKIN_CUR_SELECTION_INDEX
+                    self.SELECT_SKIN_CUR_SELECTION_INDEX  = curIndex
+                    self.SELECT_SKIN_PAGE_INDEX           = self.SELECT_SKIN_PAGE_INDEX
+                    self.SELECT_SKIN_CLICKED_SELECTION    = false
                     
                     self:preview()
 
-                    SkinNoteSave:set('selectSkinInitSelectedIndex', self.stateClass, self.selectSkinInitSelectedIndex)
-                    SkinNoteSave:set('selectSkinCurSelectedIndex',  self.stateClass, self.selectSkinCurSelectedIndex)
-                    SkinNoteSave:set('selectSkinPagePositionIndex', self.stateClass, self.selectSkinPagePositionIndex)
+                    SkinNoteSave:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
+                    SkinNoteSave:set('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+                    SkinNoteSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
                     skinObjectsPerSelected[curSkinIndex] = true
                     skinObjectsPerClicked[curSkinIndex]  = false
                end
           end
           local function displaySkinDeselect()
                local byClick   = clickObject(displaySkinIconButton, 'camHUD')
-               local byRelease = mouseReleased('left') and self.selectSkinPreSelectedIndex == curIndex
+               local byRelease = mouseReleased('left') and self.SELECT_SKIN_PRE_SELECTION_INDEX == curIndex
                if byClick == true and skinObjectsPerClicked[curSkinIndex] == false then
                     playAnim(displaySkinIconButton, 'pressed', true)
 
-                    self.selectSkinPreSelectedIndex = curIndex
-                    self.selectSkinHasBeenClicked   = true
+                    self.SELECT_SKIN_PRE_SELECTION_INDEX = curIndex
+                    self.SELECT_SKIN_CLICKED_SELECTION   = true
 
-                    SkinNoteSave:set('selectSkinPreSelectedIndex', self.stateClass, self.selectSkinPreSelectedIndex)
+                    SkinNoteSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                     skinObjectsPerClicked[curSkinIndex] = true
                end
 
                if byRelease == true and skinObjectsPerClicked[curSkinIndex] == true then
                     playAnim(displaySkinIconButton, 'static', true)
 
-                    self.selectSkinCurSelectedIndex = 0
-                    self.selectSkinPreSelectedIndex = 0
-                    self.selectSkinHasBeenClicked   = false
+                    self.SELECT_SKIN_CUR_SELECTION_INDEX = 0
+                    self.SELECT_SKIN_PRE_SELECTION_INDEX = 0
+                    self.SELECT_SKIN_CLICKED_SELECTION   = false
 
                     self:preview()
-                    SkinNoteSave:set('selectSkinCurSelectedIndex', self.stateClass, self.selectSkinCurSelectedIndex)
-                    SkinNoteSave:set('selectSkinPreSelectedIndex', self.stateClass, self.selectSkinPreSelectedIndex)
+                    SkinNoteSave:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+                    SkinNoteSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                     skinObjectsPerSelected[curSkinIndex] = false
                     skinObjectsPerClicked[curSkinIndex]  = false
                     skinObjectsPerHovered[curSkinIndex]  = false
                end
           end
           local function displaySkinAutoDeselect()
-               self.selectSkinCurSelectedIndex = 0
-               self.selectSkinPreSelectedIndex = 0
-               self.selectSkinHasBeenClicked   = false
+               self.SELECT_SKIN_CUR_SELECTION_INDEX = 0
+               self.SELECT_SKIN_PRE_SELECTION_INDEX = 0
+               self.SELECT_SKIN_CLICKED_SELECTION   = false
 
                self:preview()
-               SkinNoteSave:set('selectSkinCurSelectedIndex', self.stateClass, self.selectSkinCurSelectedIndex)
-               SkinNoteSave:set('selectSkinPreSelectedIndex', self.stateClass, self.selectSkinPreSelectedIndex)
+               SkinNoteSave:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+               SkinNoteSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                skinObjectsPerSelected[curSkinIndex] = false
                skinObjectsPerClicked[curSkinIndex]  = false
                skinObjectsPerHovered[curSkinIndex]  = false
           end
 
-          local previewObjectCurAnim        = self.previewAnimationObjectPrevAnims[self.previewAnimationObjectIndex]
-          local previewObjectMissingAnim    = self.previewAnimationObjectMissing[self.selectSkinPagePositionIndex][curSkinIndex]
+          local previewObjectCurAnim        = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
+          local previewObjectMissingAnim    = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[self.SELECT_SKIN_PAGE_INDEX][curSkinIndex]
           local previewObjectCurMissingAnim = previewObjectMissingAnim[previewObjectCurAnim]
 
-          if skinObjectsPerSelected[curSkinIndex] == false and curIndex ~= self.selectSkinCurSelectedIndex and previewObjectCurMissingAnim == false then
+          if skinObjectsPerSelected[curSkinIndex] == false and curIndex ~= self.SELECT_SKIN_CUR_SELECTION_INDEX and previewObjectCurMissingAnim == false then
                displaySkinSelect()
           end
           if skinObjectsPerSelected[curSkinIndex] == true then
@@ -143,15 +143,15 @@ function SkinNotesSelection:selection_byclick()
                displaySkinAutoDeselect()
           end
 
-          if curIndex ~= self.selectSkinInitSelectedIndex then --! DO NOT ALTER
+          if curIndex ~= self.SELECT_SKIN_INIT_SELECTION_INDEX then --! DO NOT ALTER
                if luaSpriteExists(displaySkinIconButton) == true and luaSpriteExists(displaySkinIconSkin) == true then
                     playAnim(displaySkinIconButton, 'static', true)
                end
 
-               self.selectSkinInitSelectedIndex = 0
-               SkinNoteSave:set('selectSkinInitSelectedIndex', self.stateClass, self.selectSkinInitSelectedIndex)
+               self.SELECT_SKIN_INIT_SELECTION_INDEX = 0
+               SkinNoteSave:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
 
-               local curSelectSkinIndex = self.selectSkinCurSelectedIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
+               local curSelectSkinIndex = self.SELECT_SKIN_CUR_SELECTION_INDEX - (MAX_NUMBER_CHUNK * (self.SELECT_SKIN_PAGE_INDEX - 1))
                if curSkinIndex ~= curSelectSkinIndex then -- fuck you bug
                     skinObjectsPerSelected[curSkinIndex] = false
                end
@@ -163,9 +163,9 @@ end
 --- Allowing the cursor's sprite to change its corresponding sprite when hovering for visual aid.
 ---@return nil
 function SkinNotesSelection:selection_byhover()
-     local skinObjectsPerIDs      = self.totalSkinObjectID[self.selectSkinPagePositionIndex]
-     local skinObjectsPerHovered  = self.totalSkinObjectHovered[self.selectSkinPagePositionIndex]
-     local skinObjectsPerClicked  = self.totalSkinObjectClicked[self.selectSkinPagePositionIndex]
+     local skinObjectsPerIDs      = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX]
+     local skinObjectsPerHovered  = self.TOTAL_SKIN_OBJECTS_HOVERED[self.SELECT_SKIN_PAGE_INDEX]
+     local skinObjectsPerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SELECT_SKIN_PAGE_INDEX]
 
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
      if #skinSearchInput_textContent > 0 then
@@ -174,7 +174,7 @@ function SkinNotesSelection:selection_byhover()
 
      local skinHighlightName = ''
      for curIndex = skinObjectsPerIDs[1], skinObjectsPerIDs[#skinObjectsPerIDs] do
-          local curSkinIndex = curIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
+          local curSkinIndex = curIndex - (MAX_NUMBER_CHUNK * (self.SELECT_SKIN_PAGE_INDEX - 1))
 
           local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = curIndex}
           local displaySkinIconButton   = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplate)
@@ -185,21 +185,21 @@ function SkinNotesSelection:selection_byhover()
                skinObjectsPerHovered[curSkinIndex] = false
           end
 
-          local nonCurrentPreSelectedSkin = self.selectSkinPreSelectedIndex ~= curIndex
-          local nonCurrentCurSelectedSkin = self.selectSkinCurSelectedIndex ~= curIndex
+          local nonCurrentPreSelectedSkin = self.SELECT_SKIN_PRE_SELECTION_INDEX ~= curIndex
+          local nonCurrentCurSelectedSkin = self.SELECT_SKIN_CUR_SELECTION_INDEX ~= curIndex
           if skinObjectsPerHovered[curSkinIndex] == true and nonCurrentPreSelectedSkin and nonCurrentCurSelectedSkin then
                if luaSpriteExists(displaySkinIconButton) == false then return end
                playAnim(displaySkinIconButton, 'hover', true)
 
-               skinHighlightName = self.totalSkinObjectNames[self.selectSkinPagePositionIndex][curSkinIndex]
+               skinHighlightName = self.TOTAL_SKIN_OBJECTS_NAMES[self.SELECT_SKIN_PAGE_INDEX][curSkinIndex]
           end
           if skinObjectsPerHovered[curSkinIndex] == false and nonCurrentPreSelectedSkin and nonCurrentCurSelectedSkin then
                if luaSpriteExists(displaySkinIconButton) == false then return end
                playAnim(displaySkinIconButton, 'static', true)
           end
           
-          local previewObjectCurAnim        = self.previewAnimationObjectPrevAnims[self.previewAnimationObjectIndex]
-          local previewObjectMissingAnim    = self.previewAnimationObjectMissing[self.selectSkinPagePositionIndex][curSkinIndex]
+          local previewObjectCurAnim        = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
+          local previewObjectMissingAnim    = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[self.SELECT_SKIN_PAGE_INDEX][curSkinIndex]
           local previewObjectCurMissingAnim = previewObjectMissingAnim[previewObjectCurAnim]
           if previewObjectCurMissingAnim == true then
                playAnim(displaySkinIconButton, 'blocked', true)
@@ -221,9 +221,9 @@ end
 --- Allowing the cursor's sprite to change depending on its interaction (i.e. selecting and hovering).
 ---@return nil
 function SkinNotesSelection:selection_bycursor()
-     local skinObjectsPerIDs      = self.totalSkinObjectID[self.selectSkinPagePositionIndex]
-     local skinObjectsPerHovered  = self.totalSkinObjectHovered[self.selectSkinPagePositionIndex]
-     local skinObjectsPerClicked  = self.totalSkinObjectClicked[self.selectSkinPagePositionIndex]
+     local skinObjectsPerIDs      = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX]
+     local skinObjectsPerHovered  = self.TOTAL_SKIN_OBJECTS_HOVERED[self.SELECT_SKIN_PAGE_INDEX]
+     local skinObjectsPerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SELECT_SKIN_PAGE_INDEX]
 
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
      if #skinSearchInput_textContent > 0 then
@@ -236,7 +236,7 @@ function SkinNotesSelection:selection_bycursor()
           playAnim('mouseTexture', 'idle', true)
      end
 
-     local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = self.selectSkinCurSelectedIndex}
+     local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = self.SELECT_SKIN_CUR_SELECTION_INDEX}
      local displaySkinIconButton   = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplate)
      for curIndex = 1, math.max(#skinObjectsPerClicked, #skinObjectsPerHovered) do
           if hoverObject(displaySkinIconButton, 'camHUD') == true then
@@ -253,10 +253,10 @@ function SkinNotesSelection:selection_bycursor()
      end
      
      for curIndex = skinObjectsPerIDs[1], skinObjectsPerIDs[#skinObjectsPerIDs] do
-          local curSkinIndex = curIndex - (MAX_NUMBER_CHUNK * (self.selectSkinPagePositionIndex - 1))
+          local curSkinIndex = curIndex - (MAX_NUMBER_CHUNK * (self.SELECT_SKIN_PAGE_INDEX - 1))
 
-          local previewObjectCurAnim        = self.previewAnimationObjectPrevAnims[self.previewAnimationObjectIndex]
-          local previewObjectMissingAnim    = self.previewAnimationObjectMissing[self.selectSkinPagePositionIndex][curSkinIndex]
+          local previewObjectCurAnim        = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
+          local previewObjectMissingAnim    = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[self.SELECT_SKIN_PAGE_INDEX][curSkinIndex]
           local previewObjectCurMissingAnim = previewObjectMissingAnim[previewObjectCurAnim]
           if previewObjectCurMissingAnim == true then
                local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = curIndex}
@@ -276,7 +276,7 @@ function SkinNotesSelection:selection_bycursor()
           end
      end
      
-     if hoverObject('displaySliderIcon', 'camHUD') == true and self.totalSkinLimit == 1 then
+     if hoverObject('displaySliderIcon', 'camHUD') == true and self.TOTAL_SKIN_LIMIT == 1 then
           if mouseClicked('left') or mousePressed('left') then 
                playAnim('mouseTexture', 'disabledClick', true)
           else

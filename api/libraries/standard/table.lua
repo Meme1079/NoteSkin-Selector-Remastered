@@ -7,9 +7,13 @@ require 'table.new'
 ---@param tab table The table itself to use
 ---@param value any The value from the table to find its keys
 ---@return any
-function table.find(tab, value)
+function table.find(tab, value, tonum)
      for k,v in pairs(tab) do
-          if v == value then return k end
+          if tonum == true then
+               if tonumber(v) == value then return k end
+          else
+               if v == value then return k end
+          end
      end
 end
 
