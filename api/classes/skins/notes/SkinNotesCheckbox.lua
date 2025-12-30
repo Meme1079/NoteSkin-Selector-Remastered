@@ -143,17 +143,17 @@ function SkinNotesCheckbox:checkbox_sync()
           return
      end
 
-     local skinObjectsPerIDs = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX]
+     local SKIN_OBJECTS_ID = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX]
      for CharNames, CharValues in pairs(CHARACTERS) do
           local checkboxSkinChars = self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues]
-          local CHECK_CHECKBOX_SKIN_INDEX_IS_CURRENT = checkboxSkinChars == self.SELECT_SKIN_CUR_SELECTION_INDEX
-          local CHECK_CHECKBOX_SKIN_INDEX_IS_PRESENT = checkboxSkinChars == table.find(skinObjectsPerIDs, checkboxSkinChars) 
+          local checkboxSkinIndexIsCurrent = checkboxSkinChars == self.SELECT_SKIN_CUR_SELECTION_INDEX
+          local checkboxSkinIndexIsPresent = checkboxSkinChars == table.find(SKIN_OBJECTS_ID, checkboxSkinChars) 
 
           local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{checkboxSkinChars}"
           local checkboxSkinSelectionTag = F"displaySelection{CharNames:upperAtStart(true)}"
           local checkboxSkinButtonTag    = F"selectionSkinButton{CharNames:upperAtStart(true)}"
 
-          if CHECK_CHECKBOX_SKIN_INDEX_IS_CURRENT or CHECK_CHECKBOX_SKIN_INDEX_IS_PRESENT or luaSpriteExists(displaySkinIconButtonTag) == true then
+          if checkboxSkinIndexIsCurrent or checkboxSkinIndexIsPresent or luaSpriteExists(displaySkinIconButtonTag) == true then
                setProperty(F"{checkboxSkinSelectionTag}.x", getProperty(F"{displaySkinIconButtonTag}.x"))
                setProperty(F"{checkboxSkinSelectionTag}.y", getProperty(F"{displaySkinIconButtonTag}.y"))
           end

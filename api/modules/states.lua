@@ -12,18 +12,6 @@ local states = {
      splashes = {prefix = 'noteSplashes', folder = 'noteSplashes'}
 }
 
----@enum CHARACTERS
-states.CHARACTERS = {
-     PLAYER   = 1,
-     OPPONENT = 2
-}
-
----@enum DIRECTION
-states.DIRECTION = {
-     LEFT  = 1,
-     RIGHT = 2
-}
-
 --- Gets the total amount of skins it has.
 ---@param skin string The specified skin to find the total amount it currently has.
 ---@param withPath? boolean Wheather the result will include a path to the skin or not.

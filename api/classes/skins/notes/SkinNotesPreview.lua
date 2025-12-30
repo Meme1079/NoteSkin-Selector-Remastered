@@ -58,7 +58,6 @@ function SkinNotesPreview:preview()
                end
           end
      end
-
      local currentPreviewDataSkins    = currentPreviewSkinData(self.TOTAL_SKIN_OBJECTS)
      local currentPreviewDataNames    = currentPreviewSkinData(self.TOTAL_SKIN_OBJECTS_NAMES)
      local currentPreviewMetadataPrev = currentPreviewSkinData(self.TOTAL_SKIN_METAOBJ_PREVIEW)
@@ -202,7 +201,6 @@ function SkinNotesPreview:preview_animation(loadAnim)
                end
           end
      end
-
      local conditionPressedLeft  = keyboardJustConditionPressed('Z', not getVar('skinSearchInputFocus'))
      local conditionPressedRight = keyboardJustConditionPressed('X', not getVar('skinSearchInputFocus'))
      local currentPreviewMetadataPrev = currentPreviewSkinData(self.TOTAL_SKIN_METAOBJ_PREVIEW)
@@ -332,18 +330,18 @@ function SkinNotesPreview:preview_selection_byclick()
      local function previewSelectionButtonClick(directIndex, directName, iteration)
           local previewSkinButtonTag = F"previewSkinButton{directName:upperAtStart()}"
 
-          local byPreviewButtonClick   = clickObject(previewSkinButtonTag, 'camHUD')
-          local byPreviewButtonRelease = mouseReleased('left')
+          local previewSkinButtonClicked  = clickObject(previewSkinButtonTag, 'camHUD')
+          local previewSkinButtonReleased = mouseReleased('left')
           
-          if byPreviewButtonClick == true and self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] == false then
+          if previewSkinButtonClicked == true and self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] == false then
                playAnim(previewSkinButtonTag, 'hovered-pressed', true)
                self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] = true
           end
-          if byPreviewButtonRelease == true and self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] == true then
+          if previewSkinButtonReleased == true and self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] == true then
                playAnim(previewSkinButtonTag, 'static', true)
                playSound('ding', 0.5)
 
-               self.PREVIEW_SKIN_OBJECT_INDEX          = self.PREVIEW_SKIN_OBJECT_INDEX + iteration
+               self.PREVIEW_SKIN_OBJECT_INDEX                      = self.PREVIEW_SKIN_OBJECT_INDEX + iteration
                self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] = false
                self:preview_animation(true)
 
@@ -406,20 +404,20 @@ end
 --- Allowing the cursor's sprite to change depending on its interaction (i.e. selecting and hovering).
 ---@return nil
 function SkinNotesPreview:preview_selection_bycursor()
-     for previewObjects = 1, 2 do
-          if self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[previewObjects] == true then
+     for _, DirectValues in pairs(DIRECTION) do
+          if self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[DirectValues] == true then
                playAnim('mouseTexture', 'handClick', true)
                return
           end
-          if self.PREVIEW_SKIN_OBJECT_ANIMS_HOVERED[previewObjects] == true then
+          if self.PREVIEW_SKIN_OBJECT_ANIMS_HOVERED[DirectValues] == true then
                playAnim('mouseTexture', 'hand', true)
                return
           end
      end
 
-     local conditionHoverLeft  = hoverObject('previewSkinButtonLeft', 'camHUD')
-     local conditionHoverRight = hoverObject('previewSkinButtonRight', 'camHUD')
-     if conditionHoverLeft or conditionHoverRight then
+     local previewSkinButtonLeftHovered  = hoverObject('previewSkinButtonLeft', 'camHUD')
+     local previewSkinButtonRightHovered = hoverObject('previewSkinButtonRight', 'camHUD')
+     if previewSkinButtonLeftHovered or previewSkinButtonRightHovered then
           if mouseClicked('left') or mousePressed('left') then 
                playAnim('mouseTexture', 'disabledClick', true)
           else

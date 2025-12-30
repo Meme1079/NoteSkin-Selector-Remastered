@@ -2,9 +2,13 @@
 ### Additions/Changes
 - Refactor the main source code to prevent shitty spaghetti code.
      - Skin Classes have been split into multiple subclasses each corresponding to their functions.
+- Adjust scrollbar thumb offsets between the start and end page positions.
 - Optimize checkboxes
      - Syncing only checks for checking interactions not in every updated frame.
      - Clicking only checks for its interactions not in every updated frame.
+
+### Bug Fixes
+- Fixed a previous bug where holding the skin button then switching to another page, will cause some selection issue when choosing a skin.
 
 ## Version 2.1.0
 ### Additions/Changes

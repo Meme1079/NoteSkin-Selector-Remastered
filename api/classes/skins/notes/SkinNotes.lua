@@ -123,10 +123,10 @@ function SkinNotes:load()
 
      -- Slider Properties --
 
-     self.SCROLLBAR_PAGE_INDEX          = 1
-     self.SCROLLBAR_TRACK_PAGE_INDEX    = 1
+     local SCROLLBAR_PAGE_INDEX = SkinNoteSave:get('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
+
+     self.SCROLLBAR_PAGE_INDEX          = SCROLLBAR_PAGE_INDEX
      self.SCROLLBAR_TRACK_THUMB_PRESSED = false
-     self.SCROLLBAR_TRACK_TOGGLE        = false
      self.SCROLLBAR_TRACK_MAJOR_SNAP    = states.getPageSkinSliderPositions(self.stateClass).intervals
      self.SCROLLBAR_TRACK_MINOR_SNAP    = states.getPageSkinSliderPositions(self.stateClass).semiIntervals
 
@@ -201,12 +201,11 @@ function SkinNotes:load_preventError()
           SkinNoteSave:set('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
      end
 
-     if self.SELECT_SKIN_PAGE_INDEX <= 0 or self.SELECT_SKIN_PAGE_INDEX > self.TOTAL_SKIN_LIMIT then
-          self.SCROLLBAR_PAGE_INDEX      = 1
-          self.SCROLLBAR_TRACK_PAGE_INDEX = 1
-
+     if self.SELECT_SKIN_PAGE_INDEX <= 0 or self.SELECT_SKIN_PAGE_INDEX > self.TOTAL_SKIN_LIMIT or self.SELECT_SKIN_PAGE_INDEX ~= self.SELECT_SKIN_PAGE_INDEX then
+          self.SCROLLBAR_PAGE_INDEX   = 1
           self.SELECT_SKIN_PAGE_INDEX = 1
-          SkinNoteSave:set('selectSkinPagePositionIndex', self.stateClass, 1)
+          SkinNoteSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
+          SkinNoteSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), 1)
      end
      if self.PREVIEW_SKIN_OBJECT_INDEX <= 0 or self.PREVIEW_SKIN_OBJECT_INDEX > #self.PREVIEW_SKIN_OBJECT_ANIMS then
           self.PREVIEW_SKIN_OBJECT_INDEX = 1
@@ -246,11 +245,11 @@ function SkinNotes:create(skinIndex)
                end
 
                local skinObjectID = self.TOTAL_SKIN_OBJECTS_ID[skinPages][skinDisplays]
-               local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
-               local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
-               if luaSpriteExists(displaySkinIconTagButton) == true and luaSpriteExists(displaySkinIconTagSkin) == true then
-                    removeLuaSprite(displaySkinIconTagButton, true)
-                    removeLuaSprite(displaySkinIconTagSkin, true)
+               local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
+               local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
+               if luaSpriteExists(displaySkinIconButtonTag) == true and luaSpriteExists(displaySkinIconSkinTag) == true then
+                    removeLuaSprite(displaySkinIconButtonTag, true)
+                    removeLuaSprite(displaySkinIconSkinTag, true)
                end
                ::SKIP_SKIN_PAGE::
           end
@@ -288,21 +287,21 @@ function SkinNotes:create(skinIndex)
           local skinObjectsID = self.TOTAL_SKIN_OBJECTS_ID[skinIndex][skinDisplays]
           local skinObjects   = self.TOTAL_SKIN_OBJECTS[skinIndex][skinDisplays]
 
-          local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectsID}"
-          local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectsID}"
+          local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectsID}"
+          local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectsID}"
           local displaySkinIconPosX = displaySkinIconPositions()[skinDisplays][1]
           local displaySkinIconPosY = displaySkinIconPositions()[skinDisplays][2]
-          makeAnimatedLuaSprite(displaySkinIconTagButton, 'ui/buttons/display_button', displaySkinIconPosX, displaySkinIconPosY)
-          addAnimationByPrefix(displaySkinIconTagButton, 'static', 'static')
-          addAnimationByPrefix(displaySkinIconTagButton, 'selected', 'selected')
-          addAnimationByPrefix(displaySkinIconTagButton, 'blocked', 'blocked')
-          addAnimationByPrefix(displaySkinIconTagButton, 'hover', 'hovered-static')
-          addAnimationByPrefix(displaySkinIconTagButton, 'pressed', 'hovered-pressed')
-          playAnim(displaySkinIconTagButton, 'static', true)
-          scaleObject(displaySkinIconTagButton, 0.8, 0.8)
-          setObjectCamera(displaySkinIconTagButton, 'camHUD')
-          setProperty(F"{displaySkinIconTagButton}.antialiasing", false)
-          addLuaSprite(displaySkinIconTagButton)
+          makeAnimatedLuaSprite(displaySkinIconButtonTag, 'ui/buttons/display_button', displaySkinIconPosX, displaySkinIconPosY)
+          addAnimationByPrefix(displaySkinIconButtonTag, 'static', 'static')
+          addAnimationByPrefix(displaySkinIconButtonTag, 'selected', 'selected')
+          addAnimationByPrefix(displaySkinIconButtonTag, 'blocked', 'blocked')
+          addAnimationByPrefix(displaySkinIconButtonTag, 'hover', 'hovered-static')
+          addAnimationByPrefix(displaySkinIconButtonTag, 'pressed', 'hovered-pressed')
+          playAnim(displaySkinIconButtonTag, 'static', true)
+          scaleObject(displaySkinIconButtonTag, 0.8, 0.8)
+          setObjectCamera(displaySkinIconButtonTag, 'camHUD')
+          setProperty(F"{displaySkinIconButtonTag}.antialiasing", false)
+          addLuaSprite(displaySkinIconButtonTag)
 
           --- Gets the skins' display metadata value, acts as a helper function.
           --- Checks for any missing values and replaces it with its default value.
@@ -326,18 +325,18 @@ function SkinNotes:create(skinIndex)
           local displaySkinIconPositionY = displaySkinIconPosY + DISPLAY_SKIN_POSITION_OFFSET_Y
 
           local displaySkinIconSprite = F"{self.statePaths}/{skinObjects}"
-          makeAnimatedLuaSprite(displaySkinIconTagSkin, displaySkinIconSprite, displaySkinIconPositionX, displaySkinIconPositionY)
-          scaleObject(displaySkinIconTagSkin, displaySkinMetadataSize[1], displaySkinMetadataSize[2])
-          addAnimationByPrefix(displaySkinIconTagSkin, 'static', displaySkinMetadataPrefixes, displaySkinMetadataFrames, true)
+          makeAnimatedLuaSprite(displaySkinIconSkinTag, displaySkinIconSprite, displaySkinIconPositionX, displaySkinIconPositionY)
+          scaleObject(displaySkinIconSkinTag, displaySkinMetadataSize[1], displaySkinMetadataSize[2])
+          addAnimationByPrefix(displaySkinIconSkinTag, 'static', displaySkinMetadataPrefixes, displaySkinMetadataFrames, true)
 
-          local DISPLAY_SKIN_OFFSET_X = getProperty(F"{displaySkinIconTagSkin}.offset.x")
-          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"{displaySkinIconTagSkin}.offset.y")
+          local DISPLAY_SKIN_OFFSET_X = getProperty(F"{displaySkinIconSkinTag}.offset.x")
+          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"{displaySkinIconSkinTag}.offset.y")
           local displaySkinIconOffsetX = DISPLAY_SKIN_OFFSET_X - displaySkinMetadataOffsets[1]
           local displaySkinIconOffsetY = DISPLAY_SKIN_OFFSET_Y + displaySkinMetadataOffsets[2]
-          addOffset(displaySkinIconTagSkin, 'static', displaySkinIconOffsetX, displaySkinIconOffsetY)
-          playAnim(displaySkinIconTagSkin, 'static')
-          setObjectCamera(displaySkinIconTagSkin, 'camHUD')
-          addLuaSprite(displaySkinIconTagSkin)
+          addOffset(displaySkinIconSkinTag, 'static', displaySkinIconOffsetX, displaySkinIconOffsetY)
+          playAnim(displaySkinIconSkinTag, 'static')
+          setObjectCamera(displaySkinIconSkinTag, 'camHUD')
+          addLuaSprite(displaySkinIconSkinTag)
      end
 
      self:page_text()
@@ -351,11 +350,11 @@ function SkinNotes:destroy()
           local skinObjectID = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX][skinDisplays]
           local skinObjects  = self.TOTAL_SKIN_OBJECTS[self.SELECT_SKIN_PAGE_INDEX][skinDisplays]
 
-          local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
-          local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
+          local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
+          local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
           local displaySkinIconSprite    = F"{self.statePaths}/{skinObjects}"
-          removeLuaSprite(displaySkinIconTagButton, true)
-          removeLuaSprite(displaySkinIconTagSkin, true)
+          removeLuaSprite(displaySkinIconButtonTag, true)
+          removeLuaSprite(displaySkinIconSkinTag, true)
           removeLuaSprite(displaySkinIconSprite, true)
      end
 

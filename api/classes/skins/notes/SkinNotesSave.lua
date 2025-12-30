@@ -33,8 +33,11 @@ local SkinNotesSave = {}
 --- Saves the attributes current properties when exiting the main skin state.
 ---@return nil
 function SkinNotesSave:save()
-     if keyboardJustConditionPressed('ONE',    not getVar('skinSearchInputFocus')) then SkinNoteSave:flush() end
-     if keyboardJustConditionPressed('ESCAPE', not getVar('skinSearchInputFocus')) then SkinNoteSave:flush() end
+     if keyboardJustConditionPressed('ONE',    not getVar('skinSearchInputFocus')) then 
+          SkinNoteSave:flush() end
+     if keyboardJustConditionPressed('ESCAPE', not getVar('skinSearchInputFocus')) then 
+          SkinNoteSave:flush() 
+     end
 end
 
 --- Loads the saved attribute properties and other elements for graphical correction.
@@ -43,12 +46,13 @@ function SkinNotesSave:save_load()
      self:create(self.SELECT_SKIN_PAGE_INDEX)
      self:checkbox_sync()
 
-     if math.isReal(self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SELECT_SKIN_PAGE_INDEX]) == true then
-          setProperty('displaySliderIcon.y', self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SELECT_SKIN_PAGE_INDEX])
-     else
-          setProperty('displaySliderIcon.y', 0)
-     end
-     playAnim('displaySliderIcon', 'static')
+     local displayScrollThumbTag = 'displaySliderIcon'
+     local scrollbarMajorPositionIndex  = self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SELECT_SKIN_PAGE_INDEX]
+     local scrollbarMajorPositionIsReal = math.isReal(scrollbarMajorPositionIndex)
+     local scrollbarMajorPosition = scrollbarMajorPositionIsReal and scrollbarMajorPositionIndex or 0
+     playAnim(displayScrollThumbTag, 'static')
+     setProperty(F"{displayScrollThumbTag}.y", scrollbarMajorPosition)
+
      setTextString('genInfoStateName', ' '..self.stateClass:upperAtStart())
 end
 
@@ -59,7 +63,7 @@ function SkinNotesSave:save_selection()
           return
      end
 
-     local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}{self.SELECT_SKIN_PRE_SELECTION_INDEX}"
+     local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{self.SELECT_SKIN_PRE_SELECTION_INDEX}"
      if luaSpriteExists(displaySkinIconButtonTag) == true then
           playAnim(displaySkinIconButtonTag, 'selected', true)
 
