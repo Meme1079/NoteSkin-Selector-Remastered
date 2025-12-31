@@ -129,17 +129,17 @@ function SkinNotesSelection:selection_byclick()
                totalSkinObjectsPagePerHovered[curSkinIDs]  = false
           end
 
-          local previewObjectCurAnim        = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
-          local previewObjectMissingAnim    = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[self.SELECT_SKIN_PAGE_INDEX][curSkinIDs]
-          local previewObjectCurMissingAnim = previewObjectMissingAnim[previewObjectCurAnim]
-          if totalSkinObjectsPagePerSelected[curSkinIDs] == false and curIDs ~= self.SELECT_SKIN_CUR_SELECTION_INDEX and previewObjectCurMissingAnim == false then
+          local previewSkinObjectAnims        = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
+          local previewSkinObjectMissingAnims = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[self.SELECT_SKIN_PAGE_INDEX][curSkinIDs]
+          local previewSkinObjectDefaultAnims = previewSkinObjectMissingAnims[previewSkinObjectAnims]
+          if totalSkinObjectsPagePerSelected[curSkinIDs] == false and curIDs ~= self.SELECT_SKIN_CUR_SELECTION_INDEX and previewSkinObjectDefaultAnims == false then
                displaySkinSelect()
           end
           if totalSkinObjectsPagePerSelected[curSkinIDs] == true then
                --displaySkinDeselect()
           end
 
-          if totalSkinObjectsPagePerSelected[curSkinIDs] == true and previewObjectCurMissingAnim == true then
+          if totalSkinObjectsPagePerSelected[curSkinIDs] == true and previewSkinObjectDefaultAnims == true then
                displaySkinAutoDeselect()
           end
 
@@ -193,18 +193,15 @@ function SkinNotesSelection:selection_byhover()
                playAnim(displaySkinIconButtonTag, 'static', true)
           end
           
-          local previewObjectCurAnim        = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
-          local previewObjectMissingAnim    = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[self.SELECT_SKIN_PAGE_INDEX][curSkinIDs]
-          local previewObjectCurMissingAnim = previewObjectMissingAnim[previewObjectCurAnim]
-          if previewObjectCurMissingAnim == true then
+          local previewSkinObjectAnims        = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
+          local previewSkinObjectMissingAnims = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[self.SELECT_SKIN_PAGE_INDEX][curSkinIDs]
+          local previewSkinObjectDefaultAnims = previewSkinObjectMissingAnims[previewSkinObjectAnims]
+          if previewSkinObjectDefaultAnims == true then
                playAnim(displaySkinIconButtonTag, 'blocked', true)
           end
      end
 
-     if getPropertyFromClass('flixel.FlxG', 'mouse.justMoved') == true then
-          setTextString('skinHighlightName', skinHighlightName ~= '' and skinHighlightName or '')
-          return
-     end
+     setTextString('skinHighlightName', skinHighlightName ~= '' and skinHighlightName or '') -- no way to optimize this :(
 end
 
 --- Main cursor functionality for the displau skin and its animations.
@@ -244,10 +241,10 @@ function SkinNotesSelection:selection_bycursor()
      for curIDs = totalSkinObjectsPagePerIds[1], totalSkinObjectsPagePerIds[#totalSkinObjectsPagePerIds] do
           local curSkinIDs = curIDs - (MAX_NUMBER_CHUNK * (self.SELECT_SKIN_PAGE_INDEX - 1))
 
-          local previewObjectCurAnim        = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
-          local previewObjectMissingAnim    = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[self.SELECT_SKIN_PAGE_INDEX][curSkinIDs]
-          local previewObjectCurMissingAnim = previewObjectMissingAnim[previewObjectCurAnim]
-          if previewObjectCurMissingAnim == true then
+          local previewSkinObjectAnims        = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
+          local previewSkinObjectMissingAnims = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[self.SELECT_SKIN_PAGE_INDEX][curSkinIDs]
+          local previewSkinObjectDefaultAnims = previewSkinObjectMissingAnims[previewSkinObjectAnims]
+          if previewSkinObjectDefaultAnims == true then
                local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{curIDs}"
                if hoverObject(displaySkinIconButton, 'camHUD') == false then
                     goto SKIP_SELECTED_SKIN_MISSING_ANIMS_HOVERED
@@ -256,7 +253,6 @@ function SkinNotesSelection:selection_bycursor()
                if mouseClicked('left') then 
                     playSound('cancel') 
                end
-
                if mouseClicked('left') or mousePressed('left') then 
                     playAnim('mouseTexture', 'disabledClick', true)
                else

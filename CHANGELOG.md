@@ -8,6 +8,7 @@
 
 ### Bug Fixes
 - Fixed a previous bug where holding the skin button then switching to another page, will cause some selection issue when choosing a skin.
+- Fixed a bug where the skin highlight name woouldn't render properly when searching/switching while hovering the skins.
 
 ## Version 2.1.0
 ### Additions/Changes
