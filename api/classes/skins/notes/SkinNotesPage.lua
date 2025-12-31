@@ -179,14 +179,18 @@ function SkinNotesPage:page_moved()
 
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
      if #skinSearchInput_textContent > 0 then
+          if gameControlPressedUp or gameControlPressedDown then
+               setTextColor('genInfoStatePage', 'f0b72f')
+               playSound('cancel')
+          end
           return
      end
 
      local totalSkinObjectsPagePerIds     = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX]
      local totalSkinObjectsPagePerClicked = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SELECT_SKIN_PAGE_INDEX]
-     for curIndex = totalSkinObjectsPagePerIds[1], totalSkinObjectsPagePerIds[#totalSkinObjectsPagePerIds] do
-          local curSkinIndex = curIndex - (MAX_NUMBER_CHUNK * (self.SELECT_SKIN_PAGE_INDEX - 1))
-          if totalSkinObjectsPagePerClicked[curSkinIndex] == true then
+     for curIDs = totalSkinObjectsPagePerIds[1], totalSkinObjectsPagePerIds[#totalSkinObjectsPagePerIds] do
+          local curSkinIDs = curIDs - (MAX_NUMBER_CHUNK * (self.SELECT_SKIN_PAGE_INDEX - 1))
+          if totalSkinObjectsPagePerClicked[curSkinIDs] == true then
                if gameControlPressedUp and self.SELECT_SKIN_PAGE_INDEX > 1 then
                     setTextColor('genInfoStatePage', 'f0b72f')
                     playSound('cancel')
