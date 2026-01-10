@@ -67,7 +67,6 @@ function SkinStates:switch()
           for skins, states in pairs(self.stateSkins) do
                if skins ~= self.stateSkinNames[self.stateSkinIndex] then
                     states:destroy()
-                    states:checkbox_destroy()
                end
           end
           self:create()
@@ -89,56 +88,23 @@ end
 --- Creates the current state.
 ---@return nil
 function SkinStates:create()
-     switch(self.stateSkinNames[self.stateSkinIndex]) {
-          notes = function()
-               self.stateSkinMain:load()
-               self.stateSkinMain:load_preventError()
-               self.stateSkinMain:save_load()
-               self.stateSkinMain:precache()
-               self.stateSkinMain:preload()
-               self.stateSkinMain:checkbox_create()
-               self.stateSkinMain:preview()
-               self.stateSkinMain:page_slider_marks()
-          end,
-          splashes = function()
-               self.stateSkinMain:load()
-               self.stateSkinMain:load_preventError()
-               self.stateSkinMain:save_load()
-               self.stateSkinMain:precache()
-               self.stateSkinMain:preload()
-               self.stateSkinMain:checkbox_create()
-               self.stateSkinMain:preview()
-               self.stateSkinMain:preview_notes()
-               self.stateSkinMain:page_slider_marks()
-          end
-     }
+     self.stateSkinMain:load()
+     self.stateSkinMain:load_handling()
+     self.stateSkinMain:save_load()
+     self.stateSkinMain:generate()
 end
 
 --- Updates the current state's data.
 ---@return nil
 function SkinStates:update()
-     switch(self.stateSkinNames[self.stateSkinIndex]) {
-          notes = function()
-               self.stateSkinMain:page_slider()
-               self.stateSkinMain:page_moved()
-               self.stateSkinMain:selection()
-               self.stateSkinMain:search()
-               self.stateSkinMain:checkbox_checking()
-               self.stateSkinMain:checkbox_selection()
-               self.stateSkinMain:preview_selection()
-               self.stateSkinMain:preview_animation()
-          end,
-          splashes = function()
-               self.stateSkinMain:page_slider()
-               self.stateSkinMain:page_moved()
-               self.stateSkinMain:selection()
-               self.stateSkinMain:search()
-               self.stateSkinMain:checkbox_checking()
-               self.stateSkinMain:checkbox_selection()
-               self.stateSkinMain:preview_selection()
-               self.stateSkinMain:preview_animation()
-          end
-     }
+     self.stateSkinMain:page_scrollbar()
+     self.stateSkinMain:page_moved()
+     self.stateSkinMain:search()
+     self.stateSkinMain:selection()
+     self.stateSkinMain:checkbox_selection()
+     self.stateSkinMain:checkbox_checking()
+     self.stateSkinMain:preview_selection()
+     self.stateSkinMain:preview_animation(true)
 end
 
 --- Saves the state's data.

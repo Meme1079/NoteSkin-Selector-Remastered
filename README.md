@@ -11,7 +11,7 @@ NoteSkin Selector Remastered © 2024 by Meme1079 is licensed under CC BY-NC-ND 4
 ## Installation Requirements
 1. Computer
      - Windows, MacOS, and Linux are only supported when playing this mod. 
-     - Android, Switch, Consoles and other devices are not supported due to controller issues (i.e page slider and UI interaction). 
+     - Android, Switch, Consoles and other devices are not supported due to controller issues (i.e page scrolling and UI interaction). 
           - Never ask a FUCKING port of this, especially Android I ain't doin' that shit.
 2. Psych Engine
      - Versions: 0.7.3, 1.0.3, & 1.0.4 are only supported when playing this mod.

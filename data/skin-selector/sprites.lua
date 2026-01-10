@@ -26,6 +26,7 @@ local SkinStateSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 precacheImage('menuDesat')
 precacheImage('checkboxanim')
 precacheImage('ui/buttons/slider_button')
+precacheImage('ui/buttons/display_button')
 precacheImage('ui/buttons/preview anim/previewAnimIcon_button')
 precacheImage('ui/buttons/preview anim/previewAnimInfoDirection_button')
 precacheImage('ui/buttons/preview anim/previewAnimSelection_button')
@@ -163,10 +164,10 @@ setObjectCamera('genInfoSkinName', 'camHUD')
 setProperty('genInfoSkinName.antialiasing', false)
 addLuaText('genInfoSkinName')
 
-makeLuaText('genInfoVersion', 'Ver 2.1.0', 0, 1195, 5)
+makeLuaText('genInfoVersion', 'Ver 3.0.0', 0, 1195, 5)
 setTextFont('genInfoVersion', 'sonic.ttf')
 setTextSize('genInfoVersion', 20)
-setTextColor('genInfoVersion', 'fccf03')
+setTextColor('genInfoVersion', 'fccf03') -- fccf03 03fce7
 setTextAlignment('genInfoVersion', 'right')
 setObjectCamera('genInfoVersion', 'camHUD')
 setProperty('genInfoVersion.antialiasing', false)
@@ -267,8 +268,7 @@ local function hueChangeBG()
           if math.round(hueChangeStaticValue, 0) >= 30 then 
                hueChangeSwitch = false 
           end
-     end
-     if hueChangeSwitch == false then
+     else
           hueChangeStaticValue = hueChangeStaticValue - hueChangeCPM
           hueChangeTweenValue  = math.abs(ease.inOutExpo(hueChangeStaticValue/30, 30, 0-30, 1)-30)+240
 
@@ -303,6 +303,7 @@ end
 function onDestroy()
      Skins:save()
 end
+
 
 --[[ makeLuaSprite('eefwe', 'ui/buttons/test/daih2', 397.6, 160.8) --397.6, 160.8
 scaleObject('eefwe', 0.8, 0.75)

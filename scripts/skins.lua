@@ -19,9 +19,9 @@ end
 
 local SkinStateSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector', true)
 
-local stateSave_checkboxNoteIndexPlayer   = SkinStateSave:get('checkboxSkinObjectIndexPlayer', 'notes', 0)
-local stateSave_checkboxNoteIndexOpponent = SkinStateSave:get('checkboxSkinObjectIndexOpponent', 'notes', 0)
-local stateSave_checkboxSplashIndexPlayer = SkinStateSave:get('checkboxSkinObjectIndexPlayer', 'splashes', 0)
+local stateSave_checkboxNoteIndexPlayer   = SkinStateSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER', 'NOTES', 0)
+local stateSave_checkboxNoteIndexOpponent = SkinStateSave:get('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', 'NOTES', 0)
+local stateSave_checkboxSplashIndexPlayer = SkinStateSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER', 'SPLASHES', 0)
 
 local skinStaticDataNotes    = json.parse(getTextFromFile('json/notes/constant/skins.json'))
 local skinStaticDataSplashes = json.parse(getTextFromFile('json/splashes/constant/skins.json'))

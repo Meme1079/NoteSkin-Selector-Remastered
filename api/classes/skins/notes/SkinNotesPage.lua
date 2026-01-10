@@ -4,37 +4,25 @@ local SkinSaves = require 'mods.NoteSkin Selector Remastered.api.classes.skins.s
 
 local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
-local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
-local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
-local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
-local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
 
-local switch            = global.switch
-local createTimer       = funkinlua.createTimer
-local hoverObject       = funkinlua.hoverObject
-local clickObject       = funkinlua.clickObject
-local pressedObject     = funkinlua.pressedObject
-local releasedObject    = funkinlua.releasedObject
-local addCallbackEvents = funkinlua.addCallbackEvents
+local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
+
+local clickObject                   = funkinlua.clickObject
 local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
-local keyboardJustConditionPress    = funkinlua.keyboardJustConditionPress
 local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
-local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
-
-local MAX_NUMBER_CHUNK = 16
-
---- Childclass extension, main page component functionality for the note skin state.
+--- Childclass extension, main page component functionality for the noteskin state.
 ---@class SkinNotesPage
 local SkinNotesPage = {}
+local SkinNoteGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 local SCROLLBAR_THUMB_SYNC = false -- * Ignore this btw
---- Main page slider functionality for switching throughout multiple pages.
----@param snapToPage? boolean Allows the scrollbar thumb to snap to its nearest page-index.
+--- Page scrollbar functionality, that's it.
+---@param snapToPage? boolean Enables the scrollbar snapping to its nearest page index.
 ---@return nil
-function SkinNotesPage:page_slider(snapToPage)
+function SkinNotesPage:page_scrollbar(snapToPage)
      local snapToPage = snapToPage == nil and true or false
 
      local displayScrollThumbTag = 'displaySliderIcon'
@@ -92,7 +80,6 @@ function SkinNotesPage:page_slider(snapToPage)
      local SCROLLBAR_CURRENT_PAGE_IS_NUMBER     = SCROLLBAR_CURRENT_PAGE_INDEX ~= false
      local SCROLLBAR_CURRENT_PAGE_IS_SAME_INDEX = SCROLLBAR_CURRENT_PAGE_INDEX ~= self.SCROLLBAR_PAGE_INDEX
      if SCROLLBAR_CURRENT_PAGE_IS_NUMBER and SCROLLBAR_CURRENT_PAGE_IS_SAME_INDEX and self.SCROLLBAR_TRACK_THUMB_PRESSED == true then
-          self.SELECT_SKIN_PAGE_INDEX = SCROLLBAR_CURRENT_PAGE_INDEX
           self.SCROLLBAR_PAGE_INDEX   = SCROLLBAR_CURRENT_PAGE_INDEX
           self:create(SCROLLBAR_CURRENT_PAGE_INDEX)
           self:checkbox_sync()
@@ -105,8 +92,7 @@ function SkinNotesPage:page_slider(snapToPage)
 
           playSound('ding', 0.5)
           callOnScripts('skinSearchInput_callResetSearch')
-          SkinNoteSave:set('SCROLLBAR_PAGE_INDEX',   self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
-          SkinNoteSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
+          SkinNoteGSave:set('SCROLLBAR_PAGE_INDEX',   self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
      end
 
      if self.TOTAL_SKIN_LIMIT > MINIMUM_SKIN_LIMIT and self.SCROLLBAR_TRACK_THUMB_PRESSED == false then
@@ -132,9 +118,9 @@ function SkinNotesPage:page_slider(snapToPage)
      end
 end
 
---- Creates slider-marks to each corresponding page within the slider track, for visual aid purposes.
+--- Creates a scrollbar snap-marks to each corresponding page, based on its position.
 ---@return nil
-function SkinNotesPage:page_slider_marks()
+function SkinNotesPage:page_scrollbar_snaps()
      local SCROLLBAR_METADATA_MAJOR = {
           NAME    = 'major',
           COLOR   = '3b8527',
@@ -170,7 +156,7 @@ function SkinNotesPage:page_slider_marks()
      end
 end
 
---- Main page moving functionality for switching throughout multiple pages.
+--- Page moving functionality, uses keys for switching pages.
 ---@return nil
 function SkinNotesPage:page_moved()
      if self.SCROLLBAR_TRACK_THUMB_PRESSED == true then return end
@@ -186,16 +172,16 @@ function SkinNotesPage:page_moved()
           return
      end
 
-     local totalSkinObjectsPagePerIds     = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX]
-     local totalSkinObjectsPagePerClicked = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SELECT_SKIN_PAGE_INDEX]
+     local totalSkinObjectsPagePerIds     = self.TOTAL_SKIN_OBJECTS_ID[self.SCROLLBAR_PAGE_INDEX]
+     local totalSkinObjectsPagePerClicked = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SCROLLBAR_PAGE_INDEX]
      for curIDs = totalSkinObjectsPagePerIds[1], totalSkinObjectsPagePerIds[#totalSkinObjectsPagePerIds] do
-          local curSkinIDs = curIDs - (MAX_NUMBER_CHUNK * (self.SELECT_SKIN_PAGE_INDEX - 1))
+          local curSkinIDs = curIDs - (MAX_NUMBER_CHUNK * (self.SCROLLBAR_PAGE_INDEX - 1))
           if totalSkinObjectsPagePerClicked[curSkinIDs] == true then
-               if gameControlPressedUp and self.SELECT_SKIN_PAGE_INDEX > 1 then
+               if gameControlPressedUp and self.SCROLLBAR_PAGE_INDEX > 1 then
                     setTextColor('genInfoStatePage', 'f0b72f')
                     playSound('cancel')
                end
-               if gameControlPressedDown and self.SELECT_SKIN_PAGE_INDEX < self.TOTAL_SKIN_LIMIT then
+               if gameControlPressedDown and self.SCROLLBAR_PAGE_INDEX < self.TOTAL_SKIN_LIMIT then
                     setTextColor('genInfoStatePage', 'f0b72f')
                     playSound('cancel')
                end
@@ -203,41 +189,50 @@ function SkinNotesPage:page_moved()
           end
      end
 
+     local SCROLLBAR_MIN_RANGE_PAGE_INDEX = 1
+     local SCROLLBAR_MAX_RANGE_PAGE_INDEX = self.TOTAL_SKIN_LIMIT
+
      local displayScrollThumbTag = 'displaySliderIcon'
-     if gameControlPressedUp and self.SELECT_SKIN_PAGE_INDEX > 1 then
-          self.SCROLLBAR_PAGE_INDEX   = self.SCROLLBAR_PAGE_INDEX   - 1
-          self.SELECT_SKIN_PAGE_INDEX = self.SELECT_SKIN_PAGE_INDEX - 1
-          self:create(self.SELECT_SKIN_PAGE_INDEX)
+     if gameControlPressedUp and self.SCROLLBAR_PAGE_INDEX > SCROLLBAR_MIN_RANGE_PAGE_INDEX then
+          self.SCROLLBAR_PAGE_INDEX = self.SCROLLBAR_PAGE_INDEX - 1
+          self:create(self.SCROLLBAR_PAGE_INDEX)
           self:checkbox_sync()
 
           playSound('ding', 0.5)
-          setProperty(F"{displayScrollThumbTag}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SELECT_SKIN_PAGE_INDEX])
+          setProperty(F"{displayScrollThumbTag}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX])
           callOnScripts('skinSearchInput_callResetSearch')
-          SkinNoteSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
+
+          SkinNoteGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
      end
-     if gameControlPressedDown and self.SELECT_SKIN_PAGE_INDEX < self.TOTAL_SKIN_LIMIT then
-          self.SCROLLBAR_PAGE_INDEX   = self.SCROLLBAR_PAGE_INDEX   + 1
-          self.SELECT_SKIN_PAGE_INDEX = self.SELECT_SKIN_PAGE_INDEX + 1
-          self:create(self.SELECT_SKIN_PAGE_INDEX)
+     if gameControlPressedDown and self.SCROLLBAR_PAGE_INDEX < SCROLLBAR_MAX_RANGE_PAGE_INDEX then
+          self.SCROLLBAR_PAGE_INDEX = self.SCROLLBAR_PAGE_INDEX + 1
+          self:create(self.SCROLLBAR_PAGE_INDEX)
           self:checkbox_sync()
 
           playSound('ding', 0.5)
-          setProperty(F"{displayScrollThumbTag}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SELECT_SKIN_PAGE_INDEX])
+          setProperty(F"{displayScrollThumbTag}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX])
           callOnScripts('skinSearchInput_callResetSearch')
-          SkinNoteSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
+          
+          SkinNoteGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
      end
 
-     if self.SELECT_SKIN_PAGE_INDEX == self.TOTAL_SKIN_LIMIT then
+     local SCROLLBAR_MAJOR_SNAP_OFFSET_Y = 25
+     if self.SCROLLBAR_PAGE_INDEX > SCROLLBAR_MIN_RANGE_PAGE_INDEX and self.SCROLLBAR_PAGE_INDEX < SCROLLBAR_MAX_RANGE_PAGE_INDEX then
+          setProperty(F"{displayScrollThumbTag}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX] - SCROLLBAR_MAJOR_SNAP_OFFSET_Y)
+     end
+
+     if self.SCROLLBAR_PAGE_INDEX == self.TOTAL_SKIN_LIMIT then
           setTextColor('genInfoStatePage', 'ff0000')
      else
           setTextColor('genInfoStatePage', 'ffffff')
      end
 end
 
---- Updates the current page text, that is literally it.
+--- Updates its current page number text, that's literally it.
+---@protected
 ---@return nil
 function SkinNotesPage:page_text()
-     local currentPageFormat = ('%.3d'):format(self.SELECT_SKIN_PAGE_INDEX)
+     local currentPageFormat = ('%.3d'):format(self.SCROLLBAR_PAGE_INDEX)
      local maximumPageFormat = ('%.3d'):format(self.TOTAL_SKIN_LIMIT)
      setTextString('genInfoStatePage', F" Page {currentPageFormat} / {maximumPageFormat}")
 end

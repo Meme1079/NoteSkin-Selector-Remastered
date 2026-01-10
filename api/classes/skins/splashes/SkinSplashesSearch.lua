@@ -2,218 +2,161 @@ luaDebugMode = true
 
 local SkinSaves = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinSaves'
 
+local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
-local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
 
-local switch         = global.switch
-local createTimer    = funkinlua.createTimer
-local clickObject    = funkinlua.clickObject
-local pressedObject  = funkinlua.pressedObject
-local releasedObject = funkinlua.releasedObject
-local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
-local keyboardJustConditionPress    = funkinlua.keyboardJustConditionPress
-local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
+local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 
-local SkinSplashSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
-
-local MAX_NUMBER_CHUNK = 16
+local calculateSearch = states.calculateSearch
 
 --- Childclass extension, main search component functionality for the splash skin state.
 ---@class SkinSplashesSearch
 local SkinSplashesSearch = {}
+local SkinSplashesGSave  = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Creates a chunk gallery of available display skins to select from when searching.
+--- Creates a 4x4 chunk gallery of skins to select from while searching.
+---@private
 ---@return nil
 function SkinSplashesSearch:search_create()
-     local justReleased = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
-     if not (justReleased ~= -1 and justReleased ~= nil and getVar('skinSearchInputFocus') == true) then
+     local SEARCH_INPUT_CONTENT = getVar('skinSearchInput_textContent') or ''
+     local SEARCH_INPUT_FOCUS   = getVar('skinSearchInputFocus') or false
+     local FIRST_JUST_RELEASED  = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
+     if FIRST_JUST_RELEASED  == -1 or  SEARCH_INPUT_FOCUS == false then -- optimization purposes
           return
      end
-
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent')
-     if skinSearchInput_textContent == '' and getVar('skinSearchInputFocus') == true then
-          self:create(self.selectSkinPagePositionIndex)
-          self:page_text()
-          self:save_selection()
+     if SEARCH_INPUT_CONTENT == '' and SEARCH_INPUT_FOCUS == true  then -- optimization purposes
+          self:create(self.SCROLLBAR_PAGE_INDEX)
           return
      end
-
-     for pages = 1, self.totalSkinLimit do
-          for displays = 1, #self.totalSkinObjects[pages] do
-               if pages == index then
-                    goto continue_removeNonCurrentPages
+     
+     for skinPages = 1, self.TOTAL_SKIN_LIMIT do
+          for skinDisplays = 1, #self.TOTAL_SKIN_OBJECTS[skinPages] do
+               if skinPages == skinIndex then
+                    goto SKIP_SKIN_PAGE
                end
 
-               local displaySkinIconTemplates = {state = (self.stateClass):upperAtStart(), ID = self.totalSkinObjectID[pages][displays]}
-               local displaySkinIconButton = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplates)
-               local displaySkinIconSkin   = ('displaySkinIconSkin${state}-${ID}'):interpol(displaySkinIconTemplates)
-               if luaSpriteExists(displaySkinIconButton) == true and luaSpriteExists(displaySkinIconSkin) == true then
-                    removeLuaSprite(displaySkinIconButton, true)
-                    removeLuaSprite(displaySkinIconSkin, true)
+               local skinObjectID = self.TOTAL_SKIN_OBJECTS_ID[skinPages][skinDisplays]
+               local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
+               local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
+               if luaSpriteExists(displaySkinIconTagButton) == true and luaSpriteExists(displaySkinIconTagSkin) == true then
+                    removeLuaSprite(displaySkinIconTagButton, true)
+                    removeLuaSprite(displaySkinIconTagSkin, true)
                end
-               ::continue_removeNonCurrentPages::
+               ::SKIP_SKIN_PAGE::
           end
      end
 
-     ---@alias SkinData
-     ---| 'ids'   # The ID of the skin.
-     ---| 'names' # The name of the skin.
-
-     --- The heart of this method, see the method's description for reference.
-     ---@param skinData SkinData The present searched skin data to be used, either its: ID or name data.
-     ---@param skinPath? boolean Include the skins relative file path or not.
-     ---@return table The present skins from the given search input.
-     local function calculateSearch(skinData, skinPath)
-          local skinListTotal    = self.totalSkins
-          local skinMatchPattern = self.statePrefix..'%-'
-          local skinInputContent = skinSearchInput_textContent
-
-          local skinSearchResult = {}
-          for skinListTotalID = 1, #skinListTotal do
-               local skinRawName   = skinListTotal[skinListTotalID]:match(skinMatchPattern..'(.+)')
-               local skinRawFolder = skinListTotal[skinListTotalID]:match('(%w+/)'..skinMatchPattern)
-               local skinName   = skinRawName   == nil and 'funkin' or skinRawName
-               local skinFolder = skinRawFolder == nil and ''       or skinRawFolder
-
-               local skinInputContentFilter = skinInputContent:gsub('([%%%.%$%^%(%[])', '%%%1'):upper()
-               local skinCapPatStartPos     = skinName:upper():find(skinInputContentFilter)
-               if skinCapPatStartPos ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
-                    local skinFilePathName = skinFolder..skinMatchPattern:gsub('%%%-', '-')..skinName
-                    local skinFileName     = skinPath == true and skinFilePathName or skinName
-
-                    local skinDefMatch   = skinFileName:match(skinMatchPattern..'funkin')
-                    local skinFileFilter = skinDefMatch == nil and skinFileName or match:gsub('%%%-', '')
-                    skinSearchResult[skinListTotalID] = skinFileFilter
-               end
-          end
-
-          local skinSearchResultData = {}
-          for ids, names in pairs(skinSearchResult) do
-               if names ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
-                    local skinDataValues = {["ids"] = ids, ["names"] = names}
-                    local skinDataMeta   = {
-                         __index = function() 
-                              return error("Invalid parameter value, either use: \"ids\" or \"names\"", 3)
-                         end
-                    }
-                    skinSearchResultData[#skinSearchResultData+1] = setmetatable(skinDataValues, skinDataMeta)[skinData]
-               end
-          end 
-          return skinSearchResultData
-     end
-
-     --- Calculates the display skins position.
+     --- Calculates the positions of each display skins to be shown within the chunk gallery.
      ---@return table[number]
-     local function displaySkinPositions()
-          local displaySkinIndexes   = {x = 0, y = 0}
-          local displaySkinPositions = {}
-          for displays = 1, MAX_NUMBER_CHUNK do
-               if (displays-1) % 4 == 0 then
-                    displaySkinIndexes.x = 0
-                    displaySkinIndexes.y = displaySkinIndexes.y + 1
+     local function displaySkinIconPositions()
+          local displaySkinIconPositions = {}
+          local displaySkinIconPosX = 0
+          local displaySkinIconPosY = 0
+
+          local SKIN_ROW_MAX_LENGTH    = 4
+          local SKIN_SEARCH_MAX_LENGTH = calculateSearch(self.stateClass, self.statePrefix, 'names', true)
+          for skinDisplays = 1, #SKIN_SEARCH_MAX_LENGTH do
+               if (skinDisplays - 1) % SKIN_ROW_MAX_LENGTH == 0 then
+                    displaySkinIconPosY = displaySkinIconPosY + 1
+                    displaySkinIconPosX = 0
                else
-                    displaySkinIndexes.x = displaySkinIndexes.x + 1
+                    displaySkinIconPosX = displaySkinIconPosX + 1
                end
 
-               local displaySkinPositionX = 20  + (170 * displaySkinIndexes.x) - (25 * displaySkinIndexes.x)
-               local displaySkinPositionY = -20 + (180 * displaySkinIndexes.y) - (30 * displaySkinIndexes.y)
-               displaySkinPositions[#displaySkinPositions + 1] = {displaySkinPositionX, displaySkinPositionY}
+               local DISPLAY_SKIN_OFFSET_X =  20
+               local DISPLAY_SKIN_OFFSET_Y = -20
+               local DISPLAY_SKIN_DISTRIBUTION_OFFSET_X = 145
+               local DISPLAY_SKIN_DISTRIBUTION_OFFSET_Y = 150
+
+               local DISPLAY_SKIN_POSITION_X = DISPLAY_SKIN_OFFSET_X + (DISPLAY_SKIN_DISTRIBUTION_OFFSET_X * displaySkinIconPosX)
+               local DISPLAY_SKIN_POSITION_Y = DISPLAY_SKIN_OFFSET_Y + (DISPLAY_SKIN_DISTRIBUTION_OFFSET_Y * displaySkinIconPosY)
+               displaySkinIconPositions[#displaySkinIconPositions+1] = {DISPLAY_SKIN_POSITION_X, DISPLAY_SKIN_POSITION_Y}
           end
-          return displaySkinPositions
+          return displaySkinIconPositions
      end
 
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent')
-     local filterSearchByID   = calculateSearch('ids',   false)
-     local filterSearchByName = calculateSearch('names', false)
-     local filterSearchBySkin = calculateSearch('names', true)
+     local filterSearchByID   = calculateSearch(self.stateClass, self.statePrefix, 'ids', false)
+     local filterSearchByName = calculateSearch(self.stateClass, self.statePrefix, 'names', false)
+     local filterSearchBySkin = calculateSearch(self.stateClass, self.statePrefix, 'names', true)
 
-     local currenMinPage = (self.selectSkinPagePositionIndex - 1) * MAX_NUMBER_CHUNK
-     local currenMinPageIndex = currenMinPage == 0 and 1 or currenMinPage
-     local currenMaxPageIndex = self.selectSkinPagePositionIndex * MAX_NUMBER_CHUNK
+     local currenMinPageRange = (self.SCROLLBAR_PAGE_INDEX - 1) * MAX_NUMBER_CHUNK
+     local currenMaxPageRange = self.SCROLLBAR_PAGE_INDEX       * MAX_NUMBER_CHUNK
+     currenMinPageRange = (currenMinPageRange == 0) and 1 or currenMinPageRange -- adjust for 1-based index
 
-     local searchFilterSkinsDefault = table.tally(currenMinPageIndex, currenMaxPageIndex)
-     local searchFilterSkinsTyped   = table.singularity(table.merge(filterSearchByID, searchFilterSkinsDefault), false)
+     local searchFilterSkinPageRange = table.tally(currenMinPageRange, currenMaxPageRange)
+     local searchFilterSkinPresent   = table.singularity(table.merge(filterSearchByID, searchFilterSkinPageRange), false)
+     local searchFilterSkinRange     = table.sub(searchFilterSkinPresent, 1, #filterSearchByName) -- adjust for present skins only
+     self.SEARCH_SKIN_OBJECT_PRESENT = searchFilterSkinRange
 
-     local searchFilterSkinsSubDefault = table.sub(searchFilterSkinsDefault, 1, MAX_NUMBER_CHUNK)
-     local searchFilterSkinsSubTyped   = table.sub(searchFilterSkinsTyped, 1, MAX_NUMBER_CHUNK)
-     local searchFilterSkins = #filterSearchByID == 0 and searchFilterSkinsSubDefault or searchFilterSkinsSubTyped
-     for ids, displays in pairs(searchFilterSkins) do
-          if #filterSearchByID    == 0 then return end -- !DO NOT DELETE
-          if #filterSearchByName < ids then return end -- !DO NOT DELETE
+     for skinSearchIndex, skinSearchIDs in pairs(searchFilterSkinRange) do
+          local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinSearchIDs}"
+          local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinSearchIDs}"
+          local displaySkinIconPosX = displaySkinIconPositions()[skinSearchIndex][1]
+          local displaySkinIconPosY = displaySkinIconPositions()[skinSearchIndex][2]
+          makeAnimatedLuaSprite(displaySkinIconTagButton, 'ui/buttons/display_button', displaySkinIconPosX, displaySkinIconPosY)
+          addAnimationByPrefix(displaySkinIconTagButton, 'static', 'static')
+          addAnimationByPrefix(displaySkinIconTagButton, 'selected', 'selected')
+          addAnimationByPrefix(displaySkinIconTagButton, 'blocked', 'blocked')
+          addAnimationByPrefix(displaySkinIconTagButton, 'hover', 'hovered-static')
+          addAnimationByPrefix(displaySkinIconTagButton, 'pressed', 'hovered-pressed')
+          playAnim(displaySkinIconTagButton, 'static', true)
+          scaleObject(displaySkinIconTagButton, 0.8, 0.8)
+          setObjectCamera(displaySkinIconTagButton, 'camHUD')
+          setProperty(F"{displaySkinIconTagButton}.antialiasing", false)
+          addLuaSprite(displaySkinIconTagButton)
 
-          local displaySkinIconTemplates = {state = (self.stateClass):upperAtStart(), ID = displays}
-          local displaySkinIconButton = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplates)
-          local displaySkinIconSkin   = ('displaySkinIconSkin${state}-${ID}'):interpol(displaySkinIconTemplates)
-
-          local displaySkinPositionX = displaySkinPositions()[ids][1]
-          local displaySkinPositionY = displaySkinPositions()[ids][2]
-          makeAnimatedLuaSprite(displaySkinIconButton, 'ui/buttons/display_button', displaySkinPositionX, displaySkinPositionY)
-          addAnimationByPrefix(displaySkinIconButton, 'static', 'static')
-          addAnimationByPrefix(displaySkinIconButton, 'selected', 'selected')
-          addAnimationByPrefix(displaySkinIconButton, 'blocked', 'blocked')
-          addAnimationByPrefix(displaySkinIconButton, 'hover', 'hovered-static')
-          addAnimationByPrefix(displaySkinIconButton, 'pressed', 'hovered-pressed')
-          playAnim(displaySkinIconButton, 'static', true)
-          scaleObject(displaySkinIconButton, 0.8, 0.8)
-          setObjectCamera(displaySkinIconButton, 'camHUD')
-          setProperty(displaySkinIconButton..'.antialiasing', false)
-          addLuaSprite(displaySkinIconButton)
-
-          local displaySkinMetadataJSON = self.totalMetadataOrderedDisplay[tonumber(displays)]
-          local displaySkinMetadata_frames   = displaySkinMetadataJSON == '@void' and 12                    or (displaySkinMetadataJSON.frames   or 12)
-          local displaySkinMetadata_prefixes = displaySkinMetadataJSON == '@void' and 'note splash green 1' or (displaySkinMetadataJSON.prefixes or 'note splash green 1')
-          local displaySkinMetadata_size     = displaySkinMetadataJSON == '@void' and {0.4, 0.4}            or (displaySkinMetadataJSON.size     or {0.4, 0.4})
-          local displaySkinMetadata_offsets  = displaySkinMetadataJSON == '@void' and {0, 0}                or (displaySkinMetadataJSON.offsets  or {0, 0})
-
-          local displaySkinImageTemplate = {path = self.statePaths, skin = filterSearchBySkin[ids]}
-          local displaySkinImage = ('${path}/${skin}'):interpol(displaySkinImageTemplate)
-
-          local displaySkinImagePositionX = displaySkinPositionX + 16.5
-          local displaySkinImagePositionY = displaySkinPositionY + 12
-          makeAnimatedLuaSprite(displaySkinIconSkin, displaySkinImage, displaySkinImagePositionX, displaySkinImagePositionY)
-          scaleObject(displaySkinIconSkin, displaySkinMetadata_size[1], displaySkinMetadata_size[2])
-          addAnimationByPrefix(displaySkinIconSkin, 'static', displaySkinMetadata_prefixes, displaySkinMetadata_frames, true)
-
-          local curOffsetX = getProperty(displaySkinIconSkin..'.offset.x')
-          local curOffsetY = getProperty(displaySkinIconSkin..'.offset.y')
-          addOffset(displaySkinIconSkin, 'static', curOffsetX - displaySkinMetadata_offsets[1], curOffsetY + displaySkinMetadata_offsets[2])
-          playAnim(displaySkinIconSkin, 'static')
-          setObjectCamera(displaySkinIconSkin, 'camHUD')
-          addLuaSprite(displaySkinIconSkin)
-
-          if ids > #filterSearchBySkin then
-               if luaSpriteExists(displaySkinIconButton) == true and luaSpriteExists(displaySkinIconSkin) == true then
-                    removeLuaSprite(displaySkinIconButton, true)
-                    removeLuaSprite(displaySkinIconSkin, true)
-               end
+          --- Gets the skins' display metadata value, acts as a helper function.
+          --- Checks for any missing values and replaces it with its default value.
+          ---@param metadata string The metadata element to get its value.
+          ---@param constant any The constant default value, if the metadata element is missing.
+          ---@return any
+          local function displaySkinMetadata(metadata, constant)
+               local metaObjectsDisplay = self.TOTAL_SKIN_METAOBJ_ORDERED_DISPLAY[tonumber(skinSearchIDs)]
+               if metaObjectsDisplay           == '@void' then return constant end
+               if metaObjectsDisplay[metadata] == nil     then return constant end
+               return metaObjectsDisplay[metadata]
           end
+          local displaySkinMetadataFrames   = displaySkinMetadata('frames',   12)
+          local displaySkinMetadataPrefixes = displaySkinMetadata('prefixes', 'note splash green 1')
+          local displaySkinMetadataSize     = displaySkinMetadata('size',     {0.4, 0.4})
+          local displaySkinMetadataOffsets  = displaySkinMetadata('offsets',  {0, 0})
 
-          if #filterSearchBySkin == 0 then
+          local DISPLAY_SKIN_POSITION_OFFSET_X = 16.5
+          local DISPLAY_SKIN_POSITION_OFFSET_Y = 12
+          local displaySkinIconPosOffsetX = displaySkinIconPosX + DISPLAY_SKIN_POSITION_OFFSET_X
+          local displaySkinIconPosOffsetY = displaySkinIconPosY + DISPLAY_SKIN_POSITION_OFFSET_Y
+
+          local displaySkinIconSkinSprite = F"{self.statePaths}/{filterSearchBySkin[skinSearchIndex]}"
+          makeAnimatedLuaSprite(displaySkinIconTagSkin, displaySkinIconSkinSprite, displaySkinIconPosOffsetX, displaySkinIconPosOffsetY)
+          scaleObject(displaySkinIconTagSkin, displaySkinMetadataSize[1], displaySkinMetadataSize[2])
+          addAnimationByPrefix(displaySkinIconTagSkin, 'static', displaySkinMetadataPrefixes, displaySkinMetadataFrames, true)
+
+          local DISPLAY_SKIN_OFFSET_X = getProperty(F"{displaySkinIconTagSkin}.offset.x")
+          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"{displaySkinIconTagSkin}.offset.y")
+          local displaySkinIconOffsetX = DISPLAY_SKIN_OFFSET_X - displaySkinMetadataOffsets[1]
+          local displaySkinIconOffsetY = DISPLAY_SKIN_OFFSET_Y + displaySkinMetadataOffsets[2]
+          addOffset(displaySkinIconTagSkin, 'static', displaySkinIconOffsetX, displaySkinIconOffsetY)
+          playAnim(displaySkinIconTagSkin, 'static')
+          setObjectCamera(displaySkinIconTagSkin, 'camHUD')
+          addLuaSprite(displaySkinIconTagSkin)
+
+          if skinSearchIndex > #filterSearchBySkin then
                if luaSpriteExists(displaySkinIconButton) == true and luaSpriteExists(displaySkinIconSkin) == true then
-                    return
-               end
-               
-               for _ in pairs(searchFilterSkins) do -- lmao
-                    local displaySkinIconTemplates = {state = (self.stateClass):upperAtStart(), ID = displays}
-                    local displaySkinIconButton = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplates)
-                    local displaySkinIconSkin   = ('displaySkinIconSkin${state}-${ID}'):interpol(displaySkinIconTemplates)
-
                     removeLuaSprite(displaySkinIconButton, true)
                     removeLuaSprite(displaySkinIconSkin, true)
-               end
-               if ids == MAX_NUMBER_CHUNK then 
-                    return 
                end
           end
           self:save_selection()
      end
+     self:search_checkbox_sync()
 end
 
---- Creates the preview splashes' graphic sprites and its text when searching.
+--- Creates the preview strums' graphic sprites and text while searching.
+---@private
 ---@return nil
 function SkinSplashesSearch:search_preview()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -221,125 +164,119 @@ function SkinSplashesSearch:search_preview()
           return
      end
 
-     local curIndex = self.selectSkinCurSelectedIndex
-     local function previewSearchSkinIndex()
-          for searchIndex = 1, math.max(#self.searchSkinObjectIndex, #self.searchSkinObjectPage) do
-               local searchSkinIndex = tonumber( self.searchSkinObjectIndex[searchIndex] )
+     --- Gets the skin's object data from the currently selected skin.
+     ---@param skinObjects table The object to retreive its data.
+     ---@return any
+     local function currentPreviewSkinData(skinObjects)
+          if self.SELECT_SKIN_CUR_SELECTION_INDEX == 0 or self.TOTAL_SKINS[self.SELECT_SKIN_CUR_SELECTION_INDEX] == nil then
+               return skinObjects[1][1] -- default value
+          end
 
-               local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = searchSkinIndex}
-               local displaySkinIconButton   = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplate)
-               if releasedObject(displaySkinIconButton, 'camHUD') then
-                    return searchSkinIndex
+          for skinPages = 1, self.TOTAL_SKIN_LIMIT do -- checks if each page has an existing skin object
+               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_INDICES[skinPages]
+               local selectedSkinIndex = table.find(selectedSkinPage, self.SELECT_SKIN_CUR_SELECTION_INDEX)
+               if selectedSkinIndex ~= nil then
+                    return skinObjects[skinPages][selectedSkinIndex]
                end
           end
      end
+     local currentPreviewDataSkins    = currentPreviewSkinData(self.TOTAL_SKIN_OBJECTS)
+     local currentPreviewDataNames    = currentPreviewSkinData(self.TOTAL_SKIN_OBJECTS_NAMES)
+     local currentPreviewMetadataPrev = currentPreviewSkinData(self.TOTAL_SKIN_METAOBJ_PREVIEW)
 
-     local displaySkinIconTemplate = {state = (self.stateClass):upperAtStart(), ID = previewSearchSkinIndex()}
-     local displaySkinIconButton   = ('displaySkinIconButton${state}-${ID}'):interpol(displaySkinIconTemplate)
-     if releasedObject(displaySkinIconButton, 'camHUD') then
-          local function getCurrentPreviewSkin(previewSkinArray)
-               if curIndex == 0 then
-                    return previewSkinArray[1][1]
-               end
-
-               for pages = 1, self.totalSkinLimit do
-                    local presentObjectIndex = table.find(self.totalSkinObjectIndexes[pages], curIndex)
-                    if presentObjectIndex ~= nil then
-                         return previewSkinArray[pages][presentObjectIndex]
-                    end
-               end
+     --- Gets the skin's preview metadata object from its JSON.
+     ---@param metadataName string The name of the metadata to be fetch.
+     ---@return table
+     local function previewMetadataObject(metadataName)
+          local metadataSkinPrevObj         = currentPreviewMetadataPrev
+          local metadataSkinPrevObjElements = currentPreviewMetadataPrev[metadataName]
+          if metadataSkinPrevObj == '@void' or metadataSkinPrevObjElements == nil then
+               return self.PREVIEW_CONST_METADATA_PREVIEW[metadataName]
           end
-     
-          local getCurrentPreviewSkinObjects       = getCurrentPreviewSkin(self.totalSkinObjects)
-          local getCurrentPreviewSkinObjectNames   = getCurrentPreviewSkin(self.totalSkinObjectNames)
-          local getCurrentPreviewSkinObjectPreview = getCurrentPreviewSkin(self.totalMetadataObjectPreview)
-          for strums = 1, 4 do
-               local previewSkinTemplate = {state = (self.stateClass):upperAtStart(), groupID = strums}
-               local previewSkinGroup    = ('previewSkinGroup${state}-${groupID}'):interpol(previewSkinTemplate)
-     
-               local previewMetadataObjectAnims = {
-                    names = {
-                         note_splash1 = {'left_splash1', 'down_splash1', 'up_splash1', 'right_splash1'},
-                         note_splash2 = {'left_splash2', 'down_splash2', 'up_splash2', 'right_splash2'}
-                    },
-                    prefixes = {
-                         note_splash1 = {'note splash purple 1', 'note splash blue 1', 'note splash green 1', 'note splash red 1'},
-                         note_splash2 = {'note splash purple 2', 'note splash blue 2', 'note splash green 2', 'note splash red 2'}
-                    },
-                    frames = {
-                         note_splash1 = 24,
-                         note_splash2 = 24
-                    }
-               }
-     
-               local function previewMetadataObjectData(skinAnim)
-                    local previewMetadataObject         = getCurrentPreviewSkinObjectPreview
-                    local previewMetadataObjectByAnim   = getCurrentPreviewSkinObjectPreview.animations
-                    local previewStaticDataObjectByAnim = self.previewStaticDataPreview.animations
-     
-                    local previewMetadataObjectNames = previewMetadataObjectAnims['names'][skinAnim]
-                    if previewMetadataObject == '@void' or previewMetadataObjectByAnim == nil then
-                         return previewStaticDataObjectByAnim[skinAnim][previewMetadataObjectNames[strums]]
-                    end
-                    if previewMetadataObjectByAnim[skinAnim] == nil then
-                         previewMetadataObject['animations'][skinAnim] = previewStaticDataObjectByAnim[skinAnim]
-                         return previewStaticDataObjectByAnim[skinAnim][previewMetadataObjectNames[strums]]
-                    end
-                    return previewMetadataObjectByAnim[skinAnim][previewMetadataObjectNames[strums]]
-               end
-               local function previewMetadataObjects(element)
-                    local previewMetadataObject       = getCurrentPreviewSkinObjectPreview
-                    local previewMetadataObjectByElem = getCurrentPreviewSkinObjectPreview[element]
-     
-                    if previewMetadataObject == '@void' or previewMetadataObjectByElem == nil then
-                         return self.previewStaticDataPreview[element]
-                    end
-                    return previewMetadataObjectByElem
-               end
-     
-               local previewMetadataByObjectNoteSplash1 = previewMetadataObjectData('note_splash1')
-               local previewMetadataByObjectNoteSplash2 = previewMetadataObjectData('note_splash2')
-     
-               local previewMetadataByFramesNoteSplash1 = previewMetadataObjects('frames').note_splash1
-               local previewMetadataByFramesNoteSplash2 = previewMetadataObjects('frames').note_splash2
-     
-               local previewMetadataBySize = previewMetadataObjects('size')
-               
-               local previewSkinImagePath = self.statePaths..'/'..getCurrentPreviewSkinObjects
-               local previewSkinPositionX = 790 + (105*(strums-1))
-               local previewSkinPositionY = 135
-               makeAnimatedLuaSprite(previewSkinGroup, previewSkinImagePath, previewSkinPositionX, previewSkinPositionY)
-               scaleObject(previewSkinGroup, previewMetadataBySize[1], previewMetadataBySize[2])
-     
-               local previewSkinAddAnimationPrefix = function(objectData, dataFrames)
-                    addAnimationByPrefix(previewSkinGroup, objectData.name, objectData.prefix, dataFrames, false)
-               end
-               local previewSkinGetOffsets = function(objectData, position)
-                    local previewSkinGroupOffsetX = getProperty(previewSkinGroup..'.offset.x')
-                    local previewSkinGroupOffsetY = getProperty(previewSkinGroup..'.offset.y')
-                    if position == 'x' then return previewSkinGroupOffsetX - objectData.offsets[1] end
-                    if position == 'y' then return previewSkinGroupOffsetY + objectData.offsets[2] end
-               end
-               local previewSkinAddOffsets = function(objectData)
-                    local previewSkinOffsetX = previewSkinGetOffsets(objectData, 'x')
-                    local previewSkinOffsetY = previewSkinGetOffsets(objectData, 'y')
-                    addOffset(previewSkinGroup, objectData.name, previewSkinOffsetX, previewSkinOffsetY)
-               end
-               
-               local previewSkinAnimation = function(objectData, dataFrames)
-                    previewSkinAddAnimationPrefix(objectData, dataFrames)
-                    previewSkinAddOffsets(objectData)
-               end
-               previewSkinAnimation(previewMetadataByObjectNoteSplash1, previewMetadataByFramesNoteSplash1)
-               previewSkinAnimation(previewMetadataByObjectNoteSplash2, previewMetadataByFramesNoteSplash2)
-               
-               setObjectCamera(previewSkinGroup, 'camHUD')
-               setProperty(previewSkinGroup..'.visible', false)
-               addLuaSprite(previewSkinGroup)
-          end
-     
-          setTextString('genInfoSkinName', getCurrentPreviewSkinObjectNames)
+          return metadataSkinPrevObjElements
      end
+
+     --- Same as the previous function above, helper function; this retreives mainly its animation from its JSON.
+     ---@param animationName string The name of the animation metadata to be fetch.
+     ---@param strumIndex number The strum index number to cycle each value.
+     ---@param byAnimationGroup? boolean Whether it will retreive by group or not.
+     ---@return table
+     local function previewMetadataObjectAnims(animationName, strumIndex, byAnimationGroup)
+          local metadataSkinPrevObj     = currentPreviewMetadataPrev
+          local metadataSkinPrevObjAnim = currentPreviewMetadataPrev.animations
+
+          local constantSkinPrevObjAnimNames = self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS['names'][animationName]
+          local constantSkinPrevObjAnim      = self.PREVIEW_CONST_METADATA_PREVIEW.animations
+          if byAnimationGroup == true then
+               if metadataSkinPrevObj == '@void' or metadataSkinPrevObjAnim == nil then
+                    return constantSkinPrevObjAnim[animationName]
+               end
+               if metadataSkinPrevObjAnim == nil then
+                    metadataSkinPrevObj['animations'] = constantSkinPrevObjAnim
+                    return constantSkinPrevObjAnim
+               end
+               if metadataSkinPrevObjAnim[animationName] == nil then
+                    metadataSkinPrevObj['animations'][animationName] = constantSkinPrevObjAnim[animationName]
+                    return constantSkinPrevObjAnim[animationName]
+               end
+               return metadataSkinPrevObjAnim[animationName]
+          end
+
+          local skinPrevAnimElements = constantSkinPrevObjAnimNames[strumIndex]
+          if metadataSkinPrevObj == '@void' or metadataSkinPrevObjAnim == nil then
+               return constantSkinPrevObjAnim[animationName][skinPrevAnimElements]
+          end
+          if metadataSkinPrevObjAnim == nil then
+               metadataSkinPrevObj['animations'] = constantSkinPrevObjAnim
+               return constantSkinPrevObjAnim
+          end
+          if metadataSkinPrevObjAnim[animationName] == nil then
+               metadataSkinPrevObj['animations'][animationName] = constantSkinPrevObjAnim[animationName]
+               return constantSkinPrevObjAnim[animationName][skinPrevAnimElements]
+          end
+          return metadataSkinPrevObjAnim[animationName][skinPrevAnimElements]
+     end
+
+     local metadataPreviewFrames = previewMetadataObject('frames')
+     local metadataPreviewSize   = previewMetadataObject('size')
+
+     local metadataPreviewNoteSplash1Frames = metadataPreviewFrames.note_splash1
+     local metadataPreviewNoteSplash2Frames = metadataPreviewFrames.note_splash2
+     for strumIndex = 1, 4 do
+          local metadataPreviewNoteSplash1 = previewMetadataObjectAnims('note_splash1', strumIndex)
+          local metadataPreviewNoteSplash2 = previewMetadataObjectAnims('note_splash2', strumIndex)
+
+          local previewSkinGroupTag    = F"previewSkinGroup{self.stateClass:upperAtStart()}-{strumIndex}"
+          local previewSkinGroupSprite = F"{self.statePaths}/{currentPreviewDataSkins}"
+
+          local previewSkinPositionX = 790 + (105*(strumIndex - 1))
+          local previewSkinPositionY = 135
+          makeAnimatedLuaSprite(previewSkinGroupTag, previewSkinGroupSprite, previewSkinPositionX, previewSkinPositionY)
+          scaleObject(previewSkinGroupTag, metadataPreviewSize[1], metadataPreviewSize[2])
+          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewNoteSplash1.name, metadataPreviewNoteSplash1.prefix, metadataPreviewNoteSplash1Frames, false)
+          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewNoteSplash2.name, metadataPreviewNoteSplash2.prefix, metadataPreviewNoteSplash2Frames, false)
+
+          --- Adds the offset for the given preview skins.
+          ---@param metadataPreviewAnim table The specified preview animation to use for offsetting.
+          ---@return number, number
+          local function addMetadataPreviewOffset(metadataPreviewAnim)
+               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"{previewSkinGroupTag}.offset.x")
+               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"{previewSkinGroupTag}.offset.y")
+               local PREVIEW_SKIN_DATA_OFFSET_X    = metadataPreviewAnim.offsets[1]
+               local PREVIEW_SKIN_DATA_OFFSET_Y    = metadataPreviewAnim.offsets[2]
+
+               local PREVIEW_SKIN_OFFSET_X = PREVIEW_SKIN_CURRENT_OFFSET_X - PREVIEW_SKIN_DATA_OFFSET_X
+               local PREVIEW_SKIN_OFFSET_Y = PREVIEW_SKIN_CURRENT_OFFSET_Y + PREVIEW_SKIN_DATA_OFFSET_Y
+               return PREVIEW_SKIN_OFFSET_X, PREVIEW_SKIN_OFFSET_Y
+          end
+          addOffset(previewSkinGroupTag, metadataPreviewNoteSplash1.name, addMetadataPreviewOffset(metadataPreviewNoteSplash1))
+          addOffset(previewSkinGroupTag, metadataPreviewNoteSplash2.name, addMetadataPreviewOffset(metadataPreviewNoteSplash2))
+          playAnim(previewSkinGroupTag, self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS['names']['note_splash1'][strumIndex])
+          setObjectCamera(previewSkinGroupTag, 'camHUD')
+          addLuaSprite(previewSkinGroupTag)
+          setProperty(F"{previewSkinGroupTag}.visible", false)
+     end
+     setTextString('genInfoSkinName', currentPreviewDataNames)
      self:preview_animation(true)
 end
 

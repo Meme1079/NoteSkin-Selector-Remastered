@@ -16,13 +16,13 @@
           ]
      },
      "PREVIEW": {
-          "PREVIEW_NOTES_SKIN_METAOBJ_STRUMS_PATH": "noteSkins/NOTE_assets-Tabi",
-          "PREVIEW_NOTES_SKIN_METAOBJ_STRUMS_FRAMES": 24,
-          "PREVIEW_NOTES_SKIN_METAOBJ_STRUMS_SIZE": [
+          "PREV_NOTES_METAOBJ_STRUMS_PATH": "noteSkins/NOTE_assets-Tabi",
+          "PREV_NOTES_METAOBJ_STRUMS_FRAMES": 24,
+          "PREV_NOTES_METAOBJ_STRUMS_SIZE": [
                0.65,
                0.65
           ],
-          "PREVIEW_NOTES_SKIN_METAOBJ_STRUMS": {
+          "PREV_NOTES_METAOBJ_STRUMS_ANIMS": {
                "left": {
                     "prefix": "arrowLEFT",
                     "offsets": [

@@ -4,10 +4,12 @@
      - Skin Classes have been split into multiple subclasses each corresponding to their functions.
 - Added a warning for switching pages (i.e. using keys from your keyboard) while searching skins.
 - Adjust scrollbar thumb offsets between the start and end page positions.
+- Selection of the skin will always remain constant, even when the skin has missing animations.
 - Optimize checkboxes, syncing and clicking now checks for its interaction instead of every updated frame.
 
 ### Bug Fixes
 - Fixed a previous bug where holding the skin button then switching to another page, will cause some selection issue when choosing a skin.
+- Fixed a bug where the searching algorithm would not render any skins due to the array having a max limit for some reason.
 - Fixed a bug where the skin highlight name woouldn't render properly when searching/switching while hovering the skins.
 
 ## Version 2.1.0

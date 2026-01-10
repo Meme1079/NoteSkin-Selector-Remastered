@@ -1,3 +1,6 @@
+local F = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
+
+---
 ---@class SkinSaves
 local SkinSaves = {}
 
@@ -23,7 +26,7 @@ end
 ---@param value any The new value to set it to.
 ---@return nil
 function SkinSaves:set(tag, prefix, value)
-     setDataFromSave(self.saveName, prefix..'_'..tag, value)
+     setDataFromSave(self.saveName, F"{prefix}_{tag}", value)
 end
 
 --- Gets the data field current value from the save game data.
@@ -32,7 +35,7 @@ end
 ---@param default any The field data's default value, if the inherited value doesn't exist.
 ---@return any
 function SkinSaves:get(tag, prefix, default)
-     return getDataFromSave(self.saveName, prefix..'_'..tag, default)
+     return getDataFromSave(self.saveName, F"{prefix}_{tag}", default)
 end
 
 --- Saves the applied changes from the save game data, updates its content with new values.

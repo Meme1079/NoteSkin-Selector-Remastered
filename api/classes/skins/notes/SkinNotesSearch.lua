@@ -6,37 +6,23 @@ local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-str
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
 local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
-local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
 
-local switch            = global.switch
-local createTimer       = funkinlua.createTimer
-local hoverObject       = funkinlua.hoverObject
-local clickObject       = funkinlua.clickObject
-local pressedObject     = funkinlua.pressedObject
-local releasedObject    = funkinlua.releasedObject
-local addCallbackEvents = funkinlua.addCallbackEvents
-local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
-local keyboardJustConditionPress    = funkinlua.keyboardJustConditionPress
-local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
+local CHARACTERS       = global.CHARACTERS
+local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 
-local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
-
-local MAX_NUMBER_CHUNK = 16
-
----@enum CHARACTERS
-local CHARACTERS = {
-     PLAYER   = 1,
-     OPPONENT = 2
-}
+local calculateSearch = states.calculateSearch
+local hoverObject     = funkinlua.hoverObject
+local clickObject     = funkinlua.clickObject
 
 --- Childclass extension, main searching component functionality for the note skin state.
 ---@class SkinNotesSearch
 local SkinNotesSearch = {}
+local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Collection group of search methods.
+--- Search main component group.
 ---@return nil
 function SkinNotesSearch:search()
      self:search_create()
@@ -44,7 +30,8 @@ function SkinNotesSearch:search()
      self:search_selection()
 end
 
---- Calculates and searches the nearest skin from the given input to be loaded.
+--- Calculates the nearest skin name based on its given searchbar input.
+---@private
 ---@return nil
 function SkinNotesSearch:search_skins()
      local SEARCH_INPUT_CONTENT = getVar('skinSearchInput_textContent') or ''
@@ -54,7 +41,7 @@ function SkinNotesSearch:search_skins()
      end
 
      local skinInputContent   = SEARCH_INPUT_CONTENT
-     local skinInputContentID = states.calculateSearch(self.stateClass, self.statePrefix, 'ids', false) -- to clear previous search results
+     local skinInputContentID = calculateSearch(self.stateClass, self.statePrefix, 'ids', false) -- to clear previous search results
      local skinSearchIndex = 0
      for searchPage = 1, #self.TOTAL_SKIN_OBJECTS_ID do
           local totalSkinObjectIDs     = self.TOTAL_SKIN_OBJECTS_ID[searchPage]
@@ -71,7 +58,8 @@ function SkinNotesSearch:search_skins()
      self:search_checkbox_sync()
 end
 
---- Creates a chunk gallery of available display skins to select from when searching.
+--- Creates a 4x4 chunk gallery of skins to select from while searching.
+---@private
 ---@return nil
 function SkinNotesSearch:search_create()
      local SEARCH_INPUT_CONTENT = getVar('skinSearchInput_textContent') or ''
@@ -81,9 +69,7 @@ function SkinNotesSearch:search_create()
           return
      end
      if SEARCH_INPUT_CONTENT == '' and SEARCH_INPUT_FOCUS == true  then -- optimization purposes
-          self:create(self.SELECT_SKIN_PAGE_INDEX)
-          self:page_text()
-          self:save_selection()
+          self:create(self.SCROLLBAR_PAGE_INDEX)
           return
      end
      
@@ -112,7 +98,7 @@ function SkinNotesSearch:search_create()
           local displaySkinIconPosY = 0
 
           local SKIN_ROW_MAX_LENGTH    = 4
-          local SKIN_SEARCH_MAX_LENGTH = states.calculateSearch(self.stateClass, self.statePrefix, 'names', true)
+          local SKIN_SEARCH_MAX_LENGTH = calculateSearch(self.stateClass, self.statePrefix, 'names', true)
           for skinDisplays = 1, #SKIN_SEARCH_MAX_LENGTH do
                if (skinDisplays - 1) % SKIN_ROW_MAX_LENGTH == 0 then
                     displaySkinIconPosY = displaySkinIconPosY + 1
@@ -133,12 +119,12 @@ function SkinNotesSearch:search_create()
           return displaySkinIconPositions
      end
 
-     local filterSearchByID   = states.calculateSearch(self.stateClass, self.statePrefix, 'ids', false)
-     local filterSearchByName = states.calculateSearch(self.stateClass, self.statePrefix, 'names', false)
-     local filterSearchBySkin = states.calculateSearch(self.stateClass, self.statePrefix, 'names', true)
+     local filterSearchByID   = calculateSearch(self.stateClass, self.statePrefix, 'ids', false)
+     local filterSearchByName = calculateSearch(self.stateClass, self.statePrefix, 'names', false)
+     local filterSearchBySkin = calculateSearch(self.stateClass, self.statePrefix, 'names', true)
 
-     local currenMinPageRange = (self.SELECT_SKIN_PAGE_INDEX - 1) * MAX_NUMBER_CHUNK
-     local currenMaxPageRange = self.SELECT_SKIN_PAGE_INDEX       * MAX_NUMBER_CHUNK
+     local currenMinPageRange = (self.SCROLLBAR_PAGE_INDEX - 1) * MAX_NUMBER_CHUNK
+     local currenMaxPageRange = self.SCROLLBAR_PAGE_INDEX       * MAX_NUMBER_CHUNK
      currenMinPageRange = (currenMinPageRange == 0) and 1 or currenMinPageRange -- adjust for 1-based index
 
      local searchFilterSkinPageRange = table.tally(currenMinPageRange, currenMaxPageRange)
@@ -204,12 +190,13 @@ function SkinNotesSearch:search_create()
                     removeLuaSprite(displaySkinIconSkin, true)
                end
           end
-          self:save_selection()
      end
+     self:save_selection()
      self:search_checkbox_sync()
 end
 
---- Creates the preview strums' graphic sprites and its text when searching.
+--- Creates the preview strums' graphic sprites and text while searching.
+---@private
 ---@return nil
 function SkinNotesSearch:search_preview()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -260,7 +247,7 @@ function SkinNotesSearch:search_preview()
           local metadataSkinPrevObjAnim = currentPreviewMetadataPrev.animations
 
           local constantSkinPrevObjAnimNames = self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS['names'][animationName]
-          local constantSkinPrevObjAnim      = self.PREVIEW_CONST_METADATA_PREVIEW.animation
+          local constantSkinPrevObjAnim      = self.PREVIEW_CONST_METADATA_PREVIEW.animations
           if byAnimationGroup == true then
                if metadataSkinPrevObj == '@void' or metadataSkinPrevObjAnim == nil then
                     return constantSkinPrevObjAnim[animationName]
@@ -338,17 +325,16 @@ function SkinNotesSearch:search_preview()
           setObjectCamera(previewSkinGroupTag, 'camHUD')
           addLuaSprite(previewSkinGroupTag)
 
-          SkinNoteSave:set('previewMetadataByObjectStrums', self.stateClass..'Static', previewMetadataObjectAnims('strums', strumIndex, true))
-          SkinNoteSave:set('previewMetadataByFramesStrums', self.stateClass..'Static', previewMetadataByFramesStrums)
-          SkinNoteSave:set('previewMetadataBySize', self.stateClass..'Static', previewMetadataBySize)
-          SkinNoteSave:set('previewSkinImagePath', self.stateClass..'Static', previewSkinImagePath)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  '', previewMetadataObjectAnims('strums', strumIndex, true))
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_PATH',   '', previewSkinGroupSprite)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', '', metadataPreviewStrumsFrames)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   '', metadataPreviewSize)
      end
-
      setTextString('genInfoSkinName', currentPreviewDataNames)
-     self:preview_animation(true)
 end
 
---- Syncing of the position and offset of the selection highlight when searching, obviously for visual purposes.
+--- Syncs the selection highlight corresponding correct position and offset values while serching.
+---@protected
 ---@return nil
 function SkinNotesSearch:search_checkbox_sync()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -394,7 +380,7 @@ function SkinNotesSearch:search_checkbox_sync()
      end
 end
 
---- Collection group of search selection methods.
+--- Search selection component group.
 ---@return nil
 function SkinNotesSearch:search_selection()
      self:search_selection_byclick()
@@ -402,8 +388,8 @@ function SkinNotesSearch:search_selection()
      self:search_selection_cursor()
 end
 
---- Main display skin button clicking functionality and animations.
---- Allowing the selecting of the corresponding skin in gameplay.
+--- Selection main clicking functionality and animations while searching.
+---@private
 ---@return nil
 function SkinNotesSearch:search_selection_byclick()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -431,21 +417,22 @@ function SkinNotesSearch:search_selection_byclick()
                     self.SELECT_SKIN_PRE_SELECTION_INDEX = totalSkinObjectsPagePerIds[searchSkinPresentIDs]
                     self.SELECT_SKIN_CLICKED_SELECTION   = true
 
-                    SkinNoteSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+                    SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                     totalSkinObjectsPagePerClicked[searchSkinPresentIDs] = true
                end
 
                if byRelease == true and totalSkinObjectsPagePerClicked[searchSkinPresentIDs] == true then
                     playAnim(displaySkinIconButtonTag, 'selected', true)
      
+                    self.SELECT_SKIN_PAGE_INDEX           = self.SCROLLBAR_PAGE_INDEX
                     self.SELECT_SKIN_INIT_SELECTION_INDEX = self.SELECT_SKIN_CUR_SELECTION_INDEX
                     self.SELECT_SKIN_CUR_SELECTION_INDEX  = totalSkinObjectsPagePerIds[searchSkinPresentIDs]
-                    self.SELECT_SKIN_PAGE_INDEX           = self.SELECT_SKIN_PAGE_INDEX
                     self.SELECT_SKIN_CLICKED_SELECTION    = false
                     
                     self:search_preview()
-                    SkinNoteSave:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
-                    SkinNoteSave:set('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+                    SkinNotesGSave:set('SELECT_SKIN_PAGE_INDEX',           self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
+                    SkinNotesGSave:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
+                    SkinNotesGSave:set('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
                     totalSkinObjectsPagePerSelected[searchSkinPresentIDs] = true
                     totalSkinObjectsPagePerClicked[searchSkinPresentIDs]  = false
                end
@@ -459,7 +446,7 @@ function SkinNotesSearch:search_selection_byclick()
                     self.SELECT_SKIN_PRE_SELECTION_INDEX = totalSkinObjectsPagePerIds[searchSkinPresentIDs]
                     self.SELECT_SKIN_CLICKED_SELECTION   = true
 
-                    SkinNoteSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+                    SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                     totalSkinObjectsPagePerClicked[searchSkinPresentIDs] = true
                end
 
@@ -471,8 +458,8 @@ function SkinNotesSearch:search_selection_byclick()
                     self.SELECT_SKIN_CLICKED_SELECTION   = false
 
                     self:search_preview()
-                    SkinNoteSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
-                    SkinNoteSave:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+                    SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+                    SkinNotesGSave:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
                     totalSkinObjectsPagePerSelected[searchSkinPresentIDs] = false
                     totalSkinObjectsPagePerClicked[searchSkinPresentIDs]  = false
                     totalSkinObjectsPagePerHovered[searchSkinPresentIDs]  = false
@@ -484,8 +471,8 @@ function SkinNotesSearch:search_selection_byclick()
                self.SELECT_SKIN_CLICKED_SELECTION   = false
 
                self:search_preview()
-               SkinNoteSave:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
-               SkinNoteSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+               SkinNotesGSave:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+               SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                totalSkinObjectsPagePerSelected[searchSkinPresentIDs] = false
                totalSkinObjectsPagePerClicked[searchSkinPresentIDs]  = false
                totalSkinObjectsPagePerHovered[searchSkinPresentIDs]  = false
@@ -509,13 +496,13 @@ function SkinNotesSearch:search_selection_byclick()
                self.SELECT_SKIN_INIT_SELECTION_INDEX = 0
                totalSkinObjectsPagePerSelected[searchSkinPresentIDs] = false
 
-               SkinNoteSave:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
+               SkinNotesGSave:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
           end
      end
 end
 
---- Main display skin button hovering functionality and animations.
---- Allowing the cursor's sprite to change its corresponding sprite when hovering for visual aid.
+--- Selection main hovering functionality and animations while searching.
+---@private
 ---@return nil
 function SkinNotesSearch:search_selection_byhover()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -567,8 +554,8 @@ function SkinNotesSearch:search_selection_byhover()
      setTextString('skinHighlightName', skinHighlightName ~= '' and skinHighlightName or '') -- no way to optimize this :(
 end
 
---- Main cursor functionality for the display skin button and its animations.
---- Allowing the cursor's sprite to change depending on its interaction (i.e. selecting and hovering).
+--- Selection main cursor interactive functionality and animations while searching.
+---@private
 ---@return nil
 function SkinNotesSearch:search_selection_cursor()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''

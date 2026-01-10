@@ -11,76 +11,25 @@ local SkinNotesSave      = require 'mods.NoteSkin Selector Remastered.api.classe
 local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
-local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
 local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
-local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
 
-local switch            = global.switch
-local createTimer       = funkinlua.createTimer
-local hoverObject       = funkinlua.hoverObject
-local clickObject       = funkinlua.clickObject
-local pressedObject     = funkinlua.pressedObject
-local releasedObject    = funkinlua.releasedObject
-local addCallbackEvents = funkinlua.addCallbackEvents
-local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
-local keyboardJustConditionPress    = funkinlua.keyboardJustConditionPress
-local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
+local CHARACTERS       = global.CHARACTERS
+local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
+local inheritedClasses = global.inheritedClasses
 
-local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
-
-local MAX_NUMBER_CHUNK = 16
-
----@enum CHARACTERS
-local CHARACTERS = {
-     PLAYER   = 1,
-     OPPONENT = 2
-}
-
----@alias ParentClasses
----| 'inherit' # The child class to inherit and derived from its based parent class.
----| 'extends' # The extension properties of this class. 
-
---- Allows for the classes inherit multiple parent classes either as an inherit or extension.
----@param parentClasses ParentClasses The multiple classes to inherit.
----@return table Returns all the parent classes into one table.
-local function inheritedClasses(parentClasses)
-     local parentClassesOutput = {}
-     if parentClasses.extends ~= nil then
-          for _, classes in pairs(parentClasses.extends) do
-               parentClassesOutput[#parentClassesOutput+1] = classes
-          end
-     end
-     if parentClasses.inherit ~= nil then
-          for _, classes in pairs(parentClasses.inherit) do
-               parentClassesOutput[#parentClassesOutput+1] = classes
-          end
-     end
-
-     local classes = {}
-     function classes:__index(index)
-          for classesIndex = 1, #parentClassesOutput do
-               local result = parentClassesOutput[classesIndex][index]
-               if result then
-                    return result
-               end
-          end
-          return nil
-     end
-     return setmetatable({}, classes)
-end
-
---- Main class for the note skin state inherited by many of its extended subclasses.
+--- Main class for the noteskin state inherited by many of its extended subclasses.
 ---@class SkinNotes: SkinNotesPage, SkinNotesSelection, SkinNotesPreview, SkinNotesCheckbox, SkinNotesSearch, SkinNotesSave
 local SkinNotes = inheritedClasses({
      extends = {SkinNotesPage, SkinNotesSelection, SkinNotesPreview, SkinNotesCheckbox, SkinNotesSearch, SkinNotesSave}
 })
+local SkinNoteGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Initializes the attributes for the note skin state to use.
----@param stateClass string The corresponding name for this skin state.
----@param statePath string The corresponding image path to display for this skin state.
----@param statePrefix string the corresponding image prefix name for this skin state. 
+--- Initializes the main attributes for the noteskin state.
+---@param stateClass string The corresponding global name for this skin state.
+---@param statePath string The corresponding global image path to display for this skin state.
+---@param statePrefix string the corresponding global image prefix name for this skin state. 
 ---@return SkinNotes
 function SkinNotes:new(stateClass, statePaths, statePrefix)
      local self = setmetatable(setmetatable({}, self), {__index = self})
@@ -91,8 +40,8 @@ function SkinNotes:new(stateClass, statePaths, statePrefix)
      return self
 end
 
---- Loads multiple attribute properties (including its save data) for the class, used after initialization.
---- * All attribute properties are PROTECTED (i.e. not accessible outside this class and its subclasses), hence the CAPITALIZATION format.
+--- Loads in the component attributes, including its saved value for the noteskin state.
+--- All of the component attributes are VERY IMPORTNAT, so uh don't touch it pls.
 ---@return nil
 function SkinNotes:load()
      self.TOTAL_SKINS       = states.getTotalSkins(self.stateClass, false)
@@ -121,9 +70,9 @@ function SkinNotes:load()
      self.TOTAL_SKIN_METAOBJ_ORDERED_PREVIEW = states.getMetadataSkinsOrdered(self.stateClass, 'preview', true)
      self.TOTAL_SKIN_METAOBJ_ORDERED_SKINS   = states.getMetadataSkinsOrdered(self.stateClass, 'skins', true)
 
-     -- Slider Properties --
+     -- Scrollbar Properties --
 
-     local SCROLLBAR_PAGE_INDEX = SkinNoteSave:get('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
+     local SCROLLBAR_PAGE_INDEX = SkinNoteGSave:get('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
 
      self.SCROLLBAR_PAGE_INDEX          = SCROLLBAR_PAGE_INDEX
      self.SCROLLBAR_TRACK_THUMB_PRESSED = false
@@ -132,10 +81,10 @@ function SkinNotes:load()
 
      -- Display Selection Properties --
      
-     local SELECT_SKIN_PAGE_INDEX           = SkinNoteSave:get('SELECT_SKIN_PAGE_INDEX',           self.stateClass:upper(), 1)
-     local SELECT_SKIN_INIT_SELECTION_INDEX = SkinNoteSave:get('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), 1)
-     local SELECT_SKIN_PRE_SELECTION_INDEX  = SkinNoteSave:get('SELECT_SKIN_PRE_SELECTION_INDEX',  self.stateClass:upper(), 1)
-     local SELECT_SKIN_CUR_SELECTION_INDEX  = SkinNoteSave:get('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), 1)
+     local SELECT_SKIN_PAGE_INDEX           = SkinNoteGSave:get('SELECT_SKIN_PAGE_INDEX',           self.stateClass:upper(), 1)
+     local SELECT_SKIN_INIT_SELECTION_INDEX = SkinNoteGSave:get('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), 1)
+     local SELECT_SKIN_PRE_SELECTION_INDEX  = SkinNoteGSave:get('SELECT_SKIN_PRE_SELECTION_INDEX',  self.stateClass:upper(), 1)
+     local SELECT_SKIN_CUR_SELECTION_INDEX  = SkinNoteGSave:get('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), 1)
 
      self.SELECT_SKIN_PAGE_INDEX           = SELECT_SKIN_PAGE_INDEX           -- current page index
      self.SELECT_SKIN_INIT_SELECTION_INDEX = SELECT_SKIN_INIT_SELECTION_INDEX -- current pressed selected skin
@@ -145,7 +94,7 @@ function SkinNotes:load()
 
      -- Preview Animation Properties --
 
-     local PREVIEW_SKIN_OBJECT_INDEX = SkinNoteSave:get('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
+     local PREVIEW_SKIN_OBJECT_INDEX = SkinNoteGSave:get('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
 
      self.PREVIEW_CONST_METADATA_DISPLAY       = json.parse(getTextFromFile('json/notes/constant/display.json'))
      self.PREVIEW_CONST_METADATA_PREVIEW       = json.parse(getTextFromFile('json/notes/constant/preview.json'))
@@ -164,13 +113,14 @@ function SkinNotes:load()
 
      -- Checkbox Skin Properties --
 
-     local CHECKBOX_SKIN_OBJECT_CHARS_PLAYER   = SkinNoteSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER',   self.stateClass:upper(), 0)
-     local CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT = SkinNoteSave:get('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
+     local CHECKBOX_SKIN_OBJECT_CHARS_PLAYER   = SkinNoteGSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER',   self.stateClass:upper(), 0)
+     local CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT = SkinNoteGSave:get('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
 
      self.CHECKBOX_SKIN_OBJECT_HOVERED = {false, false} -- use the fuckass CHARACTERS enum for reference
      self.CHECKBOX_SKIN_OBJECT_CLICKED = {false, false} -- use the fuckass CHARACTERS enum for reference
      self.CHECKBOX_SKIN_OBJECT_CHARS   = {CHECKBOX_SKIN_OBJECT_CHARS_PLAYER, CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT}
      self.CHECKBOX_SKIN_OBJECT_TOGGLE  = {false, false}
+     self.CHECKBOX_SKIN_OBJECT_PRESENT = {1, 2}         -- use for skins that are only present for specific characters
 
      -- Search Properties --
 
@@ -180,9 +130,9 @@ function SkinNotes:load()
      self.SEARCH_SKIN_OBJECT_ANIMS_MISSING = table.new(MAX_NUMBER_CHUNK, 0)
 end
 
---- Checks for any error(s) within the classes' attribute properties, resetting to default if found.
+--- Handles for any error(s) within the component attributes' value, resetting if found.
 ---@return nil
-function SkinNotes:load_preventError()
+function SkinNotes:load_handling()
      local skinTotalSkinMetatable = {}
      function skinTotalSkinMetatable:__index(index)
           if index == 0 then
@@ -194,53 +144,53 @@ function SkinNotes:load_preventError()
      local skinTotalSkinPaths = setmetatable(self.TOTAL_SKINS_PATHS, skinTotalSkinMetatable)
      if skinTotalSkinPaths[self.CHECKBOX_SKIN_OBJECT_CHARS[CHARACTERS.PLAYER]]   == '@error' then
           self.CHECKBOX_SKIN_OBJECT_CHARS[CHARACTERS.PLAYER] = 0
-          SkinNoteSave:set('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER', self.stateClass:upper(), 0)
+          SkinNoteGSave:set('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER', self.stateClass:upper(), 0)
      end
      if skinTotalSkinPaths[self.CHECKBOX_SKIN_OBJECT_CHARS[CHARACTERS.OPPONENT]] == '@error' then
           self.CHECKBOX_SKIN_OBJECT_CHARS[CHARACTERS.OPPONENT] = 0
-          SkinNoteSave:set('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
+          SkinNoteGSave:set('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
      end
 
-     if self.SELECT_SKIN_PAGE_INDEX <= 0 or self.SELECT_SKIN_PAGE_INDEX > self.TOTAL_SKIN_LIMIT or self.SELECT_SKIN_PAGE_INDEX ~= self.SELECT_SKIN_PAGE_INDEX then
+     local pageSkinIsOverflow    = self.SCROLLBAR_PAGE_INDEX <= 0 or self.SCROLLBAR_PAGE_INDEX > self.TOTAL_SKIN_LIMIT
+     local pageSkinIsNonExistent = self.SCROLLBAR_PAGE_INDEX ~= self.SCROLLBAR_PAGE_INDEX
+
+     local selectSkinCurSelectByChunk = self.SELECT_SKIN_CUR_SELECTION_INDEX % MAX_NUMBER_CHUNK
+     local selectSkinCurSelectFixed   = selectSkinCurSelectByChunk == 0 and MAX_NUMBER_CHUNK or selectSkinCurSelectByChunk
+     local selectSkinCurSelectExists  = self.TOTAL_SKIN_OBJECTS[self.SCROLLBAR_PAGE_INDEX][selectSkinCurSelectFixed]
+     if (pageSkinIsOverflow or pageSkinIsNonExistent) or selectSkinCurSelectExists == nil then
           self.SCROLLBAR_PAGE_INDEX   = 1
           self.SELECT_SKIN_PAGE_INDEX = 1
-          SkinNoteSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
-          SkinNoteSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), 1)
+          SkinNoteGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
+          SkinNoteGSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), 1)
      end
+
      if self.PREVIEW_SKIN_OBJECT_INDEX <= 0 or self.PREVIEW_SKIN_OBJECT_INDEX > #self.PREVIEW_SKIN_OBJECT_ANIMS then
           self.PREVIEW_SKIN_OBJECT_INDEX = 1
-          SkinNoteSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
+          SkinNoteGSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
      end
 end
 
---- Preloads multiple chunks by moving from page to page, which (might) improves optimization significantly.
+--- Generates the main components for the noteskin state functionality.
 ---@return nil
-function SkinNotes:preload()
-     for skinPages = self.TOTAL_SKIN_LIMIT, 1, -1 do
-          if skinPages == self.SELECT_SKIN_PAGE_INDEX then
-               self:create(skinPages)
-          end
-     end
-end
-
---- Precaches the images within the note skin state, which improves optimization significantly.
----@return nil
-function SkinNotes:precache()
+function SkinNotes:generate()
      for _, skinPaths in pairs(self.TOTAL_SKINS_PATHS) do
           precacheImage(skinPaths)
-     end
-     precacheImage('ui/buttons/display_button')
+     end      
+     self:create(self.SCROLLBAR_PAGE_INDEX)
+     self:checkbox()
+     self:preview()
+     self:page_scrollbar_snaps()
 end
- 
---- Creates a chunk gallery of available display skins to select from.
----@param skinIndex? integer The given page-index for the chunk to display, if it exists.
+
+--- Creates a 4x4 chunk gallery of skins to select from.
+---@param page? integer The given page index number for the chunk to display at, if said chunk number exists.
 ---@return nil
-function SkinNotes:create(skinIndex)
-     local skinIndex = (skinIndex == nil) and 1 or skinIndex
+function SkinNotes:create(page)
+     local page = (page == nil) and 1 or page
 
      for skinPages = 1, self.TOTAL_SKIN_LIMIT do
           for skinDisplays = 1, #self.TOTAL_SKIN_OBJECTS[skinPages] do
-               if skinPages == skinIndex then
+               if skinPages == page then
                     goto SKIP_SKIN_PAGE
                end
 
@@ -263,7 +213,7 @@ function SkinNotes:create(skinIndex)
           local displaySkinIconPosY = 0
 
           local SKIN_ROW_MAX_LENGTH = 4
-          for skinDisplays = 1, #self.TOTAL_SKIN_OBJECTS[skinIndex] do
+          for skinDisplays = 1, #self.TOTAL_SKIN_OBJECTS[page] do
                if (skinDisplays - 1) % SKIN_ROW_MAX_LENGTH == 0 then
                     displaySkinIconPosY = displaySkinIconPosY + 1
                     displaySkinIconPosX = 0
@@ -283,9 +233,9 @@ function SkinNotes:create(skinIndex)
           return displaySkinIconPositions
      end
 
-     for skinDisplays = 1, #self.TOTAL_SKIN_OBJECTS[skinIndex] do
-          local skinObjectsID = self.TOTAL_SKIN_OBJECTS_ID[skinIndex][skinDisplays]
-          local skinObjects   = self.TOTAL_SKIN_OBJECTS[skinIndex][skinDisplays]
+     for skinDisplays = 1, #self.TOTAL_SKIN_OBJECTS[page] do
+          local skinObjectsID = self.TOTAL_SKIN_OBJECTS_ID[page][skinDisplays]
+          local skinObjects   = self.TOTAL_SKIN_OBJECTS[page][skinDisplays]
 
           local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectsID}"
           local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectsID}"
@@ -309,9 +259,13 @@ function SkinNotes:create(skinIndex)
           ---@param constant any The constant default value, if the metadata element is missing.
           ---@return any
           local function displaySkinMetadata(metadata, constant)
-               local metaObjectsDisplay = self.TOTAL_SKIN_METAOBJ_DISPLAY[skinIndex][skinDisplays] 
-               if metaObjectsDisplay           == '@void' then return constant end
-               if metaObjectsDisplay[metadata] == nil     then return constant end
+               local metaObjectsDisplay = self.TOTAL_SKIN_METAOBJ_DISPLAY[page][skinDisplays] 
+               if metaObjectsDisplay == '@void' then 
+                    return constant 
+               end
+               if metaObjectsDisplay[metadata] == nil then 
+                    return constant 
+               end
                return metaObjectsDisplay[metadata]
           end
           local displaySkinMetadataFrames   = displaySkinMetadata('frames',   24)
@@ -338,17 +292,17 @@ function SkinNotes:create(skinIndex)
           setObjectCamera(displaySkinIconSkinTag, 'camHUD')
           addLuaSprite(displaySkinIconSkinTag)
      end
-
      self:page_text()
      self:save_selection()
 end
 
---- Destroys a chunk of the note skin state (page-index dependent), used only for switching states.
+--- Destroys the chunk gallery of skins, depending on its current page index.
+--- Only used for switching from different skin states.
 ---@return nil
 function SkinNotes:destroy()
-     for skinDisplays = 1, #self.TOTAL_SKIN_OBJECTS[self.SELECT_SKIN_PAGE_INDEX] do
-          local skinObjectID = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX][skinDisplays]
-          local skinObjects  = self.TOTAL_SKIN_OBJECTS[self.SELECT_SKIN_PAGE_INDEX][skinDisplays]
+     for skinDisplays = 1, #self.TOTAL_SKIN_OBJECTS[self.SCROLLBAR_PAGE_INDEX] do
+          local skinObjectID = self.TOTAL_SKIN_OBJECTS_ID[self.SCROLLBAR_PAGE_INDEX][skinDisplays]
+          local skinObjects  = self.TOTAL_SKIN_OBJECTS[self.SCROLLBAR_PAGE_INDEX][skinDisplays]
 
           local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
           local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
@@ -357,28 +311,24 @@ function SkinNotes:destroy()
           removeLuaSprite(displaySkinIconSkinTag, true)
           removeLuaSprite(displaySkinIconSprite, true)
      end
+     for CharNames, _ in pairs(CHARACTERS) do
+          local checkboxSkinButtonTag    = F"selectionSkinButton{CharNames:upperAtStart(true)}"
+          local checkboxSkinTitleTag     = F"selectionSkinTextButton{CharNames:upperAtStart(true)}"
+          local checkboxSkinSelectionTag = F"displaySelection{CharNames:upperAtStart(true)}"
+          removeLuaSprite(checkboxSkinButtonTag, true)
+          removeLuaSprite(checkboxSkinTitleTag, true)
+          removeLuaSprite(checkboxSkinSelectionTag, false)
+     end
 
-     --- Destroyes the slider marks within sliderbar tracks.
-     ---@param intervalType string The interval type to be destroyed, either: interval or semiInterval.
-     ---@param intervalPageIndex number The interval page index to be destroyed.
-     ---@return nil
-     local function destroySliderMarkObjects(intervalType, intervalPageIndex)
-          local INTERVAL_TYPE_UPPER = intervalType:upperAtStart()
-          local INTERVAL_PAGE_INDEX = intervalPageIndex
-
-          local displaySliderMarkTag = F"displaySliderMark{self.stateClass:upperAtStart()}{INTERVAL_TYPE_UPPER}{INTERVAL_PAGE_INDEX}"
+     local function removeSnapMarks(scrollbarTrackSnapIndex, scrollbarTrackMetadataName)
+          local displaySliderMarkTag = F"displaySliderMark{self.stateClass:upperAtStart()}{scrollbarTrackMetadataName}{scrollbarTrackSnapIndex}"
           removeLuaSprite(displaySliderMarkTag, true)
      end
-     for intervalIndex = 1, #self.SCROLLBAR_TRACK_MAJOR_SNAP do
-          destroySliderMarkObjects('interval', intervalIndex)
+     for majorSnapIndex = 1, #self.SCROLLBAR_TRACK_MAJOR_SNAP do
+          removeSnapMarks(majorSnapIndex, 'Major')
      end
-     for semiIntervalIndex = 2, #self.SCROLLBAR_TRACK_MINOR_SNAP do
-          destroySliderMarkObjects('semiInterval', semiIntervalIndex)
-     end
-
-     for skinPreviewStrums = 1, 4 do
-          local previewSkinGroup = F"previewSkinGroup{self.stateClass:upperAtStart()}{skinPreviewStrums}"          
-          removeLuaSprite(previewSkinGroup, true)
+     for minorSnapIndex = 2, #self.SCROLLBAR_TRACK_MINOR_SNAP do -- 2-index start, prevent an extra snap mark sprite
+          removeSnapMarks(minorSnapIndex, 'Minor')
      end
      callOnScripts('skinSearchInput_callResetSearch')
 end

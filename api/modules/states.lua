@@ -427,7 +427,8 @@ function states.calculateSearch(skin, skinPrefix, skinData, skinPath)
 
           local skinInputContentFilter = skinInputContent:gsub('([%%%.%$%^%(%[])', '%%%1'):upper()
           local skinCapPatStartPos     = skinName:upper():find(skinInputContentFilter)
-          if skinCapPatStartPos ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
+
+          if skinCapPatStartPos ~= nil then
                local skinFilePathName = skinFolder..skinMatchPattern:gsub('%%%-', '-')..skinName
                local skinFileName     = skinPath == true and skinFilePathName or skinName
 
@@ -439,7 +440,7 @@ function states.calculateSearch(skin, skinPrefix, skinData, skinPath)
 
      local skinSearchResultData = table.new(0xff, 0)
      for ids, names in pairs(skinSearchResult) do
-          if names ~= nil and #table.keys(skinSearchResult) <= MAX_NUMBER_CHUNK then
+          if names ~= nil then
                local skinDataValues    = {["ids"] = ids, ["names"] = names}
                local skinDataMetatable = {}
                function skinDataMetatable:__index()

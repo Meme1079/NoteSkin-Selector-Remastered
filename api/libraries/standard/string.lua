@@ -110,6 +110,7 @@ end
 --- It uses two methods to use this function, it uses global variables or tables on the `template` parameter
 ---@param self string The string to interpolate with variables
 ---@param template string The template to reference the variables inside the string
+---@deprecated
 ---@return string
 function string:interpol(template)
      local function deepCopy(original)

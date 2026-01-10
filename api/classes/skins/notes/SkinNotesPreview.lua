@@ -5,36 +5,25 @@ local SkinSaves = require 'mods.NoteSkin Selector Remastered.api.classes.skins.s
 local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
-local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
-local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
-local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
 
-local switch            = global.switch
-local createTimer       = funkinlua.createTimer
-local hoverObject       = funkinlua.hoverObject
-local clickObject       = funkinlua.clickObject
-local pressedObject     = funkinlua.pressedObject
-local releasedObject    = funkinlua.releasedObject
-local addCallbackEvents = funkinlua.addCallbackEvents
+local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
+
+local DIRECTION        = global.DIRECTION
+local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
+
+local hoverObject                   = funkinlua.hoverObject
+local clickObject                   = funkinlua.clickObject
 local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
-local keyboardJustConditionPress    = funkinlua.keyboardJustConditionPress
 local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
-
-local SkinNoteSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
-
----@enum DIRECTION
-local DIRECTION = {
-     LEFT  = 1,
-     RIGHT = 2
-}
 
 --- Childclass extension, main preview strums component functionality for the note skin state.
 ---@class SkinNotesPreview
 local SkinNotesPreview = {}
+local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Creates the preview strums' graphic sprites and its text.
+--- Creates the preview strums' graphic sprites and text.
 ---@return nil
 function SkinNotesPreview:preview()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
@@ -84,7 +73,7 @@ function SkinNotesPreview:preview()
           local metadataSkinPrevObjAnim = currentPreviewMetadataPrev.animations
 
           local constantSkinPrevObjAnimNames = self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS['names'][animationName]
-          local constantSkinPrevObjAnim      = self.PREVIEW_CONST_METADATA_PREVIEW.animation
+          local constantSkinPrevObjAnim      = self.PREVIEW_CONST_METADATA_PREVIEW.animations
           if byAnimationGroup == true then
                if metadataSkinPrevObj == '@void' or metadataSkinPrevObjAnim == nil then
                     return constantSkinPrevObjAnim[animationName]
@@ -100,16 +89,18 @@ function SkinNotesPreview:preview()
                return metadataSkinPrevObjAnim[animationName]
           end
 
+          local metadataSkinPrevObj     = currentPreviewMetadataPrev
+          local metadataSkinPrevObjAnim = currentPreviewMetadataPrev.animations
+          
+          local constantSkinPrevObjAnimNames = self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS['names'][animationName]
+          local constantSkinPrevObjAnim      = self.PREVIEW_CONST_METADATA_PREVIEW.animations
+
           local skinPrevAnimElements = constantSkinPrevObjAnimNames[strumIndex]
           if metadataSkinPrevObj == '@void' or metadataSkinPrevObjAnim == nil then
                return constantSkinPrevObjAnim[animationName][skinPrevAnimElements]
           end
-          if metadataSkinPrevObjAnim == nil then
-               previewMetadataObject['animations'] = constantSkinPrevObjAnim
-               return constantSkinPrevObjAnim
-          end
           if metadataSkinPrevObjAnim[animationName] == nil then
-               previewMetadataObject['animations'][animationName] = constantSkinPrevObjAnim[skinAnim]
+               metadataSkinPrevObj['animations'][animationName] = constantSkinPrevObjAnim[animationName]
                return constantSkinPrevObjAnim[animationName][skinPrevAnimElements]
           end
           return metadataSkinPrevObjAnim[animationName][skinPrevAnimElements]
@@ -135,10 +126,10 @@ function SkinNotesPreview:preview()
           local previewSkinPositionY = 135
           makeAnimatedLuaSprite(previewSkinGroupTag, previewSkinGroupSprite, previewSkinPositionX, previewSkinPositionY)
           scaleObject(previewSkinGroupTag, metadataPreviewSize[1], metadataPreviewSize[2])
-          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewConfirmAnim.name, metadataPreviewConfirmAnim.prefix, previewMetadataByConfirmFrames)
-          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewPressedAnim.name, metadataPreviewPressedAnim.prefix, previewMetadataByPressedFrames)
-          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewColoredAnim.name, metadataPreviewColoredAnim.prefix, previewMetadataByColoredFrames)
-          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewStrumsAnim.name,  metadataPreviewStrumsAnim.prefix,  previewMetadataByStrumsFrames)
+          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewConfirmAnim.name, metadataPreviewConfirmAnim.prefix, metadataPreviewConfirmFrames)
+          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewPressedAnim.name, metadataPreviewPressedAnim.prefix, metadataPreviewPressedFrames)
+          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewColoredAnim.name, metadataPreviewColoredAnim.prefix, metadataPreviewColoredFrames)
+          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewStrumsAnim.name,  metadataPreviewStrumsAnim.prefix,  metadataPreviewStrumsFrames)
 
           --- Adds the offset for the given preview skins.
           ---@param metadataPreviewAnim table The specified preview animation to use for offsetting.
@@ -161,27 +152,22 @@ function SkinNotesPreview:preview()
           setObjectCamera(previewSkinGroupTag, 'camHUD')
           addLuaSprite(previewSkinGroupTag)
 
-          SkinNoteSave:set('previewMetadataByObjectStrums', F"{self.stateClass}Static", previewMetadataObjectAnims('strums', strumIndex, true))
-          SkinNoteSave:set('previewMetadataByFramesStrums', F"{self.stateClass}Static", metadataPreviewStrumsFrames)
-          SkinNoteSave:set('previewMetadataBySize', F"{self.stateClass}Static", metadataPreviewSize)
-          SkinNoteSave:set('previewSkinImagePath', F"{self.stateClass}Static", previewSkinGroupSprite)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  '', previewMetadataObjectAnims('strums', strumIndex, true))
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_PATH',   '', previewSkinGroupSprite)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', '', metadataPreviewStrumsFrames)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   '', metadataPreviewSize)
      end
      setTextString('genInfoSkinName', currentPreviewDataNames)
-     self:preview_animation(true)
 end
 
---- Creates the preview strums' animations.
----@param loadAnim? boolean Forcefully load the current skin animations, mainly for visual fixing purposes.
+--- Creates the preview strums' animations, for testing its animations for visual aid.
 ---@return nil
-function SkinNotesPreview:preview_animation(loadAnim)
-     local loadAnim = loadAnim ~= nil and true or false
-
+function SkinNotesPreview:preview_animation()
      local firstJustPressed  = callMethodFromClass('flixel.FlxG', 'keys.firstJustPressed', {''})
      local firstJustReleased = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
-     local firstJustInputPressed  = firstJustPressed  ~= -1 and firstJustPressed  ~= nil
-     local firstJustInputReleased = firstJustReleased ~= -1 and firstJustReleased ~= nil
-     local firstJustInputs        = firstJustInputPressed or firstJustInputReleased
-     if not firstJustInputs and loadAnim == false then
+     local firstJustInputPressed  = firstJustPressed  == -1 and firstJustPressed  == nil
+     local firstJustInputReleased = firstJustReleased == -1 and firstJustReleased == nil
+     if firstJustInputPressed or firstJustInputReleased then
           return
      end
 
@@ -221,10 +207,26 @@ function SkinNotesPreview:preview_animation(loadAnim)
                return constantSkinPrevObjAnim[animationName][skinPrevAnimElements]
           end
           if metadataSkinPrevObjAnim[animationName] == nil then
-               previewMetadataObject['animations'][animationName] = constantSkinPrevObjAnim[animationName]
+               metadataSkinPrevObj['animations'][animationName] = constantSkinPrevObjAnim[animationName]
                return constantSkinPrevObjAnim[animationName][skinPrevAnimElements]
           end
           return metadataSkinPrevObjAnim[animationName][skinPrevAnimElements]
+     end
+
+     --- Checks if said skin is missing an animation for preview, helper function.
+     ---@return boolean
+     local function previewSkinObjectIsMissing()
+          local selectSkinPageIndex      = self.SELECT_SKIN_PAGE_INDEX
+          local selectSkinCurSelectIndex = self.SELECT_SKIN_CUR_SELECTION_INDEX
+          local previewSkinObjectAnims   = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
+          local previewSkinMissingAnims  = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING
+
+          local selectSkinCurSelectByChunk = selectSkinCurSelectIndex % MAX_NUMBER_CHUNK
+          local selectSkinCurSelectFixed   = selectSkinCurSelectByChunk == 0 and MAX_NUMBER_CHUNK or selectSkinCurSelectByChunk
+          if previewSkinMissingAnims[selectSkinPageIndex][selectSkinCurSelectFixed] == nil then
+               return true
+          end
+          return previewSkinMissingAnims[selectSkinPageIndex][selectSkinCurSelectFixed][previewSkinObjectAnims]
      end
 
      for strumIndex = 1, 4 do
@@ -234,7 +236,6 @@ function SkinNotesPreview:preview_animation(loadAnim)
                colored = previewMetadataObjectAnims('colored', strumIndex),
                strums  = previewMetadataObjectAnims('strums',  strumIndex)
           }
-
           local previewSkinGroupTag   = F"previewSkinGroup{self.stateClass:upperAtStart()}-{strumIndex}"
           local previewSkinAnimations = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
 
@@ -257,17 +258,20 @@ function SkinNotesPreview:preview_animation(loadAnim)
           if (conditionPressedLeft or conditionPressedRight) or mouseReleased('left') then
                playAnim(previewSkinGroupTag, metadataPreviewAnimations['strums']['name'], true)
           end
-          if keyboardJustConditionPressed(getKeyBinds(strumIndex), not getVar('skinSearchInputFocus')) then
-               playAnim(previewSkinGroupTag, metadataPreviewAnimations[previewSkinAnimations]['name'], true)
-          end
-          if keyboardJustConditionReleased(getKeyBinds(strumIndex), not getVar('skinSearchInputFocus')) then
-               playAnim(previewSkinGroupTag, metadataPreviewAnimations['strums']['name'], true)
+
+          if previewSkinObjectIsMissing() == false then
+               if keyboardJustConditionPressed(getKeyBinds(strumIndex), not getVar('skinSearchInputFocus')) then
+                    playAnim(previewSkinGroupTag, metadataPreviewAnimations[previewSkinAnimations]['name'], true)
+               end
+               if keyboardJustConditionReleased(getKeyBinds(strumIndex), not getVar('skinSearchInputFocus')) then
+                    playAnim(previewSkinGroupTag, metadataPreviewAnimations['strums']['name'], true)
+               end
           end
           ::SKIP_PREVIEW_ANIMATIONS::
      end
 end
 
---- Collection group of preview strum selection methods.
+--- Preview selection component group.
 ---@return nil
 function SkinNotesPreview:preview_selection()
      self:preview_selection_moved()
@@ -276,9 +280,9 @@ function SkinNotesPreview:preview_selection()
      self:preview_selection_bycursor()
 end
 
-local previewSelectionToggle = false -- * Important, but ignore this lmao
---- Main preview strum animation selecting functionality.
---- Allowing the selecting of specific strum animations, for visual aid purposes.
+local PREVIEW_SELECTION_TOGGLE = false -- * Important, but ignore this lmao
+--- Preview main strum animation selection functionality.
+---@private
 ---@return nil
 function SkinNotesPreview:preview_selection_moved()
      local conditionPressedLeft  = keyboardJustConditionPressed('Z', not getVar('skinSearchInputFocus'))
@@ -288,21 +292,21 @@ function SkinNotesPreview:preview_selection_moved()
      local previewAnimationMaxIndex = self.PREVIEW_SKIN_OBJECT_INDEX < #self.PREVIEW_SKIN_OBJECT_ANIMS
      if conditionPressedLeft and previewAnimationMinIndex then
           self.PREVIEW_SKIN_OBJECT_INDEX = self.PREVIEW_SKIN_OBJECT_INDEX - 1
-          previewSelectionToggle  = true
+          PREVIEW_SELECTION_TOGGLE  = true
 
           playSound('ding', 0.5)
-          SkinNoteSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
+          SkinNotesGSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
      end
      if conditionPressedRight and previewAnimationMaxIndex then
           self.PREVIEW_SKIN_OBJECT_INDEX = self.PREVIEW_SKIN_OBJECT_INDEX + 1
-          previewSelectionToggle  = true
+          PREVIEW_SELECTION_TOGGLE  = true
 
           playSound('ding', 0.5)
-          SkinNoteSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
+          SkinNotesGSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
      end
      
-     if previewSelectionToggle == true then --! DO NOT DELETE
-          previewSelectionToggle = false
+     if PREVIEW_SELECTION_TOGGLE == true then --! DO NOT DELETE
+          PREVIEW_SELECTION_TOGGLE = false
           return
      end
 
@@ -318,13 +322,11 @@ function SkinNotesPreview:preview_selection_moved()
      else
           playAnim('previewSkinInfoIconRight', 'right', true)
      end
-
-     local previewSkinAnimations = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
-     setTextString('previewSkinButtonSelectionText', previewSkinAnimations:upperAtStart())
+     self:preview_selection_name()
 end
 
---- Main preview strum button clicking functionality and animations.
---- Allowing the selecting of the corresponding skin in gameplay.
+--- Preview main strum animation selection button clicking functionality and animations.
+---@private
 ---@return nil
 function SkinNotesPreview:preview_selection_byclick()
      local function previewSelectionButtonClick(directIndex, directName, iteration)
@@ -343,9 +345,8 @@ function SkinNotesPreview:preview_selection_byclick()
 
                self.PREVIEW_SKIN_OBJECT_INDEX                      = self.PREVIEW_SKIN_OBJECT_INDEX + iteration
                self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] = false
-               self:preview_animation(true)
 
-               SkinNoteSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
+               SkinNotesGSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
           end
      end
 
@@ -359,8 +360,8 @@ function SkinNotesPreview:preview_selection_byclick()
      end
 end
 
---- Main preview strum button hovering functionality and animations.
---- Allowing the cursor's sprite to change its corresponding sprite when hovering for visual aid.
+--- Preview main strum animation selection button hovering functionality and animations.
+---@private
 ---@return nil
 function SkinNotesPreview:preview_selection_byhover()
      local function previewSelectionButtonHover(directIndex, directName)
@@ -400,8 +401,8 @@ function SkinNotesPreview:preview_selection_byhover()
      end
 end
 
---- Main cursor functionality for the preview strum and its animations.
---- Allowing the cursor's sprite to change depending on its interaction (i.e. selecting and hovering).
+--- Preview main strum animation selection button hovering functionality and animations.
+---@private
 ---@return nil
 function SkinNotesPreview:preview_selection_bycursor()
      for _, DirectValues in pairs(DIRECTION) do
@@ -428,6 +429,15 @@ function SkinNotesPreview:preview_selection_bycursor()
                playSound('cancel') 
           end
      end
+end
+
+--- Preview current animation name, that's literally it.
+---@protected
+---@return nil
+function SkinNotesPreview:preview_selection_name()
+     local previewSkinAnimations    = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
+     local previewSkinAnimationName = previewSkinAnimations:upperAtStart()
+     setTextString('previewSkinButtonSelectionText', previewSkinAnimationName)
 end
 
 return SkinNotesPreview

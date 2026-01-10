@@ -34,10 +34,8 @@ function onUpdatePost(elapsed)
 
      setProperty('mouseHitBox.x', getMouseX('camHUD') - 3)
      setProperty('mouseHitBox.y', getMouseY('camHUD'))
-
      setProperty('mouseTexture.x', getMouseX('camHUD'))
      setProperty('mouseTexture.y', getMouseY('camHUD'))
-
      setProperty('skinHighlightName.x', getMouseX('camHUD') + 35)
      setProperty('skinHighlightName.y', getMouseY('camHUD') + 12)
      
