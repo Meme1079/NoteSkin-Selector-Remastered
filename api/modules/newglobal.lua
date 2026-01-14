@@ -1,4 +1,4 @@
----@module global
+---@module
 local global = {}
 
 ---@enum DIRECTION
@@ -12,30 +12,30 @@ global.CHARACTERS = {
      OPPONENT = 2
 }
 
----@alias ParentClasses
----| 'inherit' # The child class to inherit and derived from its based parent class.
----| 'extends' # The extension properties of this class. 
+---@alias ChildClasses
+---| 'inherit' # The childclass to inherit and dervieves its properties from a parentclass.
+---| 'extends' # The childclass extensions to be fully chained and link to its main parentclass.
 
---- Allows for the classes inherit multiple parent classes either as an inherit or extension.
----@param parentClasses ParentClasses The multiple classes to inherit.
+--- Inherits and/or chain extensions from multiple childclasses to its main parentclass.
+---@param childClasses ChildClasses The multiple classes to inherit.
 ---@return table Returns all the parent classes into one table.
-function global.inheritedClasses(parentClasses)
-     local parentClassesOutput = {}
-     if parentClasses.extends ~= nil then
-          for _, classes in pairs(parentClasses.extends) do
-               parentClassesOutput[#parentClassesOutput+1] = classes
+function global.inheritedClasses(childClasses)
+     local childClassesOutput = {}
+     if childClasses.extends ~= nil then
+          for _, classes in pairs(childClasses.extends) do
+               childClassesOutput[#childClassesOutput+1] = classes
           end
      end
-     if parentClasses.inherit ~= nil then
-          for _, classes in pairs(parentClasses.inherit) do
-               parentClassesOutput[#parentClassesOutput+1] = classes
+     if childClasses.inherit ~= nil then
+          for _, classes in pairs(childClasses.inherit) do
+               childClassesOutput[#childClassesOutput+1] = classes
           end
      end
 
      local classes = {}
      function classes:__index(index)
-          for classesIndex = 1, #parentClassesOutput do
-               local result = parentClassesOutput[classesIndex][index]
+          for classesIndex = 1, #childClassesOutput do
+               local result = childClassesOutput[classesIndex][index]
                if result then
                     return result
                end

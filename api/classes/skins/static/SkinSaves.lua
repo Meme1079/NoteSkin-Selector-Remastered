@@ -1,50 +1,55 @@
 local F = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 
----
+--- Saves the skinstates saved data, self-explanatory.
 ---@class SkinSaves
 local SkinSaves = {}
 
---- Creates a save for this mod, that's it.
----@param saveName string The global save name to utilize with.
----@param saveFolder? string The specified folder to save to.
+--- Initializes the main attributes for the skinstate saves.
+---@param saveName string The global name to reference for saving data, will also be the save file name.
+---@param saveFolder? string The folder for the saved data to be saved to.
 ---@return nil
-function SkinSaves:new(saveName, saveFolder, saveInit)
+function SkinSaves:new(saveName, saveFolder)
      local self = setmetatable({}, {__index = self})
      self.saveName   = saveName
      self.saveFolder = savePath
 
-     if saveInit == true then
-          initSaveData(self.saveName, self.saveFolder)
-     end
      return self
 end
 
---- Sets the data field with a new value from the save game data or be created with inherited field value. 
---- If the said data field currently doesn't exist yet.
----@param tag string The specified data field to set a new value to.
----@param prefix string The prefix to concatenate with a tag.
----@param value any The new value to set it to.
+--- Creates the save data for the skinstate, required.
+---@return nil
+function SkinSaves:init()
+     initSaveData(self.saveName, self.saveFolder)
+end
+
+--- Sets the saved data field with a new value.
+--- Creates the saved data field, if said data field doesn't exists.
+---@param tag string The saved data field to set a new value to.
+---@param prefix string The skinstate prefix to its corresponding skin.
+---@param value any The given new value to set it to.
 ---@return nil
 function SkinSaves:set(tag, prefix, value)
-     setDataFromSave(self.saveName, F"{prefix}_{tag}", value)
+     local tagFormat = tag == '' and prefix..tag or F"{prefix}_{tag}"
+     setDataFromSave(self.saveName, tagFormat, value)
 end
 
---- Gets the data field current value from the save game data.
----@param tag string The specified data field to get its current value from.
----@param prefix string The prefix to concatenate with a tag.
----@param default any The field data's default value, if the inherited value doesn't exist.
+--- Gets the saved data field current value.
+---@param tag string The saved data field to get the current value from.
+---@param prefix string The skinstate prefix to its corresponding skin.
+---@param value any The default value, if said data field doesn't have one.
 ---@return any
 function SkinSaves:get(tag, prefix, default)
-     return getDataFromSave(self.saveName, F"{prefix}_{tag}", default)
+     local tagFormat = tag == '' and prefix..tag or F"{prefix}_{tag}"
+     return getDataFromSave(self.saveName, tagFormat, default)
 end
 
---- Saves the applied changes from the save game data, updates its content with new values.
+--- Saves the applied changes of the saved data to the save file.
 ---@return nil
 function SkinSaves:flush()
      flushSaveData(self.saveName)
 end
 
---- Erases the specified save game data, removes the sub-folder within the application data folder.
+--- Erases the saved data, alongside removing the save file.
 ---@return nil
 function SkinSaves:erase()
      eraseSaveData(self.saveName)

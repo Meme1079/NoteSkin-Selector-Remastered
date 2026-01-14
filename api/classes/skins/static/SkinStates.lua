@@ -3,27 +3,19 @@ local SkinSaves = require 'mods.NoteSkin Selector Remastered.api.classes.skins.s
 local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
-local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
-local ease      = require 'mods.NoteSkin Selector Remastered.api.libraries.ease.ease'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
-local switch = global.switch
-local createTimer       = funkinlua.createTimer
-local addCallbackEvents = funkinlua.addCallbackEvents
 local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
-local keyboardJustConditionPress    = funkinlua.keyboardJustConditionPress
-local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
-local SkinStateSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
-
+--- Maintains the skin classes' creation, switching, and saving.
 ---@class SkinStates
 local SkinStates = {}
+local SkinStatesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
---- Initializes the creation of multiple states to control over (i.e. switching and stuff).
----@param stateSkins table The given states to control over.
----@param stateSelect string The current state to first display when loading.
+--- Initializes the main attributes for the skinstate.
+---@param stateSkins table The skinstate classes to maintain.
+---@param stateSelect string The current skinstate to create first.
 ---@return table
 function SkinStates:new(stateSkins, stateSelect)
      local self = setmetatable({}, {__index = self})
@@ -33,81 +25,78 @@ function SkinStates:new(stateSkins, stateSelect)
      return self
 end
 
---- Loads multiple-unique data to the class itself, to be used later.
+--- Loads in the component attributes for the skinstate to maintains its skin classes.
+--- All of the component attributes are VERY IMPORTNAT, so uh don't touch it pls.
 ---@return nil
 function SkinStates:load()
      for index, states in pairs(self.stateSkins) do
           self.stateSkins[index] = nil
           self.stateSkins[states.stateClass] = states
      end
-
-     local function getStateSkinIndex()
-          for skins, states in pairs(self.stateSkins) do
-               if skins == self.stateSelect then
-                    return table.find(self.stateSkinNames, skins)
-               end
-          end
-     end
-
-     self.stateSkinNames = table.keys(self.stateSkins)
-     self.stateSkinIndex = getStateSkinIndex()
-     self.stateSkinMain  = self.stateSkins[self.stateSkinNames[self.stateSkinIndex]]
+     
+     self.__stateSkinNames = table.keys(self.stateSkins)
+     self.__stateSkinIndex = table.find(self.__stateSkinNames, self.stateSelect)
+     self.__stateSkinMain  = self.stateSkins[self.__stateSkinNames[self.__stateSkinIndex]]
 end
 
---- Switches state to another different state.
+--- Swaping helper function for switching through different skinstates, no way!
+---@protected
+---@return nil
+function SkinStates:_swap()
+     for skins, states in pairs(self.stateSkins) do
+          if skins ~= self.__stateSkinNames[self.__stateSkinIndex] then
+               states:destroy()
+          end
+     end
+     self:create()
+     SkinStatesGSave:set('dataStateName', '', self.__stateSkinNames[self.__stateSkinIndex])
+end
+
+--- Switches the current skinstate to another skinstate, self-explanatory.
 ---@return nil
 function SkinStates:switch()
-     local conditionPressedSwitchStateLeft  = keyboardJustConditionPressed('O', not getVar('skinSearchInputFocus'))
-     local conditionPressedSwitchStateRight = keyboardJustConditionPressed('P', not getVar('skinSearchInputFocus'))
-     if not (conditionPressedSwitchStateLeft or conditionPressedSwitchStateRight) then 
+     local conditionPressedSwitchLeft  = keyboardJustConditionPressed('O', not getVar('skinSearchInputFocus'))
+     local conditionPressedSwitchRight = keyboardJustConditionPressed('P', not getVar('skinSearchInputFocus'))
+     if not (conditionPressedSwitchLeft or conditionPressedSwitchRight) then 
           return 
      end
 
-     local function swapStateSkin()
-          for skins, states in pairs(self.stateSkins) do
-               if skins ~= self.stateSkinNames[self.stateSkinIndex] then
-                    states:destroy()
-               end
-          end
-          self:create()
-          SkinStateSave:set('dataStateName', '', self.stateSkinNames[self.stateSkinIndex])
+     local MAX_STATE = self.__stateSkinIndex < #self.__stateSkinNames
+     local MIN_STATE = self.__stateSkinIndex > 1
+     if conditionPressedSwitchRight and MAX_STATE then
+          self.__stateSkinIndex = self.__stateSkinIndex + 1
+          self.__stateSkinMain  = self.stateSkins[self.__stateSkinNames[self.__stateSkinIndex]]
+          self:_swap()
      end
-
-     if conditionPressedSwitchStateRight and self.stateSkinIndex < #self.stateSkinNames then
-          self.stateSkinIndex = self.stateSkinIndex + 1
-          self.stateSkinMain  = self.stateSkins[self.stateSkinNames[self.stateSkinIndex]]
-          swapStateSkin()
+     if conditionPressedSwitchLeft and MIN_STATE then
+          self.__stateSkinIndex = self.__stateSkinIndex - 1
+          self.__stateSkinMain  = self.stateSkins[self.__stateSkinNames[self.__stateSkinIndex]]
+          self:_swap()
      end
-     if conditionPressedSwitchStateLeft  and self.stateSkinIndex > 1 then
-          self.stateSkinIndex = self.stateSkinIndex - 1
-          self.stateSkinMain  = self.stateSkins[self.stateSkinNames[self.stateSkinIndex]]
-          swapStateSkin()
-     end     
 end
 
---- Creates the current state.
+--- Main skinstate creation, obviously self-explanatory.
 ---@return nil
 function SkinStates:create()
-     self.stateSkinMain:load()
-     self.stateSkinMain:load_handling()
-     self.stateSkinMain:save_load()
-     self.stateSkinMain:generate()
+     self.__stateSkinMain:load()
+     self.__stateSkinMain:load_handling()
+     self.__stateSkinMain:generate()
 end
 
---- Updates the current state's data.
+--- Main skinstate update, obviously self-explanatory.
 ---@return nil
 function SkinStates:update()
-     self.stateSkinMain:page_scrollbar()
-     self.stateSkinMain:page_moved()
-     self.stateSkinMain:search()
-     self.stateSkinMain:selection()
-     self.stateSkinMain:checkbox_selection()
-     self.stateSkinMain:checkbox_checking()
-     self.stateSkinMain:preview_selection()
-     self.stateSkinMain:preview_animation(true)
+     self.__stateSkinMain:page_scrollbar()
+     self.__stateSkinMain:page_moved()
+     self.__stateSkinMain:search()
+     self.__stateSkinMain:selection()
+     self.__stateSkinMain:checkbox_selection()
+     self.__stateSkinMain:checkbox_checking()
+     self.__stateSkinMain:preview_selection()
+     self.__stateSkinMain:preview_animation()
 end
 
---- Saves the state's data.
+--- Main skinstate saving, obviously self-explanatory.
 ---@return nil
 function SkinStates:save()
      for _,states in pairs(self.stateSkins) do

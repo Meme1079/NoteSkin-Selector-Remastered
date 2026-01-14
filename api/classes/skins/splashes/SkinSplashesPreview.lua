@@ -139,7 +139,7 @@ function SkinSplashesPreview:preview()
           addLuaSprite(previewSkinGroupTag)
           setProperty(F"{previewSkinGroupTag}.visible", false)
      end
-     setTextString('genInfoSkinName', currentPreviewDataNames)
+     setTextString('skinStatePreviewName', currentPreviewDataNames)
 end
 
 --- Creates the noteskin strums' graphic sprites for visual support.

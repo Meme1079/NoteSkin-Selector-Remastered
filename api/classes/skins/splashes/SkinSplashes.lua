@@ -15,7 +15,7 @@ local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglob
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 local inheritedClasses = global.inheritedClasses
 
---- Main class for the splash skin state inherited by many of its extended subclasses.
+--- Main class for the splashskin state inherited by many of its extended subclasses.
 ---@class SkinSplashes: SkinSplashesPreview, SkinSplashesSearch
 local SkinSplashes = inheritedClasses({
      inherit = {SkinNotes},
@@ -71,10 +71,10 @@ function SkinSplashes:load()
 
      local SCROLLBAR_PAGE_INDEX = SkinSplashesGSave:get('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
 
-     self.SCROLLBAR_PAGE_INDEX          = SCROLLBAR_PAGE_INDEX
+     self.SCROLLBAR_PAGE_INDEX          = 1
      self.SCROLLBAR_TRACK_THUMB_PRESSED = false
-     self.SCROLLBAR_TRACK_MAJOR_SNAP    = states.getPageSkinSliderPositions(self.stateClass).intervals
-     self.SCROLLBAR_TRACK_MINOR_SNAP    = states.getPageSkinSliderPositions(self.stateClass).semiIntervals
+     self.SCROLLBAR_TRACK_MAJOR_SNAP    = states.getPageSkinScrollbarPositions(self.stateClass).major
+     self.SCROLLBAR_TRACK_MINOR_SNAP    = states.getPageSkinScrollbarPositions(self.stateClass).minor
 
      -- Display Selection Properties --
 

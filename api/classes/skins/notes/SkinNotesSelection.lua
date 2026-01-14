@@ -150,7 +150,7 @@ function SkinNotesSelection:selection_byhover()
           return
      end     
 
-     local skinHighlightName = ''
+     local mouseSkinToolTip = ''
      for curIDs = totalSkinObjectsPagePerIds[1], totalSkinObjectsPagePerIds[#totalSkinObjectsPagePerIds] do
           local curSkinIDs = curIDs - (MAX_NUMBER_CHUNK * (self.SCROLLBAR_PAGE_INDEX - 1))
 
@@ -168,7 +168,7 @@ function SkinNotesSelection:selection_byhover()
                if luaSpriteExists(displaySkinIconButtonTag) == false then return end
                playAnim(displaySkinIconButtonTag, 'hover', true)
 
-               skinHighlightName = self.TOTAL_SKIN_OBJECTS_NAMES[self.SCROLLBAR_PAGE_INDEX][curSkinIDs]
+               mouseSkinToolTip = self.TOTAL_SKIN_OBJECTS_NAMES[self.SCROLLBAR_PAGE_INDEX][curSkinIDs]
           end
           if totalSkinObjectsPagePerHovered[curSkinIDs] == false and nonCurrentPreSelectedSkin and nonCurrentCurSelectedSkin then
                if luaSpriteExists(displaySkinIconButtonTag) == false then return end
@@ -186,7 +186,7 @@ function SkinNotesSelection:selection_byhover()
                end
           end
      end
-     setTextString('skinHighlightName', skinHighlightName ~= '' and skinHighlightName or '') -- no way to optimize this :(
+     setTextString('mouseSkinToolTip', mouseSkinToolTip ~= '' and mouseSkinToolTip or '') -- no way to optimize this :(
 end
 
 --- Selection main cursor interactive functionality and animations.
@@ -205,6 +205,7 @@ function SkinNotesSelection:selection_bycursor()
      if mouseClicked('left') or mousePressed('left') then 
           playAnim('mouseTexture', 'idleClick', true)
      else
+          setTextColor('mouseSkinToolTip', 'ffffff')
           playAnim('mouseTexture', 'idle', true)
      end
 
@@ -241,6 +242,7 @@ function SkinNotesSelection:selection_bycursor()
                if mouseClicked('left') or mousePressed('left') then 
                     playAnim('mouseTexture', 'disabledClick', true)
                else
+                    setTextColor('mouseSkinToolTip', 'ff293d')
                     playAnim('mouseTexture', 'disabled', true)
                end
                ::SKIP_SELECTED_SKIN_MISSING_ANIMS_HOVERED::
@@ -248,7 +250,7 @@ function SkinNotesSelection:selection_bycursor()
      end
      
      local MINIMUM_SKIN_LIMIT = 1
-     if hoverObject('displaySliderIcon', 'camHUD') == true and self.TOTAL_SKIN_LIMIT == MINIMUM_SKIN_LIMIT then
+     if hoverObject('pageScrollbarThumb', 'camHUD') == true and self.TOTAL_SKIN_LIMIT == MINIMUM_SKIN_LIMIT then
           if mouseClicked('left') or mousePressed('left') then 
                playAnim('mouseTexture', 'disabledClick', true)
           else

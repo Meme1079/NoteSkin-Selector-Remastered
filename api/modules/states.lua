@@ -215,25 +215,25 @@ end
 --- If the error occured, it must have a piece of code to detect it to prevent visual bugs.
 ---@param skin The specified skin to contain the positions
 ---@return table[table[number]]
-function states.getPageSkinSliderPositions(skin)
-     local sliderTrackData = table.new(3, 0)
-     sliderTrackData[skin] = {intervals = table.new(0xff, 0), semiIntervals = table.new(0xff, 0), pages = table.new(0xff, 0)}
+function states.getPageSkinScrollbarPositions(skin)
+     local sliderTrackData = table.new(0, 3)
+     sliderTrackData[skin] = {major = table.new(0xff, 0), minor = table.new(0xff, 0), pages = table.new(0xff, 0)}
 
      local totalSkinMax = states.getTotalSkinLimit(skin)-1
      local totalSliderHeight = 570
      for pages = 0, totalSkinMax+1 do
-          local intervals     = (pages / totalSkinMax) * totalSliderHeight
-          local semiIntervals = ( (((pages-1) / totalSkinMax) + (pages / totalSkinMax)) / 2) * totalSliderHeight
+          local major = (pages / totalSkinMax) * totalSliderHeight
+          local minor = ( (((pages-1) / totalSkinMax) + (pages / totalSkinMax)) / 2) * totalSliderHeight
 
-          table.insert(sliderTrackData[skin]['intervals'], intervals + 127)
-          table.insert(sliderTrackData[skin]['semiIntervals'], semiIntervals + 127)
+          table.insert(sliderTrackData[skin]['major'], major + 127)
+          table.insert(sliderTrackData[skin]['minor'], minor + 127)
           table.insert(sliderTrackData[skin]['pages'], pages + 1)
      end
 
-     local overIntervals     = (totalSkinMax + 1 / totalSkinMax) * totalSliderHeight
-     local overSemiIntervals = ( (((totalSkinMax-1) / totalSkinMax) + (totalSkinMax / totalSkinMax)) / 2) * totalSliderHeight
-     table.insert(sliderTrackData[skin]['intervals'], overIntervals + 127)
-     table.insert(sliderTrackData[skin]['semiIntervals'], overSemiIntervals + 127)
+     local overMajor = (totalSkinMax + 1) * totalSliderHeight
+     local overMinor = ((totalSkinMax-1) + (totalSkinMax/2)) * totalSliderHeight
+     table.insert(sliderTrackData[skin]['major'], overMajor + 127)
+     table.insert(sliderTrackData[skin]['minor'], overMinor + 127)
      return sliderTrackData[skin]
 end
 

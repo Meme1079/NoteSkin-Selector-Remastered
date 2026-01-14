@@ -36,8 +36,8 @@ function onUpdatePost(elapsed)
      setProperty('mouseHitBox.y', getMouseY('camHUD'))
      setProperty('mouseTexture.x', getMouseX('camHUD'))
      setProperty('mouseTexture.y', getMouseY('camHUD'))
-     setProperty('skinHighlightName.x', getMouseX('camHUD') + 35)
-     setProperty('skinHighlightName.y', getMouseY('camHUD') + 12)
+     setProperty('mouseSkinToolTip.x', getMouseX('camHUD') + 35)
+     setProperty('mouseSkinToolTip.y', getMouseY('camHUD') + 12)
      
      if keyboardJustConditionPressed('ENTER', not getVar('skinSearchInputFocus')) and songName == 'Skin Selector' then
           local dataSongName = SkinStateSave:get('dataSongName', '')

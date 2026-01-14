@@ -20,8 +20,9 @@ local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 --- Saves all the current component attribute values, and other data for the noteskin state.
 ---@return nil
 function SkinNotesSave:save()
-     if keyboardJustConditionPressed('ONE',    not getVar('skinSearchInputFocus')) then 
-          SkinNotesGSave:flush() end
+     if keyboardJustConditionPressed('ONE', not getVar('skinSearchInputFocus')) then 
+          SkinNotesGSave:flush()
+     end
      if keyboardJustConditionPressed('ESCAPE', not getVar('skinSearchInputFocus')) then 
           SkinNotesGSave:flush() 
      end
@@ -33,14 +34,14 @@ function SkinNotesSave:save_load()
      self:create(self.SCROLLBAR_PAGE_INDEX)
      self:checkbox_sync()
 
-     local displayScrollThumbTag = 'displaySliderIcon'
+     local displayScrollThumbTag = 'pageScrollbarThumb'
 
      local scrollbarMajorPositionIndex  = self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX]
      local scrollbarMajorPositionIsReal = math.isReal(scrollbarMajorPositionIndex)
      local scrollbarMajorPositionFixed  = scrollbarMajorPositionIsReal and scrollbarMajorPositionIndex or 0
      playAnim(displayScrollThumbTag, 'static')
      setProperty(F"{displayScrollThumbTag}.y", scrollbarMajorPositionFixed)
-     setTextString('genInfoStateName', F" {self.stateClass:upperAtStart()}")
+     setTextString('skinStatePreviewState', self.stateClass:upperAtStart())
 end
 
 --- Syncs the saved selection highlight corresponding correct position and offset values.

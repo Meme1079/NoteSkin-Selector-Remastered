@@ -276,7 +276,7 @@ function SkinSplashesSearch:search_preview()
           addLuaSprite(previewSkinGroupTag)
           setProperty(F"{previewSkinGroupTag}.visible", false)
      end
-     setTextString('genInfoSkinName', currentPreviewDataNames)
+     setTextString('skinStatePreviewName', currentPreviewDataNames)
      self:preview_animation(true)
 end
 

@@ -330,7 +330,7 @@ function SkinNotesSearch:search_preview()
           SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', '', metadataPreviewStrumsFrames)
           SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   '', metadataPreviewSize)
      end
-     setTextString('genInfoSkinName', currentPreviewDataNames)
+     setTextString('skinStatePreviewName', currentPreviewDataNames)
 end
 
 --- Syncs the selection highlight corresponding correct position and offset values while serching.
@@ -510,7 +510,7 @@ function SkinNotesSearch:search_selection_byhover()
           return
      end
 
-     local skinHighlightName = ''
+     local mouseSkinToolTip = ''
      for searchIDs = 1, math.max(#self.SEARCH_SKIN_OBJECT_IDS, #self.SEARCH_SKIN_OBJECT_PAGES) do
           local searchSkinIDs  = tonumber( self.SEARCH_SKIN_OBJECT_IDS[searchIDs] )
           local searchSkinPage = tonumber( self.SEARCH_SKIN_OBJECT_PAGES[searchIDs]  )
@@ -535,7 +535,7 @@ function SkinNotesSearch:search_selection_byhover()
                if luaSpriteExists(displaySkinIconButtonTag) == false then goto SKIP_NON_EXISTING_SEARCH_BUTTON end
                playAnim(displaySkinIconButtonTag, 'hover', true)
 
-               skinHighlightName = self.TOTAL_SKIN_OBJECTS_NAMES[searchSkinPage][searchSkinPresentIDs]
+               mouseSkinToolTip = self.TOTAL_SKIN_OBJECTS_NAMES[searchSkinPage][searchSkinPresentIDs]
           end
           if totalSkinObjectsPagePerHovered[searchSkinPresentIDs] == false and nonCurrentPreSelectedSkin and nonCurrentCurSelectedSkin then
                if luaSpriteExists(displaySkinIconButtonTag) == false then goto SKIP_NON_EXISTING_SEARCH_BUTTON end
@@ -551,7 +551,7 @@ function SkinNotesSearch:search_selection_byhover()
      end
 
      ::SKIP_NON_EXISTING_SEARCH_BUTTON::
-     setTextString('skinHighlightName', skinHighlightName ~= '' and skinHighlightName or '') -- no way to optimize this :(
+     setTextString('mouseSkinToolTip', mouseSkinToolTip ~= '' and mouseSkinToolTip or '') -- no way to optimize this :(
 end
 
 --- Selection main cursor interactive functionality and animations while searching.
@@ -611,7 +611,7 @@ function SkinNotesSearch:search_selection_cursor()
      end
      
      local MINIMUM_SKIN_LIMIT = 1
-     if hoverObject('displaySliderIcon', 'camHUD') == true and self.TOTAL_SKIN_LIMIT == MINIMUM_SKIN_LIMIT then
+     if hoverObject('pageScrollbarThumb', 'camHUD') == true and self.TOTAL_SKIN_LIMIT == MINIMUM_SKIN_LIMIT then
           if mouseClicked('left') or mousePressed('left') then 
                playAnim('mouseTexture', 'disabledClick', true)
           else

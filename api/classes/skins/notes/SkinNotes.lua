@@ -24,7 +24,7 @@ local inheritedClasses = global.inheritedClasses
 local SkinNotes = inheritedClasses({
      extends = {SkinNotesPage, SkinNotesSelection, SkinNotesPreview, SkinNotesCheckbox, SkinNotesSearch, SkinNotesSave}
 })
-local SkinNoteGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Initializes the main attributes for the noteskin state.
 ---@param stateClass string The corresponding global name for this skin state.
@@ -72,19 +72,19 @@ function SkinNotes:load()
 
      -- Scrollbar Properties --
 
-     local SCROLLBAR_PAGE_INDEX = SkinNoteGSave:get('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
+     local SCROLLBAR_PAGE_INDEX = SkinNotesGSave:get('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
 
      self.SCROLLBAR_PAGE_INDEX          = SCROLLBAR_PAGE_INDEX
      self.SCROLLBAR_TRACK_THUMB_PRESSED = false
-     self.SCROLLBAR_TRACK_MAJOR_SNAP    = states.getPageSkinSliderPositions(self.stateClass).intervals
-     self.SCROLLBAR_TRACK_MINOR_SNAP    = states.getPageSkinSliderPositions(self.stateClass).semiIntervals
+     self.SCROLLBAR_TRACK_MAJOR_SNAP    = states.getPageSkinScrollbarPositions(self.stateClass).major
+     self.SCROLLBAR_TRACK_MINOR_SNAP    = states.getPageSkinScrollbarPositions(self.stateClass).minor
 
      -- Display Selection Properties --
      
-     local SELECT_SKIN_PAGE_INDEX           = SkinNoteGSave:get('SELECT_SKIN_PAGE_INDEX',           self.stateClass:upper(), 1)
-     local SELECT_SKIN_INIT_SELECTION_INDEX = SkinNoteGSave:get('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), 1)
-     local SELECT_SKIN_PRE_SELECTION_INDEX  = SkinNoteGSave:get('SELECT_SKIN_PRE_SELECTION_INDEX',  self.stateClass:upper(), 1)
-     local SELECT_SKIN_CUR_SELECTION_INDEX  = SkinNoteGSave:get('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), 1)
+     local SELECT_SKIN_PAGE_INDEX           = SkinNotesGSave:get('SELECT_SKIN_PAGE_INDEX',           self.stateClass:upper(), 1)
+     local SELECT_SKIN_INIT_SELECTION_INDEX = SkinNotesGSave:get('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), 1)
+     local SELECT_SKIN_PRE_SELECTION_INDEX  = SkinNotesGSave:get('SELECT_SKIN_PRE_SELECTION_INDEX',  self.stateClass:upper(), 1)
+     local SELECT_SKIN_CUR_SELECTION_INDEX  = SkinNotesGSave:get('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), 1)
 
      self.SELECT_SKIN_PAGE_INDEX           = SELECT_SKIN_PAGE_INDEX           -- current page index
      self.SELECT_SKIN_INIT_SELECTION_INDEX = SELECT_SKIN_INIT_SELECTION_INDEX -- current pressed selected skin
@@ -94,7 +94,7 @@ function SkinNotes:load()
 
      -- Preview Animation Properties --
 
-     local PREVIEW_SKIN_OBJECT_INDEX = SkinNoteGSave:get('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
+     local PREVIEW_SKIN_OBJECT_INDEX = SkinNotesGSave:get('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
 
      self.PREVIEW_CONST_METADATA_DISPLAY       = json.parse(getTextFromFile('json/notes/constant/display.json'))
      self.PREVIEW_CONST_METADATA_PREVIEW       = json.parse(getTextFromFile('json/notes/constant/preview.json'))
@@ -113,8 +113,8 @@ function SkinNotes:load()
 
      -- Checkbox Skin Properties --
 
-     local CHECKBOX_SKIN_OBJECT_CHARS_PLAYER   = SkinNoteGSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER',   self.stateClass:upper(), 0)
-     local CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT = SkinNoteGSave:get('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
+     local CHECKBOX_SKIN_OBJECT_CHARS_PLAYER   = SkinNotesGSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER',   self.stateClass:upper(), 0)
+     local CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT = SkinNotesGSave:get('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
 
      self.CHECKBOX_SKIN_OBJECT_HOVERED = {false, false} -- use the fuckass CHARACTERS enum for reference
      self.CHECKBOX_SKIN_OBJECT_CLICKED = {false, false} -- use the fuckass CHARACTERS enum for reference
@@ -144,29 +144,23 @@ function SkinNotes:load_handling()
      local skinTotalSkinPaths = setmetatable(self.TOTAL_SKINS_PATHS, skinTotalSkinMetatable)
      if skinTotalSkinPaths[self.CHECKBOX_SKIN_OBJECT_CHARS[CHARACTERS.PLAYER]]   == '@error' then
           self.CHECKBOX_SKIN_OBJECT_CHARS[CHARACTERS.PLAYER] = 0
-          SkinNoteGSave:set('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER', self.stateClass:upper(), 0)
+          SkinNotesGSave:set('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER', self.stateClass:upper(), 0)
      end
      if skinTotalSkinPaths[self.CHECKBOX_SKIN_OBJECT_CHARS[CHARACTERS.OPPONENT]] == '@error' then
           self.CHECKBOX_SKIN_OBJECT_CHARS[CHARACTERS.OPPONENT] = 0
-          SkinNoteGSave:set('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
+          SkinNotesGSave:set('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', self.stateClass:upper(), 0)
      end
 
      local pageSkinIsOverflow    = self.SCROLLBAR_PAGE_INDEX <= 0 or self.SCROLLBAR_PAGE_INDEX > self.TOTAL_SKIN_LIMIT
      local pageSkinIsNonExistent = self.SCROLLBAR_PAGE_INDEX ~= self.SCROLLBAR_PAGE_INDEX
-
-     local selectSkinCurSelectByChunk = self.SELECT_SKIN_CUR_SELECTION_INDEX % MAX_NUMBER_CHUNK
-     local selectSkinCurSelectFixed   = selectSkinCurSelectByChunk == 0 and MAX_NUMBER_CHUNK or selectSkinCurSelectByChunk
-     local selectSkinCurSelectExists  = self.TOTAL_SKIN_OBJECTS[self.SCROLLBAR_PAGE_INDEX][selectSkinCurSelectFixed]
-     if (pageSkinIsOverflow or pageSkinIsNonExistent) or selectSkinCurSelectExists == nil then
-          self.SCROLLBAR_PAGE_INDEX   = 1
+     if (pageSkinIsOverflow or pageSkinIsNonExistent) then
           self.SELECT_SKIN_PAGE_INDEX = 1
-          SkinNoteGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
-          SkinNoteGSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), 1)
+          SkinNotesGSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), 1)
      end
 
      if self.PREVIEW_SKIN_OBJECT_INDEX <= 0 or self.PREVIEW_SKIN_OBJECT_INDEX > #self.PREVIEW_SKIN_OBJECT_ANIMS then
           self.PREVIEW_SKIN_OBJECT_INDEX = 1
-          SkinNoteGSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
+          SkinNotesGSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
      end
 end
 
@@ -175,8 +169,9 @@ end
 function SkinNotes:generate()
      for _, skinPaths in pairs(self.TOTAL_SKINS_PATHS) do
           precacheImage(skinPaths)
-     end      
-     self:create(self.SCROLLBAR_PAGE_INDEX)
+     end
+
+     self:save_load()
      self:checkbox()
      self:preview()
      self:page_scrollbar_snaps()

@@ -16,7 +16,7 @@ local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 --- Childclass extension, main page component functionality for the noteskin state.
 ---@class SkinNotesPage
 local SkinNotesPage = {}
-local SkinNoteGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 local SCROLLBAR_THUMB_SYNC = false -- * Ignore this btw
 --- Page scrollbar functionality, that's it.
@@ -25,42 +25,46 @@ local SCROLLBAR_THUMB_SYNC = false -- * Ignore this btw
 function SkinNotesPage:page_scrollbar(snapToPage)
      local snapToPage = snapToPage == nil and true or false
 
-     local displayScrollThumbTag = 'displaySliderIcon'
-     if clickObject(displayScrollThumbTag, 'camHUD') then
+     if self.SCROLLBAR_TRACK_MAJOR_SNAP == nil or self.SCROLLBAR_TRACK_MINOR_SNAP == nil then
+          return
+     end
+
+     local pageScrollbarThumb = 'pageScrollbarThumb'
+     if clickObject(pageScrollbarThumb, 'camHUD') then
           self.SCROLLBAR_TRACK_THUMB_PRESSED = true
      end
 
      local MINIMUM_SKIN_LIMIT = 1
      if self.TOTAL_SKIN_LIMIT <= MINIMUM_SKIN_LIMIT then
-          playAnim(displayScrollThumbTag, 'unscrollable')
+          playAnim(pageScrollbarThumb, 'unscrollable')
      end
      if self.TOTAL_SKIN_LIMIT > MINIMUM_SKIN_LIMIT and self.SCROLLBAR_TRACK_THUMB_PRESSED == true then
-          local DISPLAY_SCROLL_THUMB_HEIGHT   = getProperty('displaySliderIcon.height')
+          local DISPLAY_SCROLL_THUMB_HEIGHT   = getProperty(F"{pageScrollbarThumb}.height")
           local DISPLAY_SCROLL_THUMB_OFFSET_Y = getMouseY('camHUD') - (DISPLAY_SCROLL_THUMB_HEIGHT / 2)
           if mousePressed('left') then
-               playAnim(displayScrollThumbTag, 'pressed')
-               setProperty(F"{displayScrollThumbTag}.y", DISPLAY_SCROLL_THUMB_OFFSET_Y)
+               playAnim(pageScrollbarThumb, 'pressed')
+               setProperty(F"{pageScrollbarThumb}.y", DISPLAY_SCROLL_THUMB_OFFSET_Y)
           end
           if mouseReleased('left') then
-               playAnim(displayScrollThumbTag, 'static')
+               playAnim(pageScrollbarThumb, 'static')
                self.SCROLLBAR_TRACK_THUMB_PRESSED = false 
           end
      end
 
      local DISPLAY_SCROLL_THUMB_MIN_POSITION_Y = 127
      local DISPLAY_SCROLL_THUMB_MAX_POSITION_Y = 643
-     if getProperty(F"{displayScrollThumbTag}.y") <= DISPLAY_SCROLL_THUMB_MIN_POSITION_Y then
-          setProperty(F"{displayScrollThumbTag}.y", DISPLAY_SCROLL_THUMB_MIN_POSITION_Y)
+     if getProperty(F"{pageScrollbarThumb}.y") <= DISPLAY_SCROLL_THUMB_MIN_POSITION_Y then
+          setProperty(F"{pageScrollbarThumb}.y", DISPLAY_SCROLL_THUMB_MIN_POSITION_Y)
      end
-     if getProperty(F"{displayScrollThumbTag}.y") >= DISPLAY_SCROLL_THUMB_MAX_POSITION_Y then
-          setProperty(F"{displayScrollThumbTag}.y", DISPLAY_SCROLL_THUMB_MAX_POSITION_Y)
+     if getProperty(F"{pageScrollbarThumb}.y") >= DISPLAY_SCROLL_THUMB_MAX_POSITION_Y then
+          setProperty(F"{pageScrollbarThumb}.y", DISPLAY_SCROLL_THUMB_MAX_POSITION_Y)
      end
 
      --- Calculates the page position by using the scroll thumb's position.
      --- By check its range between the major and minor snap positions.
      ---@return number|boolean
      local function calculateScrollCurrentRangePage()
-          local displayScrollThumbPositionY = getProperty(F"{displayScrollThumbTag}.y")
+          local displayScrollThumbPositionY = getProperty(F"{pageScrollbarThumb}.y")
 
           local STARTING_SNAP_POSITION = 2
           for snapIndex = STARTING_SNAP_POSITION, #self.SCROLLBAR_TRACK_MAJOR_SNAP do
@@ -81,18 +85,18 @@ function SkinNotesPage:page_scrollbar(snapToPage)
      local SCROLLBAR_CURRENT_PAGE_IS_SAME_INDEX = SCROLLBAR_CURRENT_PAGE_INDEX ~= self.SCROLLBAR_PAGE_INDEX
      if SCROLLBAR_CURRENT_PAGE_IS_NUMBER and SCROLLBAR_CURRENT_PAGE_IS_SAME_INDEX and self.SCROLLBAR_TRACK_THUMB_PRESSED == true then
           self.SCROLLBAR_PAGE_INDEX   = SCROLLBAR_CURRENT_PAGE_INDEX
-          self:create(SCROLLBAR_CURRENT_PAGE_INDEX)
+          self:create(self.SCROLLBAR_PAGE_INDEX)
           self:checkbox_sync()
 
           if self.SCROLLBAR_PAGE_INDEX == self.TOTAL_SKIN_LIMIT then
-               setTextColor('genInfoStatePage', 'ff0000')
+               setTextColor('skinStatePreviewPage', 'ff0000')
           else
-               setTextColor('genInfoStatePage', 'ffffff')
+               setTextColor('skinStatePreviewPage', 'ffffff')
           end
 
           playSound('ding', 0.5)
           callOnScripts('skinSearchInput_callResetSearch')
-          SkinNoteGSave:set('SCROLLBAR_PAGE_INDEX',   self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
+          SkinNotesGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
      end
 
      if self.TOTAL_SKIN_LIMIT > MINIMUM_SKIN_LIMIT and self.SCROLLBAR_TRACK_THUMB_PRESSED == false then
@@ -108,11 +112,11 @@ function SkinNotesPage:page_scrollbar(snapToPage)
                local SCROLLBAR_MAJOR_SNAP_OFFSET_Y  = 25
 
                if SCROLLBAR_CURRENT_PAGE_INDEX == self.TOTAL_SKIN_LIMIT then
-                    setProperty(F"{displayScrollThumbTag}.y", DISPLAY_SCROLL_THUMB_MAX_POSITION_Y)
+                    setProperty(F"{pageScrollbarThumb}.y", DISPLAY_SCROLL_THUMB_MAX_POSITION_Y)
                elseif SCROLLBAR_CURRENT_PAGE_INDEX >= SCROLLBAR_MID_RANGE_PAGE_INDEX then
-                    setProperty(F"{displayScrollThumbTag}.y", scrollbarMajorSnapIndex - SCROLLBAR_MAJOR_SNAP_OFFSET_Y)
+                    setProperty(F"{pageScrollbarThumb}.y", scrollbarMajorSnapIndex - SCROLLBAR_MAJOR_SNAP_OFFSET_Y)
                else
-                    setProperty(F"{displayScrollThumbTag}.y", scrollbarMajorSnapIndex)
+                    setProperty(F"{pageScrollbarThumb}.y", scrollbarMajorSnapIndex)
                end
           end 
      end
@@ -134,15 +138,15 @@ function SkinNotesPage:page_scrollbar_snaps()
           OFFSETX = 12 / 0.8
      }
 
-     local displayScrollThumbTag = 'displaySliderIcon'
+     local pageScrollbarThumb = 'pageScrollbarThumb'
      local function createSnapMarks(scrollbarTrackSnapObjects, scrollbarTrackSnapIndex, scrollbarTrackMetadata)
           local displayScrollSnapMarkTag = F"displaySliderMark{self.stateClass:upperAtStart()}{scrollbarTrackMetadata.NAME:upperAtStart()}{scrollbarTrackSnapIndex}"
-          local displayScrollSnapMarkX   = getProperty(F"{displayScrollThumbTag}.x") + scrollbarTrackMetadata.OFFSETX
+          local displayScrollSnapMarkX   = getProperty(F"{pageScrollbarThumb}.x") + scrollbarTrackMetadata.OFFSETX
           local displayScrollSnapMarkY   = scrollbarTrackSnapObjects[scrollbarTrackSnapIndex]
      
           makeLuaSprite(displayScrollSnapMarkTag, nil, displayScrollSnapMarkX, displayScrollSnapMarkY)
           makeGraphic(displayScrollSnapMarkTag, scrollbarTrackMetadata.WIDTH, 3, scrollbarTrackMetadata.COLOR)
-          setObjectOrder(displayScrollSnapMarkTag, getObjectOrder(displayScrollThumbTag))
+          setObjectOrder(displayScrollSnapMarkTag, getObjectOrder(pageScrollbarThumb))
           setObjectCamera(displayScrollSnapMarkTag, 'camHUD')
           setProperty(F"{displayScrollSnapMarkTag}.antialiasing", false)
           addLuaSprite(displayScrollSnapMarkTag)
@@ -166,7 +170,7 @@ function SkinNotesPage:page_moved()
      local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
      if #skinSearchInput_textContent > 0 then
           if gameControlPressedUp or gameControlPressedDown then
-               setTextColor('genInfoStatePage', 'f0b72f')
+               setTextColor('skinStatePreviewPage', 'f0b72f')
                playSound('cancel')
           end
           return
@@ -178,11 +182,11 @@ function SkinNotesPage:page_moved()
           local curSkinIDs = curIDs - (MAX_NUMBER_CHUNK * (self.SCROLLBAR_PAGE_INDEX - 1))
           if totalSkinObjectsPagePerClicked[curSkinIDs] == true then
                if gameControlPressedUp and self.SCROLLBAR_PAGE_INDEX > 1 then
-                    setTextColor('genInfoStatePage', 'f0b72f')
+                    setTextColor('skinStatePreviewPage', 'f0b72f')
                     playSound('cancel')
                end
                if gameControlPressedDown and self.SCROLLBAR_PAGE_INDEX < self.TOTAL_SKIN_LIMIT then
-                    setTextColor('genInfoStatePage', 'f0b72f')
+                    setTextColor('skinStatePreviewPage', 'f0b72f')
                     playSound('cancel')
                end
                return
@@ -192,17 +196,17 @@ function SkinNotesPage:page_moved()
      local SCROLLBAR_MIN_RANGE_PAGE_INDEX = 1
      local SCROLLBAR_MAX_RANGE_PAGE_INDEX = self.TOTAL_SKIN_LIMIT
 
-     local displayScrollThumbTag = 'displaySliderIcon'
+     local pageScrollbarThumb = 'pageScrollbarThumb'
      if gameControlPressedUp and self.SCROLLBAR_PAGE_INDEX > SCROLLBAR_MIN_RANGE_PAGE_INDEX then
           self.SCROLLBAR_PAGE_INDEX = self.SCROLLBAR_PAGE_INDEX - 1
           self:create(self.SCROLLBAR_PAGE_INDEX)
           self:checkbox_sync()
 
           playSound('ding', 0.5)
-          setProperty(F"{displayScrollThumbTag}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX])
+          setProperty(F"{pageScrollbarThumb}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX])
           callOnScripts('skinSearchInput_callResetSearch')
 
-          SkinNoteGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
+          SkinNotesGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
      end
      if gameControlPressedDown and self.SCROLLBAR_PAGE_INDEX < SCROLLBAR_MAX_RANGE_PAGE_INDEX then
           self.SCROLLBAR_PAGE_INDEX = self.SCROLLBAR_PAGE_INDEX + 1
@@ -210,21 +214,21 @@ function SkinNotesPage:page_moved()
           self:checkbox_sync()
 
           playSound('ding', 0.5)
-          setProperty(F"{displayScrollThumbTag}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX])
+          setProperty(F"{pageScrollbarThumb}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX])
           callOnScripts('skinSearchInput_callResetSearch')
           
-          SkinNoteGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
+          SkinNotesGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
      end
 
      local SCROLLBAR_MAJOR_SNAP_OFFSET_Y = 25
      if self.SCROLLBAR_PAGE_INDEX > SCROLLBAR_MIN_RANGE_PAGE_INDEX and self.SCROLLBAR_PAGE_INDEX < SCROLLBAR_MAX_RANGE_PAGE_INDEX then
-          setProperty(F"{displayScrollThumbTag}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX] - SCROLLBAR_MAJOR_SNAP_OFFSET_Y)
+          setProperty(F"{pageScrollbarThumb}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX] - SCROLLBAR_MAJOR_SNAP_OFFSET_Y)
      end
 
      if self.SCROLLBAR_PAGE_INDEX == self.TOTAL_SKIN_LIMIT then
-          setTextColor('genInfoStatePage', 'ff0000')
+          setTextColor('skinStatePreviewPage', 'ff0000')
      else
-          setTextColor('genInfoStatePage', 'ffffff')
+          setTextColor('skinStatePreviewPage', 'ffffff')
      end
 end
 
@@ -234,7 +238,7 @@ end
 function SkinNotesPage:page_text()
      local currentPageFormat = ('%.3d'):format(self.SCROLLBAR_PAGE_INDEX)
      local maximumPageFormat = ('%.3d'):format(self.TOTAL_SKIN_LIMIT)
-     setTextString('genInfoStatePage', F" Page {currentPageFormat} / {maximumPageFormat}")
+     setTextString('skinStatePreviewPage', F" Page {currentPageFormat} / {maximumPageFormat}")
 end
 
 return SkinNotesPage

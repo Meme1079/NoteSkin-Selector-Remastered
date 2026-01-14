@@ -17,7 +17,8 @@ function stateSkinMetadata:__index(index)
      return '@void'
 end
 
-local SkinStateSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector', true)
+local SkinStateSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+SkinStateSave:init()
 
 local stateSave_checkboxNoteIndexPlayer   = SkinStateSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER', 'NOTES', 0)
 local stateSave_checkboxNoteIndexOpponent = SkinStateSave:get('CHECKBOX_SKIN_OBJECT_CHARS_OPPONENT', 'NOTES', 0)

@@ -157,7 +157,7 @@ function SkinNotesPreview:preview()
           SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', '', metadataPreviewStrumsFrames)
           SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   '', metadataPreviewSize)
      end
-     setTextString('genInfoSkinName', currentPreviewDataNames)
+     setTextString('skinStatePreviewName', currentPreviewDataNames)
 end
 
 --- Creates the preview strums' animations, for testing its animations for visual aid.
@@ -311,16 +311,16 @@ function SkinNotesPreview:preview_selection_moved()
      end
 
      if not previewAnimationMinIndex then
-          playAnim('previewSkinInfoIconLeft', 'none', true)
-          playAnim('previewSkinInfoIconRight', 'right', true)
+          playAnim('preivewSkinButtonIconLeft', 'none', true)
+          playAnim('previewSkinButtonIconRight', 'right', true)
      else
-          playAnim('previewSkinInfoIconLeft', 'left', true)
+          playAnim('preivewSkinButtonIconLeft', 'left', true)
      end
      if not previewAnimationMaxIndex then
-          playAnim('previewSkinInfoIconLeft', 'left', true)
-          playAnim('previewSkinInfoIconRight', 'none', true)
+          playAnim('preivewSkinButtonIconLeft', 'left', true)
+          playAnim('previewSkinButtonIconRight', 'none', true)
      else
-          playAnim('previewSkinInfoIconRight', 'right', true)
+          playAnim('previewSkinButtonIconRight', 'right', true)
      end
      self:preview_selection_name()
 end
