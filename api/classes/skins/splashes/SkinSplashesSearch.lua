@@ -7,7 +7,7 @@ local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.stand
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 
@@ -22,13 +22,13 @@ local SkinSplashesGSave  = SkinSaves:new('noteskin_selector', 'NoteSkin Selector
 ---@private
 ---@return nil
 function SkinSplashesSearch:search_create()
-     local SEARCH_INPUT_CONTENT = getVar('skinSearchInput_textContent') or ''
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
      local SEARCH_INPUT_FOCUS   = getVar('skinSearchInputFocus') or false
      local FIRST_JUST_RELEASED  = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
      if FIRST_JUST_RELEASED  == -1 or  SEARCH_INPUT_FOCUS == false then -- optimization purposes
           return
      end
-     if SEARCH_INPUT_CONTENT == '' and SEARCH_INPUT_FOCUS == true  then -- optimization purposes
+     if SEARCH_INPUT_TEXT_CONTENT == '' and SEARCH_INPUT_FOCUS == true  then -- optimization purposes
           self:create(self.SCROLLBAR_PAGE_INDEX)
           return
      end
@@ -39,7 +39,7 @@ function SkinSplashesSearch:search_create()
                     goto SKIP_SKIN_PAGE
                end
 
-               local skinObjectID = self.TOTAL_SKIN_OBJECTS_ID[skinPages][skinDisplays]
+               local skinObjectID = self.TOTAL_SKIN_OBJECTS_IDS[skinPages][skinDisplays]
                local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
                local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
                if luaSpriteExists(displaySkinIconTagButton) == true and luaSpriteExists(displaySkinIconTagSkin) == true then
@@ -115,7 +115,7 @@ function SkinSplashesSearch:search_create()
           ---@param constant any The constant default value, if the metadata element is missing.
           ---@return any
           local function displaySkinMetadata(metadata, constant)
-               local metaObjectsDisplay = self.TOTAL_SKIN_METAOBJ_ORDERED_DISPLAY[tonumber(skinSearchIDs)]
+               local metaObjectsDisplay = self.TOTAL_SKIN_METAOBJ_ALL_DISPLAY[tonumber(skinSearchIDs)]
                if metaObjectsDisplay           == '@void' then return constant end
                if metaObjectsDisplay[metadata] == nil     then return constant end
                return metaObjectsDisplay[metadata]
@@ -159,8 +159,8 @@ end
 ---@private
 ---@return nil
 function SkinSplashesSearch:search_preview()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent == 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT == 0 then
           return
      end
 
@@ -173,7 +173,7 @@ function SkinSplashesSearch:search_preview()
           end
 
           for skinPages = 1, self.TOTAL_SKIN_LIMIT do -- checks if each page has an existing skin object
-               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_INDICES[skinPages]
+               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_IDS[skinPages]
                local selectedSkinIndex = table.find(selectedSkinPage, self.SELECT_SKIN_CUR_SELECTION_INDEX)
                if selectedSkinIndex ~= nil then
                     return skinObjects[skinPages][selectedSkinIndex]

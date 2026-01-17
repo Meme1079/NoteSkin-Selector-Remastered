@@ -6,7 +6,7 @@ local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-str
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 local CHARACTERS = global.CHARACTERS
 
@@ -120,12 +120,12 @@ end
 ---@protected
 ---@return nil
 function SkinNotesCheckbox:checkbox_sync()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent > 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT > 0 then
           return
      end
 
-     local SKIN_OBJECTS_ID = self.TOTAL_SKIN_OBJECTS_ID[self.SELECT_SKIN_PAGE_INDEX]
+     local SKIN_OBJECTS_ID = self.TOTAL_SKIN_OBJECTS_IDS[self.SELECT_SKIN_PAGE_INDEX]
      for CharNames, CharValues in pairs(CHARACTERS) do
           if self.CHECKBOX_SKIN_OBJECT_PRESENT[CharValues] ~= CharValues then
                goto SKIP_CHECKBOX_SKIN_MISSING_CHAR_SYNC

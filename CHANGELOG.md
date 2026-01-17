@@ -6,11 +6,15 @@
 - Adjust scrollbar thumb offsets between the start and end page positions.
 - Selection of the skin will always remain constant, even when the skin has missing animations.
 - Optimize checkboxes, syncing and clicking now checks for its interaction instead of every updated frame.
+- Optimize certain parts of the code that might slightly actually optimize it.
+     - Correctly allocate table to their corresponding array and dictionaries.
+     - Remove certain component attributes that have never been utilize within the code.
 
 ### Bug Fixes
 - Fixed a previous bug where holding the skin button then switching to another page, will cause some selection issue when choosing a skin.
 - Fixed a bug where the searching algorithm would not render any skins due to the array having a max limit for some reason.
-- Fixed a bug where the skin highlight name wwouldn't render properly when searching/switching while hovering the skins.
+- Fixed a bug where the skin highlight name wouldn't render properly when searching/switching while hovering the skins.
+- Fixed a bug when searching up skins will have their incorrect offsets shown.
 
 ## Version 2.1.0
 ### Additions/Changes

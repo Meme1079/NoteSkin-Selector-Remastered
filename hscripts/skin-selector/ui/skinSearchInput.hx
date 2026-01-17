@@ -43,8 +43,8 @@ function onCreate() {
 
      skinSearchInput.onChange     = function(preText:String, curText:String) {
           FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1);
-          setVar('skinSearchInput_textPreContent', preText);
-          setVar('skinSearchInput_textContent', curText);
+		setVar('SEARCH_INPUT_PRE_TEXT_CONTENT', preText);
+          setVar('SEARCH_INPUT_TEXT_CONTENT', curText);
 
           if (curText.length > 0) {
                skinSearchInput_placeholder.text  = '';
@@ -62,10 +62,10 @@ function onCreate() {
      };
      skinSearchInput.onPressEnter = function() {
           //skinSearchInput.textObj.color = 0xFFF0B72F;
-          //setVar('skinSearchInput_textContent', skinSearchInput.text);
+          //setVar('SEARCH_INPUT_TEXT_CONTENT', skinSearchInput.text);
 
           //new FlxTimer().start(0.1, () -> { PsychUIInputText.focusOn = null; });
-          //new FlxTimer().start(0.3, () -> { setVar('skinSearchInput_textContent', ''); }); // forcefully resets, due to a bug
+          //new FlxTimer().start(0.3, () -> { setVar('SEARCH_INPUT_TEXT_CONTENT', ''); }); // forcefully resets, due to a bug
      };
 
      add(skinSearchInput_background);
@@ -87,7 +87,7 @@ function skinSearchInput_callResetSearch() {
      skinSearchInput.caretIndex = 1;
      skinSearchInput.set_text('');
 
-     setVar('skinSearchInput_textContent', '');
+     setVar('SEARCH_INPUT_TEXT_CONTENT', '');
      skinSearchInput_placeholder.text = 'Search Skins...';
 }
 

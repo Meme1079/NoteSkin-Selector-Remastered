@@ -6,7 +6,7 @@ local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-str
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 

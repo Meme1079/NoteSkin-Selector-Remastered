@@ -10,7 +10,7 @@ local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.stand
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
 local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 local inheritedClasses = global.inheritedClasses
@@ -43,15 +43,14 @@ end
 function SkinSplashes:load()
      self.TOTAL_SKINS       = states.getTotalSkins(self.stateClass, false)
      self.TOTAL_SKINS_PATHS = states.getTotalSkins(self.stateClass, true)
-     self.TOTAL_SKINS_NAMES = states.getTotalSkinNames(self.stateClass)
+     --self.TOTAL_SKINS_NAMES = states.getTotalSkinNames(self.stateClass)
 
      -- Object Properties --
 
-     self.TOTAL_SKIN_LIMIT           = states.getTotalSkinLimit(self.stateClass)
-     self.TOTAL_SKIN_OBJECTS         = states.getTotalSkinObjects(self.stateClass)
-     self.TOTAL_SKIN_OBJECTS_ID      = states.getTotalSkinObjects(self.stateClass, 'ids')
-     self.TOTAL_SKIN_OBJECTS_NAMES   = states.getTotalSkinObjects(self.stateClass, 'names')
-     self.TOTAL_SKIN_OBJECTS_INDICES = states.getTotalSkinObjectIndexes(self.stateClass)
+     self.TOTAL_SKIN_LIMIT         = states.getTotalPageLimit(self.stateClass)
+     self.TOTAL_SKIN_OBJECTS       = states.getTotalSkinObjects(self.stateClass)
+     self.TOTAL_SKIN_OBJECTS_IDS   = states.getTotalSkinObjects(self.stateClass, 'ids')
+     self.TOTAL_SKIN_OBJECTS_NAMES = states.getTotalSkinObjects(self.stateClass, 'names')
 
      -- Display Properties --
      
@@ -59,13 +58,13 @@ function SkinSplashes:load()
      self.TOTAL_SKIN_OBJECTS_CLICKED  = states.getTotalSkinObjects(self.stateClass, 'bools')
      self.TOTAL_SKIN_OBJECTS_SELECTED = states.getTotalSkinObjects(self.stateClass, 'bools')
 
-     self.TOTAL_SKIN_METAOBJ_DISPLAY  = states.getMetadataObjectSkins(self.stateClass, 'display', true)
-     self.TOTAL_SKIN_METAOBJ_PREVIEW  = states.getMetadataObjectSkins(self.stateClass, 'preview', true)
-     self.TOTAL_SKIN_METAOBJ_SKINS    = states.getMetadataObjectSkins(self.stateClass, 'skins', true)
+     self.TOTAL_SKIN_METAOBJ_DISPLAY  = states.getTotalMetadataSkinObjects(self.stateClass, 'display', true)
+     self.TOTAL_SKIN_METAOBJ_PREVIEW  = states.getTotalMetadataSkinObjects(self.stateClass, 'preview', true)
+     --self.TOTAL_SKIN_METAOBJ_SKINS    = states.getTotalMetadataSkinObjects(self.stateClass, 'skins', true)
 
-     self.TOTAL_SKIN_METAOBJ_ORDERED_DISPLAY = states.getMetadataSkinsOrdered(self.stateClass, 'display', true)
-     self.TOTAL_SKIN_METAOBJ_ORDERED_PREVIEW = states.getMetadataSkinsOrdered(self.stateClass, 'preview', true)
-     self.TOTAL_SKIN_METAOBJ_ORDERED_SKINS   = states.getMetadataSkinsOrdered(self.stateClass, 'skins', true)
+     self.TOTAL_SKIN_METAOBJ_ALL_DISPLAY = states.getTotalMetadataSkinObjectAll(self.stateClass, 'display', true)
+     --self.TOTAL_SKIN_METAOBJ_ALL_PREVIEW = states.getTotalMetadataSkinObjectAll(self.stateClass, 'preview', true)
+     --self.TOTAL_SKIN_METAOBJ_ALL_SKINS   = states.getTotalMetadataSkinObjectAll(self.stateClass, 'skins', true)
 
      -- Slider Properties --
 
@@ -73,8 +72,8 @@ function SkinSplashes:load()
 
      self.SCROLLBAR_PAGE_INDEX          = 1
      self.SCROLLBAR_TRACK_THUMB_PRESSED = false
-     self.SCROLLBAR_TRACK_MAJOR_SNAP    = states.getPageSkinScrollbarPositions(self.stateClass).major
-     self.SCROLLBAR_TRACK_MINOR_SNAP    = states.getPageSkinScrollbarPositions(self.stateClass).minor
+     self.SCROLLBAR_TRACK_MAJOR_SNAP    = states.calculateScrollbarPositions(self.stateClass).major
+     self.SCROLLBAR_TRACK_MINOR_SNAP    = states.calculateScrollbarPositions(self.stateClass).minor
 
      -- Display Selection Properties --
 
@@ -93,11 +92,11 @@ function SkinSplashes:load()
 
      local PREVIEW_SKIN_OBJECT_INDEX = SkinSplashesGSave:get('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
 
-     self.PREVIEW_CONST_METADATA_DISPLAY       = json.parse(getTextFromFile('json/splashes/constant/display.json'))
+     --self.PREVIEW_CONST_METADATA_DISPLAY       = json.parse(getTextFromFile('json/splashes/constant/display.json'))
      self.PREVIEW_CONST_METADATA_PREVIEW       = json.parse(getTextFromFile('json/splashes/constant/preview.json'))
      self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS = json.parse(getTextFromFile('json/splashes/constant/preview_anims.json'))
      self.PREVIEW_CONST_METADATA_STRUMS        = json.parse(getTextFromFile('json/splashes/constant/strums.json'))
-     self.PREVIEW_CONST_METADATA_SKINS         = json.parse(getTextFromFile('json/splashes/constant/skins.json'))
+     --self.PREVIEW_CONST_METADATA_SKINS         = json.parse(getTextFromFile('json/splashes/constant/skins.json'))
 
      self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS_NOTES = json.parse(getTextFromFile('json/notes/constant/preview_anims.json'))
 
@@ -105,7 +104,7 @@ function SkinSplashes:load()
      self.PREVIEW_SKIN_OBJECT_ANIMS         = {'note_splash1', 'note_splash2'}
      self.PREVIEW_SKIN_OBJECT_ANIMS_HOVERED = {false, false} -- use the fuckass DIRECTION enum for reference
      self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED = {false, false} -- use the fuckass DIRECTION enum for reference
-     self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING = states.getPreviewObjectMissingAnims(
+     self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING = states.getTotalPreviewMissingAnimObjects(
           {'note_splash1', 'note_splash2'},
           self.TOTAL_SKIN_METAOBJ_PREVIEW,
           self.TOTAL_SKIN_LIMIT
@@ -130,10 +129,10 @@ function SkinSplashes:load()
 
      -- Note Preview Properties --
 
-     local PREV_NOTES_METAOBJ_STRUMS_ANIMS  = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  '', self.PREVIEW_CONST_METADATA_STRUMS)
-     local PREV_NOTES_METAOBJ_STRUMS_PATH   = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_PATH',   '', {24, 24, 24, 24})
-     local PREV_NOTES_METAOBJ_STRUMS_FRAMES = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_FRAMES', '', {0.65, 0.65, 0.65, 0.65})
-     local PREV_NOTES_METAOBJ_STRUMS_SIZE   = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_SIZE',   '', {0.65, 0.65, 0.65, 0.65})
+     local PREV_NOTES_METAOBJ_STRUMS_ANIMS  = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  'PREVIEW', self.PREVIEW_CONST_METADATA_STRUMS)
+     local PREV_NOTES_METAOBJ_STRUMS_PATH   = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_PATH',   'PREVIEW', {24, 24, 24, 24})
+     local PREV_NOTES_METAOBJ_STRUMS_FRAMES = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_FRAMES', 'PREVIEW', {0.65, 0.65, 0.65, 0.65})
+     local PREV_NOTES_METAOBJ_STRUMS_SIZE   = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_SIZE',   'PREVIEW', {0.65, 0.65, 0.65, 0.65})
      self.PREV_NOTES_METAOBJ_STRUMS_ANIMS   = PREV_NOTES_METAOBJ_STRUMS_ANIMS
      self.PREV_NOTES_METAOBJ_STRUMS_PATH    = PREV_NOTES_METAOBJ_STRUMS_PATH
      self.PREV_NOTES_METAOBJ_STRUMS_FRAMES  = PREV_NOTES_METAOBJ_STRUMS_FRAMES
@@ -152,7 +151,7 @@ function SkinSplashes:create(page)
                     goto SKIP_SKIN_PAGE
                end
 
-               local skinObjectID = self.TOTAL_SKIN_OBJECTS_ID[skinPages][skinDisplays]
+               local skinObjectID = self.TOTAL_SKIN_OBJECTS_IDS[skinPages][skinDisplays]
                local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
                local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
                if luaSpriteExists(displaySkinIconButtonTag) == true and luaSpriteExists(displaySkinIconSkinTag) == true then
@@ -192,7 +191,7 @@ function SkinSplashes:create(page)
      end
 
      for skinDisplays = 1, #self.TOTAL_SKIN_OBJECTS[page] do
-          local skinObjectsID = self.TOTAL_SKIN_OBJECTS_ID[page][skinDisplays]
+          local skinObjectsID = self.TOTAL_SKIN_OBJECTS_IDS[page][skinDisplays]
           local skinObjects   = self.TOTAL_SKIN_OBJECTS[page][skinDisplays]
 
           local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectsID}"

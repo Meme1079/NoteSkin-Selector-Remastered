@@ -6,7 +6,7 @@ local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-str
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 local DIRECTION        = global.DIRECTION
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
@@ -22,8 +22,8 @@ local SkinSplashesGSave   = SkinSaves:new('noteskin_selector', 'NoteSkin Selecto
 --- Creates the preview strums' graphic sprites and text.
 ---@return nil
 function SkinSplashesPreview:preview()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent > 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT > 0 then
           return
      end
 
@@ -36,7 +36,7 @@ function SkinSplashesPreview:preview()
           end
 
           for skinPages = 1, self.TOTAL_SKIN_LIMIT do -- checks if each page has an existing skin object
-               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_INDICES[skinPages]
+               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_IDS[skinPages]
                local selectedSkinIndex = table.find(selectedSkinPage, self.SELECT_SKIN_CUR_SELECTION_INDEX)
                if selectedSkinIndex ~= nil then
                     return skinObjects[skinPages][selectedSkinIndex]
@@ -145,8 +145,8 @@ end
 --- Creates the noteskin strums' graphic sprites for visual support.
 ---@return nil
 function SkinSplashesPreview:preview_notes()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent > 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT > 0 then
           return
      end
      if self.stateClass == 'notes' then
@@ -210,7 +210,7 @@ function SkinSplashesPreview:preview_animation()
           end
 
           for skinPages = 1, self.TOTAL_SKIN_LIMIT do -- checks if each page has an existing skin object
-               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_INDICES[skinPages]
+               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_IDS[skinPages]
                local selectedSkinIndex = table.find(selectedSkinPage, self.SELECT_SKIN_CUR_SELECTION_INDEX)
                if selectedSkinIndex ~= nil then
                     return skinObjects[skinPages][selectedSkinIndex]

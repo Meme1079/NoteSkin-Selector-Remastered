@@ -6,7 +6,7 @@ local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-str
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 
@@ -30,13 +30,13 @@ end
 ---@private
 ---@return nil
 function SkinNotesSelection:selection_byclick()
-     local totalSkinObjectsPagePerIds      = self.TOTAL_SKIN_OBJECTS_ID[self.SCROLLBAR_PAGE_INDEX]
+     local totalSkinObjectsPagePerIds      = self.TOTAL_SKIN_OBJECTS_IDS[self.SCROLLBAR_PAGE_INDEX]
      local totalSkinObjectsPagePerHovered  = self.TOTAL_SKIN_OBJECTS_HOVERED[self.SCROLLBAR_PAGE_INDEX]
      local totalSkinObjectsPagePerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SCROLLBAR_PAGE_INDEX]
      local totalSkinObjectsPagePerSelected = self.TOTAL_SKIN_OBJECTS_SELECTED[self.SCROLLBAR_PAGE_INDEX]
 
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent > 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT > 0 then
           return
      end
 
@@ -141,12 +141,12 @@ end
 ---@private
 ---@return nil
 function SkinNotesSelection:selection_byhover()
-     local totalSkinObjectsPagePerIds      = self.TOTAL_SKIN_OBJECTS_ID[self.SCROLLBAR_PAGE_INDEX]
+     local totalSkinObjectsPagePerIds      = self.TOTAL_SKIN_OBJECTS_IDS[self.SCROLLBAR_PAGE_INDEX]
      local totalSkinObjectsPagePerHovered  = self.TOTAL_SKIN_OBJECTS_HOVERED[self.SCROLLBAR_PAGE_INDEX]
      local totalSkinObjectsPagePerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SCROLLBAR_PAGE_INDEX]
 
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent > 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT > 0 then
           return
      end     
 
@@ -193,12 +193,12 @@ end
 ---@private
 ---@return nil
 function SkinNotesSelection:selection_bycursor()
-     local totalSkinObjectsPagePerIds      = self.TOTAL_SKIN_OBJECTS_ID[self.SCROLLBAR_PAGE_INDEX]
+     local totalSkinObjectsPagePerIds      = self.TOTAL_SKIN_OBJECTS_IDS[self.SCROLLBAR_PAGE_INDEX]
      local totalSkinObjectsPagePerHovered  = self.TOTAL_SKIN_OBJECTS_HOVERED[self.SCROLLBAR_PAGE_INDEX]
      local totalSkinObjectsPagePerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SCROLLBAR_PAGE_INDEX]
 
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent > 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT > 0 then
           return
      end
 

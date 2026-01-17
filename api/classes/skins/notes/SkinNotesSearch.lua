@@ -8,7 +8,9 @@ local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.stand
 local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
+
+local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 
 local CHARACTERS       = global.CHARACTERS
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
@@ -34,17 +36,17 @@ end
 ---@private
 ---@return nil
 function SkinNotesSearch:search_skins()
-     local SEARCH_INPUT_CONTENT = getVar('skinSearchInput_textContent') or ''
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
      local FIRST_JUST_RELEASED  = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
      if FIRST_JUST_RELEASED == -1 or getVar('skinSearchInputFocus') == false then -- optimization purposes
           return
      end
 
-     local skinInputContent   = SEARCH_INPUT_CONTENT
+     local skinInputContent   = SEARCH_INPUT_TEXT_CONTENT
      local skinInputContentID = calculateSearch(self.stateClass, self.statePrefix, 'ids', false) -- to clear previous search results
      local skinSearchIndex = 0
-     for searchPage = 1, #self.TOTAL_SKIN_OBJECTS_ID do
-          local totalSkinObjectIDs     = self.TOTAL_SKIN_OBJECTS_ID[searchPage]
+     for searchPage = 1, #self.TOTAL_SKIN_OBJECTS_IDS do
+          local totalSkinObjectIDs     = self.TOTAL_SKIN_OBJECTS_IDS[searchPage]
           local totalSkinObjectMerge   = table.merge(totalSkinObjectIDs, skinInputContentID)
           local totalSkinObjectPresent = table.singularity(totalSkinObjectMerge, true)
 
@@ -62,13 +64,13 @@ end
 ---@private
 ---@return nil
 function SkinNotesSearch:search_create()
-     local SEARCH_INPUT_CONTENT = getVar('skinSearchInput_textContent') or ''
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
      local SEARCH_INPUT_FOCUS   = getVar('skinSearchInputFocus') or false
      local FIRST_JUST_RELEASED  = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
      if FIRST_JUST_RELEASED  == -1 or  SEARCH_INPUT_FOCUS == false then -- optimization purposes
           return
      end
-     if SEARCH_INPUT_CONTENT == '' and SEARCH_INPUT_FOCUS == true  then -- optimization purposes
+     if SEARCH_INPUT_TEXT_CONTENT == '' and SEARCH_INPUT_FOCUS == true  then -- optimization purposes
           self:create(self.SCROLLBAR_PAGE_INDEX)
           return
      end
@@ -79,12 +81,12 @@ function SkinNotesSearch:search_create()
                     goto SKIP_SKIN_PAGE
                end
 
-               local skinObjectID = self.TOTAL_SKIN_OBJECTS_ID[skinPages][skinDisplays]
-               local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
-               local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
-               if luaSpriteExists(displaySkinIconTagButton) == true and luaSpriteExists(displaySkinIconTagSkin) == true then
-                    removeLuaSprite(displaySkinIconTagButton, true)
-                    removeLuaSprite(displaySkinIconTagSkin, true)
+               local skinObjectID = self.TOTAL_SKIN_OBJECTS_IDS[skinPages][skinDisplays]
+               local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
+               local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
+               if luaSpriteExists(displaySkinIconButtonTag) == true and luaSpriteExists(displaySkinIconSkinTag) == true then
+                    removeLuaSprite(displaySkinIconButtonTag, true)
+                    removeLuaSprite(displaySkinIconSkinTag, true)
                end
                ::SKIP_SKIN_PAGE::
           end
@@ -133,21 +135,21 @@ function SkinNotesSearch:search_create()
      self.SEARCH_SKIN_OBJECT_PRESENT = searchFilterSkinRange
 
      for skinSearchIndex, skinSearchIDs in pairs(searchFilterSkinRange) do
-          local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinSearchIDs}"
-          local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinSearchIDs}"
+          local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinSearchIDs}"
+          local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinSearchIDs}"
           local displaySkinIconPosX = displaySkinIconPositions()[skinSearchIndex][1]
           local displaySkinIconPosY = displaySkinIconPositions()[skinSearchIndex][2]
-          makeAnimatedLuaSprite(displaySkinIconTagButton, 'ui/buttons/display_button', displaySkinIconPosX, displaySkinIconPosY)
-          addAnimationByPrefix(displaySkinIconTagButton, 'static', 'static')
-          addAnimationByPrefix(displaySkinIconTagButton, 'selected', 'selected')
-          addAnimationByPrefix(displaySkinIconTagButton, 'blocked', 'blocked')
-          addAnimationByPrefix(displaySkinIconTagButton, 'hover', 'hovered-static')
-          addAnimationByPrefix(displaySkinIconTagButton, 'pressed', 'hovered-pressed')
-          playAnim(displaySkinIconTagButton, 'static', true)
-          scaleObject(displaySkinIconTagButton, 0.8, 0.8)
-          setObjectCamera(displaySkinIconTagButton, 'camHUD')
-          setProperty(F"{displaySkinIconTagButton}.antialiasing", false)
-          addLuaSprite(displaySkinIconTagButton)
+          makeAnimatedLuaSprite(displaySkinIconButtonTag, 'ui/buttons/display_button', displaySkinIconPosX, displaySkinIconPosY)
+          addAnimationByPrefix(displaySkinIconButtonTag, 'static', 'static')
+          addAnimationByPrefix(displaySkinIconButtonTag, 'selected', 'selected')
+          addAnimationByPrefix(displaySkinIconButtonTag, 'blocked', 'blocked')
+          addAnimationByPrefix(displaySkinIconButtonTag, 'hover', 'hovered-static')
+          addAnimationByPrefix(displaySkinIconButtonTag, 'pressed', 'hovered-pressed')
+          playAnim(displaySkinIconButtonTag, 'static', true)
+          scaleObject(displaySkinIconButtonTag, 0.8, 0.8)
+          setObjectCamera(displaySkinIconButtonTag, 'camHUD')
+          setProperty(F"{displaySkinIconButtonTag}.antialiasing", false)
+          addLuaSprite(displaySkinIconButtonTag)
 
           --- Gets the skins' display metadata value, acts as a helper function.
           --- Checks for any missing values and replaces it with its default value.
@@ -155,7 +157,7 @@ function SkinNotesSearch:search_create()
           ---@param constant any The constant default value, if the metadata element is missing.
           ---@return any
           local function displaySkinMetadata(metadata, constant)
-               local metaObjectsDisplay = self.TOTAL_SKIN_METAOBJ_ORDERED_DISPLAY[tonumber(skinSearchIDs)]
+               local metaObjectsDisplay = self.TOTAL_SKIN_METAOBJ_ALL_DISPLAY[tonumber(skinSearchIDs)]
                if metaObjectsDisplay           == '@void' then return constant end
                if metaObjectsDisplay[metadata] == nil     then return constant end
                return metaObjectsDisplay[metadata]
@@ -171,18 +173,18 @@ function SkinNotesSearch:search_create()
           local displaySkinIconPosOffsetY = displaySkinIconPosY + DISPLAY_SKIN_POSITION_OFFSET_Y
 
           local displaySkinIconSkinSprite = F"{self.statePaths}/{filterSearchBySkin[skinSearchIndex]}"
-          makeAnimatedLuaSprite(displaySkinIconTagSkin, displaySkinIconSkinSprite, displaySkinIconPosOffsetX, displaySkinIconPosOffsetY)
-          scaleObject(displaySkinIconTagSkin, displaySkinMetadataSize[1], displaySkinMetadataSize[2])
-          addAnimationByPrefix(displaySkinIconTagSkin, 'static', displaySkinMetadataPrefixes, displaySkinMetadataFrames, true)
+          makeAnimatedLuaSprite(displaySkinIconSkinTag, displaySkinIconSkinSprite, displaySkinIconPosOffsetX, displaySkinIconPosOffsetY)
+          scaleObject(displaySkinIconSkinTag, displaySkinMetadataSize[1], displaySkinMetadataSize[2])
+          addAnimationByPrefix(displaySkinIconSkinTag, 'static', displaySkinMetadataPrefixes, displaySkinMetadataFrames, true)
 
-          local DISPLAY_SKIN_OFFSET_X = getProperty(F"{displaySkinIconTagSkin}.offset.x")
-          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"{displaySkinIconTagSkin}.offset.y")
+          local DISPLAY_SKIN_OFFSET_X = getProperty(F"{displaySkinIconSkinTag}.offset.x")
+          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"{displaySkinIconSkinTag}.offset.y")
           local displaySkinIconOffsetX = DISPLAY_SKIN_OFFSET_X - displaySkinMetadataOffsets[1]
           local displaySkinIconOffsetY = DISPLAY_SKIN_OFFSET_Y + displaySkinMetadataOffsets[2]
-          addOffset(displaySkinIconTagSkin, 'static', displaySkinIconOffsetX, displaySkinIconOffsetY)
-          playAnim(displaySkinIconTagSkin, 'static')
-          setObjectCamera(displaySkinIconTagSkin, 'camHUD')
-          addLuaSprite(displaySkinIconTagSkin)
+          addOffset(displaySkinIconSkinTag, 'static', displaySkinIconOffsetX, displaySkinIconOffsetY)
+          playAnim(displaySkinIconSkinTag, 'static')
+          setObjectCamera(displaySkinIconSkinTag, 'camHUD')
+          addLuaSprite(displaySkinIconSkinTag)
 
           if skinSearchIndex > #filterSearchBySkin then
                if luaSpriteExists(displaySkinIconButton) == true and luaSpriteExists(displaySkinIconSkin) == true then
@@ -199,8 +201,8 @@ end
 ---@private
 ---@return nil
 function SkinNotesSearch:search_preview()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent == 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT == 0 then
           return
      end
 
@@ -213,7 +215,7 @@ function SkinNotesSearch:search_preview()
           end
 
           for skinPages = 1, self.TOTAL_SKIN_LIMIT do -- checks if each page has an existing skin object
-               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_INDICES[skinPages]
+               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_IDS[skinPages]
                local selectedSkinIndex = table.find(selectedSkinPage, self.SELECT_SKIN_CUR_SELECTION_INDEX)
                if selectedSkinIndex ~= nil then
                     return skinObjects[skinPages][selectedSkinIndex]
@@ -325,10 +327,10 @@ function SkinNotesSearch:search_preview()
           setObjectCamera(previewSkinGroupTag, 'camHUD')
           addLuaSprite(previewSkinGroupTag)
 
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  '', previewMetadataObjectAnims('strums', strumIndex, true))
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_PATH',   '', previewSkinGroupSprite)
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', '', metadataPreviewStrumsFrames)
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   '', metadataPreviewSize)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  'PREVIEW', previewMetadataObjectAnims('strums', strumIndex, true))
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_PATH',   'PREVIEW', previewSkinGroupSprite)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', 'PREVIEW', metadataPreviewStrumsFrames)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   'PREVIEW', metadataPreviewSize)
      end
      setTextString('skinStatePreviewName', currentPreviewDataNames)
 end
@@ -337,13 +339,13 @@ end
 ---@protected
 ---@return nil
 function SkinNotesSearch:search_checkbox_sync()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent == 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT == 0 then
           return
      end
 
      for searchPages = 1, #self.SEARCH_SKIN_OBJECT_PAGES do
-          local totalSkinObjectIDs = self.TOTAL_SKIN_OBJECTS_ID[tonumber(self.SEARCH_SKIN_OBJECT_PAGES[searchPages])]
+          local totalSkinObjectIDs = self.TOTAL_SKIN_OBJECTS_IDS[tonumber(self.SEARCH_SKIN_OBJECT_PAGES[searchPages])]
           for CharNames, CharValues in pairs(CHARACTERS) do
                local checkboxSkinChars = self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues]
                local CHECK_CHECKBOX_SKIN_INDEX_IS_CURRENT = checkboxSkinChars == self.SELECT_SKIN_CUR_SELECTION_INDEX
@@ -392,17 +394,17 @@ end
 ---@private
 ---@return nil
 function SkinNotesSearch:search_selection_byclick()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent == 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT == 0 then
           return
      end
 
      for searchIDs = 1, math.max(#self.SEARCH_SKIN_OBJECT_IDS, #self.SEARCH_SKIN_OBJECT_PAGES) do
           local searchSkinIDs  = tonumber( self.SEARCH_SKIN_OBJECT_IDS[searchIDs] )
           local searchSkinPage = tonumber( self.SEARCH_SKIN_OBJECT_PAGES[searchIDs]  )
-          local searchSkinPresentIDs = table.find(self.TOTAL_SKIN_OBJECTS_ID[searchSkinPage], searchSkinIDs)
+          local searchSkinPresentIDs = table.find(self.TOTAL_SKIN_OBJECTS_IDS[searchSkinPage], searchSkinIDs)
 
-          local totalSkinObjectsPagePerIds      = self.TOTAL_SKIN_OBJECTS_ID[searchSkinPage]
+          local totalSkinObjectsPagePerIds      = self.TOTAL_SKIN_OBJECTS_IDS[searchSkinPage]
           local totalSkinObjectsPagePerHovered  = self.TOTAL_SKIN_OBJECTS_HOVERED[searchSkinPage]
           local totalSkinObjectsPagePerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[searchSkinPage]
           local totalSkinObjectsPagePerSelected = self.TOTAL_SKIN_OBJECTS_SELECTED[searchSkinPage]
@@ -505,8 +507,8 @@ end
 ---@private
 ---@return nil
 function SkinNotesSearch:search_selection_byhover()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent == 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT == 0 then
           return
      end
 
@@ -514,9 +516,9 @@ function SkinNotesSearch:search_selection_byhover()
      for searchIDs = 1, math.max(#self.SEARCH_SKIN_OBJECT_IDS, #self.SEARCH_SKIN_OBJECT_PAGES) do
           local searchSkinIDs  = tonumber( self.SEARCH_SKIN_OBJECT_IDS[searchIDs] )
           local searchSkinPage = tonumber( self.SEARCH_SKIN_OBJECT_PAGES[searchIDs]  )
-          local searchSkinPresentIDs = table.find(self.TOTAL_SKIN_OBJECTS_ID[searchSkinPage], searchSkinIDs)
+          local searchSkinPresentIDs = table.find(self.TOTAL_SKIN_OBJECTS_IDS[searchSkinPage], searchSkinIDs)
 
-          local totalSkinObjectsPagePerIds      = self.TOTAL_SKIN_OBJECTS_ID[searchSkinPage]
+          local totalSkinObjectsPagePerIds      = self.TOTAL_SKIN_OBJECTS_IDS[searchSkinPage]
           local totalSkinObjectsPagePerHovered  = self.TOTAL_SKIN_OBJECTS_HOVERED[searchSkinPage]
           local totalSkinObjectsPagePerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[searchSkinPage]
           local totalSkinObjectsPagePerSelected = self.TOTAL_SKIN_OBJECTS_SELECTED[searchSkinPage]
@@ -558,44 +560,44 @@ end
 ---@private
 ---@return nil
 function SkinNotesSearch:search_selection_cursor()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent == 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT == 0 then
           return
      end
 
      if mouseClicked('left') or mousePressed('left') then 
           playAnim('mouseTexture', 'idleClick', true)
      else
+          setTextColor('mouseSkinToolTip', 'ffffff')
           playAnim('mouseTexture', 'idle', true)
      end
 
+     local searchSkinTextContentLength = #calculateSearch(self.stateClass, self.statePrefix, 'ids', false)
      for searchIDs = 1, math.max(#self.SEARCH_SKIN_OBJECT_IDS, #self.SEARCH_SKIN_OBJECT_PAGES) do
           local searchSkinIDs = tonumber( self.SEARCH_SKIN_OBJECT_IDS[searchIDs] )
           local searchSkinPage  = tonumber( self.SEARCH_SKIN_OBJECT_PAGES[searchIDs]  )
-          local searchSkinPresentIDs = table.find(self.TOTAL_SKIN_OBJECTS_ID[searchSkinPage], searchSkinIDs)
+          local searchSkinPresentIDs = table.find(self.TOTAL_SKIN_OBJECTS_IDS[searchSkinPage], searchSkinIDs)
 
           local totalSkinObjectsPagePerHovered  = self.TOTAL_SKIN_OBJECTS_HOVERED[searchSkinPage]
           local totalSkinObjectsPagePerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[searchSkinPage]
 
           local displaySkinIconButtonTag       = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{searchSkinIDs}"
           local displaySkinIconButtonTagFilter = displaySkinIconButtonTag:gsub('%d+', tostring(self.SELECT_SKIN_CUR_SELECTION_INDEX))
-          if hoverObject(displaySkinIconButtonTagFilter, 'camHUD') == true then
-               goto SKIP_SELECTED_SEARCH_SKIN_HOVERED -- disabled deselecting
-          end
-
-          if totalSkinObjectsPagePerClicked[searchSkinPresentIDs] == true and luaSpriteExists(displaySkinIconButtonTag) == true then
-               playAnim('mouseTexture', 'handClick', true)
-          end
-          if totalSkinObjectsPagePerHovered[searchSkinPresentIDs] == true and luaSpriteExists(displaySkinIconButtonTag) == true then
-               playAnim('mouseTexture', 'hand', true)
+          if hoverObject(displaySkinIconButtonTagFilter, 'camHUD') == false then
+               if totalSkinObjectsPagePerClicked[searchSkinPresentIDs] == true and luaSpriteExists(displaySkinIconButtonTag) == true then
+                    playAnim('mouseTexture', 'handClick', true)
+               end
+               if totalSkinObjectsPagePerHovered[searchSkinPresentIDs] == true and luaSpriteExists(displaySkinIconButtonTag) == true then
+                    playAnim('mouseTexture', 'hand', true)
+               end
           end
 
           local previewSkinObjectAnims        = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
           local previewSkinObjectMissingAnims = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[searchSkinPage][searchSkinPresentIDs]
           local previewSkinObjectDefaultAnims = previewSkinObjectMissingAnims[previewSkinObjectAnims]
-          if previewSkinObjectDefaultAnims == true then
+          if previewSkinObjectDefaultAnims == true and searchSkinTextContentLength > 0 then
                if hoverObject(displaySkinIconButtonTag, 'camHUD') == false then
-                    goto SKIP_SELECTED_SEARCH_SKIN_HOVERED
+                    goto SKIP_SELECTED_SEARCH_SKIN_MISSING_ANIMS_HOVERED
                end
 
                if mouseClicked('left') then 
@@ -604,11 +606,13 @@ function SkinNotesSearch:search_selection_cursor()
                if mouseClicked('left') or mousePressed('left') then 
                     playAnim('mouseTexture', 'disabledClick', true)
                else
+                    setTextColor('mouseSkinToolTip', 'ff293d')
                     playAnim('mouseTexture', 'disabled', true)
                end
+               ::SKIP_SELECTED_SEARCH_SKIN_MISSING_ANIMS_HOVERED::
           end
-          ::SKIP_SELECTED_SEARCH_SKIN_HOVERED::
      end
+     
      
      local MINIMUM_SKIN_LIMIT = 1
      if hoverObject('pageScrollbarThumb', 'camHUD') == true and self.TOTAL_SKIN_LIMIT == MINIMUM_SKIN_LIMIT then
@@ -617,7 +621,6 @@ function SkinNotesSearch:search_selection_cursor()
           else
                playAnim('mouseTexture', 'disabled', true)
           end
-
           if mouseClicked('left') then 
                playSound('cancel') 
           end

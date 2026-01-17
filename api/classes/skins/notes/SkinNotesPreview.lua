@@ -6,7 +6,7 @@ local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-str
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 
@@ -26,8 +26,8 @@ local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 --- Creates the preview strums' graphic sprites and text.
 ---@return nil
 function SkinNotesPreview:preview()
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent > 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT > 0 then
           return
      end
 
@@ -40,7 +40,7 @@ function SkinNotesPreview:preview()
           end
 
           for skinPages = 1, self.TOTAL_SKIN_LIMIT do -- checks if each page has an existing skin object
-               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_INDICES[skinPages]
+               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_IDS[skinPages]
                local selectedSkinIndex = table.find(selectedSkinPage, self.SELECT_SKIN_CUR_SELECTION_INDEX)
                if selectedSkinIndex ~= nil then
                     return skinObjects[skinPages][selectedSkinIndex]
@@ -152,10 +152,10 @@ function SkinNotesPreview:preview()
           setObjectCamera(previewSkinGroupTag, 'camHUD')
           addLuaSprite(previewSkinGroupTag)
 
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  '', previewMetadataObjectAnims('strums', strumIndex, true))
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_PATH',   '', previewSkinGroupSprite)
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', '', metadataPreviewStrumsFrames)
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   '', metadataPreviewSize)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  'PREVIEW', previewMetadataObjectAnims('strums', strumIndex, true))
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_PATH',   'PREVIEW', previewSkinGroupSprite)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', 'PREVIEW', metadataPreviewStrumsFrames)
+          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   'PREVIEW', metadataPreviewSize)
      end
      setTextString('skinStatePreviewName', currentPreviewDataNames)
 end
@@ -180,7 +180,7 @@ function SkinNotesPreview:preview_animation()
           end
 
           for skinPages = 1, self.TOTAL_SKIN_LIMIT do -- checks if each page has an existing skin object
-               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_INDICES[skinPages]
+               local selectedSkinPage  = self.TOTAL_SKIN_OBJECTS_IDS[skinPages]
                local selectedSkinIndex = table.find(selectedSkinPage, self.SELECT_SKIN_CUR_SELECTION_INDEX)
                if selectedSkinIndex ~= nil then
                     return skinObjects[skinPages][selectedSkinIndex]

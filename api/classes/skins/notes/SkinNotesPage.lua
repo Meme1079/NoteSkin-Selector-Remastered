@@ -5,7 +5,7 @@ local SkinSaves = require 'mods.NoteSkin Selector Remastered.api.classes.skins.s
 local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
-local global    = require 'mods.NoteSkin Selector Remastered.api.modules.newglobal'
+local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 
@@ -24,10 +24,6 @@ local SCROLLBAR_THUMB_SYNC = false -- * Ignore this btw
 ---@return nil
 function SkinNotesPage:page_scrollbar(snapToPage)
      local snapToPage = snapToPage == nil and true or false
-
-     if self.SCROLLBAR_TRACK_MAJOR_SNAP == nil or self.SCROLLBAR_TRACK_MINOR_SNAP == nil then
-          return
-     end
 
      local pageScrollbarThumb = 'pageScrollbarThumb'
      if clickObject(pageScrollbarThumb, 'camHUD') then
@@ -167,8 +163,8 @@ function SkinNotesPage:page_moved()
      local gameControlPressedDown = keyboardJustConditionPressed('E', getVar('skinSearchInputFocus') == false)
      local gameControlPressedUp   = keyboardJustConditionPressed('Q', getVar('skinSearchInputFocus') == false)
 
-     local skinSearchInput_textContent = getVar('skinSearchInput_textContent') or ''
-     if #skinSearchInput_textContent > 0 then
+     local SEARCH_INPUT_TEXT_CONTENT = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
+     if #SEARCH_INPUT_TEXT_CONTENT > 0 then
           if gameControlPressedUp or gameControlPressedDown then
                setTextColor('skinStatePreviewPage', 'f0b72f')
                playSound('cancel')
@@ -176,7 +172,7 @@ function SkinNotesPage:page_moved()
           return
      end
 
-     local totalSkinObjectsPagePerIds     = self.TOTAL_SKIN_OBJECTS_ID[self.SCROLLBAR_PAGE_INDEX]
+     local totalSkinObjectsPagePerIds     = self.TOTAL_SKIN_OBJECTS_IDS[self.SCROLLBAR_PAGE_INDEX]
      local totalSkinObjectsPagePerClicked = self.TOTAL_SKIN_OBJECTS_CLICKED[self.SCROLLBAR_PAGE_INDEX]
      for curIDs = totalSkinObjectsPagePerIds[1], totalSkinObjectsPagePerIds[#totalSkinObjectsPagePerIds] do
           local curSkinIDs = curIDs - (MAX_NUMBER_CHUNK * (self.SCROLLBAR_PAGE_INDEX - 1))

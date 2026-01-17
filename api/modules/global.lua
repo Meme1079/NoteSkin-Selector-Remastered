@@ -1,31 +1,54 @@
-require 'table.new'
+---@module
 local global = {}
 
-function global.switch(value) -- calling operation (); first argument value
-     return function(cases)   -- calling operation (); "second" argument table
-          if cases[value] or cases.default then -- checks if any cases or default case exists
-               return (cases[value] or cases.default)()
+---@enum DIRECTION
+global.DIRECTION = {
+     LEFT  = 1,
+     RIGHT = 2
+}
+---@enum CHARACTERS
+global.CHARACTERS = {
+     PLAYER   = 1,
+     OPPONENT = 2
+}
+
+---@alias ChildClasses
+---| 'inherit' # The childclass to inherit and dervieves its properties from a parentclass.
+---| 'extends' # The childclass extensions to be fully chained and link to its main parentclass.
+
+--- Inherits and/or chain extensions from multiple childclasses to its main parentclass.
+---@param childClasses ChildClasses The multiple classes to inherit.
+---@return table Returns all the parent classes into one table.
+function global.inheritedClasses(childClasses)
+     local childClassesOutput = {}
+     if childClasses.extends ~= nil then
+          for _, classes in pairs(childClasses.extends) do
+               childClassesOutput[#childClassesOutput+1] = classes
           end
-          return -- if not, return nothing
      end
+     if childClasses.inherit ~= nil then
+          for _, classes in pairs(childClasses.inherit) do
+               childClassesOutput[#childClassesOutput+1] = classes
+          end
+     end
+
+     local classes = {}
+     function classes:__index(index)
+          for classesIndex = 1, #childClassesOutput do
+               local result = childClassesOutput[classesIndex][index]
+               if result then
+                    return result
+               end
+          end
+          return nil
+     end
+     return setmetatable({}, classes)
 end
 
-function global.toAllMetatable(tab, default)
-     local duplicateMetaData = { 
-          __index    = function() return default end,
-          __newindex = function() return default end
-     }
+---@type number
+global.MAX_NUMBER_CHUNK = 16
 
-     local duplicate = table.new(0xff, 0)
-     for keys, values in pairs(tab) do
-          if type(values) == "table" then
-               values = global.toAllMetatable(setmetatable(values, duplicateMetaData), default)
-          else
-               values = values
-          end
-          duplicate[keys] = values
-     end
-     return setmetatable(duplicate, duplicateMetaData)
-end
+---@type number
+global.MAX_ALLOCATED_SPACE = 0x64
 
 return global
