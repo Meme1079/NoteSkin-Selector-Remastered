@@ -298,8 +298,7 @@ local SkinStatesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 local Notes    = SkinNotes:new('notes', 'noteSkins', 'NOTE_assets')
 local Splashes = SkinSplashes:new('splashes', 'noteSplashes', 'noteSplashes')
-
-local Skins = SkinStates:new({Notes, Splashes}, SkinStatesGSave:get('dataStateName', '', 'notes'))
+local Skins    = SkinStates:new({Notes, Splashes}, SkinStatesGSave:get('dataStateName', '', 'notes'))
 Skins:load()
 Skins:create()
 

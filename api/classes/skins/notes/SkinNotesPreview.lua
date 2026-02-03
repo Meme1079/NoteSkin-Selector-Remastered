@@ -8,8 +8,6 @@ local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.stand
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
-local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
-
 local DIRECTION        = global.DIRECTION
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 
