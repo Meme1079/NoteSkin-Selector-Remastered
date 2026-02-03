@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="previewAnimIcon_toggle.png">
+	<!-- Created using the Spritesheet and XML generator -->
+	<!-- https://uncertainprod.github.io/FNF-Spritesheet-XML-generator-Web -->
+	<SubTexture name="active-focused0000" x="0" y="0" width="178" height="106" frameX="-16" frameY="2" frameWidth="192" frameHeight="102"/>
+	<SubTexture name="active-hovered0000" x="172" y="200" width="172" height="94" frameX="-16" frameY="-4" frameWidth="192" frameHeight="102"/>
+	<SubTexture name="active-static0000" x="0" y="106" width="172" height="94" frameX="-16" frameY="-4" frameWidth="192" frameHeight="102"/>
+	<SubTexture name="inactive-focused0000" x="178" y="0" width="178" height="106" frameX="2" frameY="2" frameWidth="192" frameHeight="102"/>
+	<SubTexture name="inactive-hovered0000" x="172" y="106" width="172" height="94" frameX="-4" frameY="-4" frameWidth="192" frameHeight="102"/>
+	<SubTexture name="inactive-static0000" x="0" y="200" width="172" height="94" frameX="-4" frameY="-4" frameWidth="192" frameHeight="102"/>
+</TextureAtlas>
