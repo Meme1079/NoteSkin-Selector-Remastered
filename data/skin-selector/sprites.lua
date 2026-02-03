@@ -132,7 +132,7 @@ addAnimationByPrefix('previewSkinToggleAnims', 'inactive-static', 'inactive-stat
 addAnimationByPrefix('previewSkinToggleAnims', 'inactive-hovered', 'inactive-hovered', 24, false)
 addAnimationByPrefix('previewSkinToggleAnims', 'inactive-focused', 'inactive-focused', 24, false)
 playAnim('previewSkinToggleAnims', 'inactive-static', true)
-scaleObject('previewSkinToggleAnims', 0.51, 0.55)
+scaleObject('previewSkinToggleAnims', 0.51, 0.562)
 setObjectCamera('previewSkinToggleAnims', 'camHUD')
 setProperty('previewSkinToggleAnims.antialiasing', false)
 addLuaSprite('previewSkinToggleAnims')
