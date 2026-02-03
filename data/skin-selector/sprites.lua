@@ -52,6 +52,7 @@ addLuaSprite('pageScrollbarTrack', true)
 -- Selection Animation Buttons --
 
 local PREVIEW_SKIN_BUTTON_SPRITE    = 'ui/buttons/preview anim/previewAnimIcon_button'
+local PREVIEW_SKIN_TOGGLE_SPRITE    = 'ui/buttons/preview anim/previewAnimIcon_toggle'
 local PREVIEW_SKIN_ICON_SPRITE      = 'ui/buttons/preview anim/previewAnimInfoDirection_button'
 local PREVIEW_SKIN_SELECTION_SPRITE = 'ui/buttons/preview anim/previewAnimSelection_button'
 
@@ -122,6 +123,26 @@ setTextSize('previewSkinButtonSelectionText', 25)
 setObjectCamera('previewSkinButtonSelectionText', 'camHUD')
 setProperty('previewSkinButtonSelectionText.antialiasing', false)
 addLuaText('previewSkinButtonSelectionText')
+
+makeAnimatedLuaSprite('previewSkinToggleAnims', PREVIEW_SKIN_TOGGLE_SPRITE, 783, 600)
+addAnimationByPrefix('previewSkinToggleAnims', 'active-static', 'active-static', 24, false)
+addAnimationByPrefix('previewSkinToggleAnims', 'active-hovered', 'active-hovered', 24, false)
+addAnimationByPrefix('previewSkinToggleAnims', 'active-focused', 'active-focused', 24, false)
+addAnimationByPrefix('previewSkinToggleAnims', 'inactive-static', 'inactive-static', 24, false)
+addAnimationByPrefix('previewSkinToggleAnims', 'inactive-hovered', 'inactive-hovered', 24, false)
+addAnimationByPrefix('previewSkinToggleAnims', 'inactive-focused', 'inactive-focused', 24, false)
+playAnim('previewSkinToggleAnims', 'inactive-static', true)
+scaleObject('previewSkinToggleAnims', 0.51, 0.55)
+setObjectCamera('previewSkinToggleAnims', 'camHUD')
+setProperty('previewSkinToggleAnims.antialiasing', false)
+addLuaSprite('previewSkinToggleAnims')
+
+makeLuaText('previewSkinToggleAnimDescText', 'Enable Preview Animations', 0, 902.6, 515 + 105)
+setTextFont('previewSkinToggleAnimDescText', 'sonic.ttf')
+setTextSize('previewSkinToggleAnimDescText', 20)
+setObjectCamera('previewSkinToggleAnimDescText', 'camHUD')
+setProperty('previewSkinToggleAnimDescText.antialiasing', false)
+addLuaText('previewSkinToggleAnimDescText')
 
 -- General Infos --
 
