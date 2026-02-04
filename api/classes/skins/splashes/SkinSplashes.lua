@@ -43,7 +43,6 @@ end
 function SkinSplashes:load()
      self.TOTAL_SKINS       = states.getTotalSkins(self.stateClass, false)
      self.TOTAL_SKINS_PATHS = states.getTotalSkins(self.stateClass, true)
-     --self.TOTAL_SKINS_NAMES = states.getTotalSkinNames(self.stateClass)
 
      -- Object Properties --
 
@@ -60,11 +59,8 @@ function SkinSplashes:load()
 
      self.TOTAL_SKIN_METAOBJ_DISPLAY  = states.getTotalMetadataSkinObjects(self.stateClass, 'display', true)
      self.TOTAL_SKIN_METAOBJ_PREVIEW  = states.getTotalMetadataSkinObjects(self.stateClass, 'preview', true)
-     --self.TOTAL_SKIN_METAOBJ_SKINS    = states.getTotalMetadataSkinObjects(self.stateClass, 'skins', true)
 
      self.TOTAL_SKIN_METAOBJ_ALL_DISPLAY = states.getTotalMetadataSkinObjectAll(self.stateClass, 'display', true)
-     --self.TOTAL_SKIN_METAOBJ_ALL_PREVIEW = states.getTotalMetadataSkinObjectAll(self.stateClass, 'preview', true)
-     --self.TOTAL_SKIN_METAOBJ_ALL_SKINS   = states.getTotalMetadataSkinObjectAll(self.stateClass, 'skins', true)
 
      -- Slider Properties --
 
@@ -92,11 +88,9 @@ function SkinSplashes:load()
 
      local PREVIEW_SKIN_OBJECT_INDEX = SkinSplashesGSave:get('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
 
-     --self.PREVIEW_CONST_METADATA_DISPLAY       = json.parse(getTextFromFile('json/splashes/constant/display.json'))
      self.PREVIEW_CONST_METADATA_PREVIEW       = json.parse(getTextFromFile('json/splashes/constant/preview.json'))
      self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS = json.parse(getTextFromFile('json/splashes/constant/preview_anims.json'))
      self.PREVIEW_CONST_METADATA_STRUMS        = json.parse(getTextFromFile('json/splashes/constant/strums.json'))
-     --self.PREVIEW_CONST_METADATA_SKINS         = json.parse(getTextFromFile('json/splashes/constant/skins.json'))
 
      self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS_NOTES = json.parse(getTextFromFile('json/notes/constant/preview_anims.json'))
 
@@ -109,6 +103,13 @@ function SkinSplashes:load()
           self.TOTAL_SKIN_METAOBJ_PREVIEW,
           self.TOTAL_SKIN_LIMIT
      )
+
+     self.PREVIEW_SKIN_TOGGLE_HOVERED = {false}
+     self.PREVIEW_SKIN_TOGGLE_CLICKED = {false}
+
+     self.PREVIEW_SKIN_TOGGLE_STATES  = {'inactive', 'active'}
+     self.PREVIEW_SKIN_TOGGLE_COUNTER = 1
+     self.PREVIEW_SKIN_TOGGLE_INDEX   = 1
 
      -- Checkbox Skin Properties --
 

@@ -452,31 +452,26 @@ function SkinNotesPreview:preview_toggle()
      self:preview_toggle_bycursor()
 end
 
-local homosexual = false
-local heterosexual = false
-local er = 0
-local yas = 1
-
-bisexual = {'inactive', 'active'}
-
 ---@private
 ---@return nil
 function SkinNotesPreview:preview_toggle_byclick()
      local previewSkinToggleAnimsTag = 'previewSkinToggleAnims'
 
+     local previewSkinToggleStates   = self.PREVIEW_SKIN_TOGGLE_STATES[self.PREVIEW_SKIN_TOGGLE_INDEX]
      local previewSkinToggleClicked  = clickObject(previewSkinToggleAnimsTag, 'camHUD')
      local previewSkinToggleReleased = mouseReleased('left')
-
-     if previewSkinToggleClicked == true and heterosexual == false then
-          playAnim(previewSkinToggleAnimsTag, F"{bisexual[yas]}-focused", true)
-          heterosexual = true
-     end
-     if previewSkinToggleReleased == true and heterosexual == true then
-          er = er + 1
-          yas = er % 2 == 0 and 1 or 2
-
-          playAnim(previewSkinToggleAnimsTag, F"{bisexual[yas]}-static", true)
-          heterosexual = false
+     for clickedIndex, clickedElements in ipairs(self.PREVIEW_SKIN_TOGGLE_CLICKED) do
+          if previewSkinToggleClicked == true and clickedElements == false then
+               playAnim(previewSkinToggleAnimsTag, F"{previewSkinToggleStates}-focused", true)
+               self.PREVIEW_SKIN_TOGGLE_CLICKED[clickedIndex] = true
+          end
+          if previewSkinToggleReleased == true and clickedElements == true then
+               self.PREVIEW_SKIN_TOGGLE_COUNTER = self.PREVIEW_SKIN_TOGGLE_COUNTER + 1
+               self.PREVIEW_SKIN_TOGGLE_INDEX   = self.PREVIEW_SKIN_TOGGLE_COUNTER % 2 == 0 and 1 or 2
+     
+               playAnim(previewSkinToggleAnimsTag, F"{previewSkinToggleStates}-states", true)
+               self.PREVIEW_SKIN_TOGGLE_CLICKED[clickedIndex] = false
+          end
      end
 end
 
@@ -484,36 +479,45 @@ end
 ---@return nil
 function SkinNotesPreview:preview_toggle_byhover()
      local previewSkinToggleAnimsTag = 'previewSkinToggleAnims'
-     if hoverObject(previewSkinToggleAnimsTag, 'camHUD') == true then
-          homosexual = true
-     end
-     if hoverObject(previewSkinToggleAnimsTag, 'camHUD') == false then
-          homosexual = false
+
+     local previewSkinToggleStates   = self.PREVIEW_SKIN_TOGGLE_STATES[self.PREVIEW_SKIN_TOGGLE_INDEX]
+     for _, clickedElements in ipairs(self.PREVIEW_SKIN_TOGGLE_CLICKED) do
+          self.PREVIEW_SKIN_TOGGLE_INDEX = self.PREVIEW_SKIN_TOGGLE_COUNTER % 2 == 0 and 1 or 2
+
+          if clickedElements == true then
+               return
+          end
      end
 
-     yas = er % 2 == 0 and 1 or 2
-     if heterosexual == true then
-          return
-     end
-     if homosexual == true then
-          playAnim(previewSkinToggleAnimsTag, F"{bisexual[yas]}-hovered", true)
-     end
-     if homosexual == false then
-          playAnim(previewSkinToggleAnimsTag, F"{bisexual[yas]}-static", true)
+     for hoveredIndex, hoveredElements in ipairs(self.PREVIEW_SKIN_TOGGLE_HOVERED) do
+          if hoverObject(previewSkinToggleAnimsTag, 'camHUD') == true then
+               self.PREVIEW_SKIN_TOGGLE_HOVERED[hoveredIndex] = true
+          end
+          if hoverObject(previewSkinToggleAnimsTag, 'camHUD') == false then
+               self.PREVIEW_SKIN_TOGGLE_HOVERED[hoveredIndex] = false
+          end
+
+          if hoveredElements == true then
+               playAnim(previewSkinToggleAnimsTag, F"{previewSkinToggleStates}-hovered", true)
+          end
+          if hoveredElements == false then
+               playAnim(previewSkinToggleAnimsTag, F"{previewSkinToggleStates}-static", true)
+          end
      end
 end
 
 ---@private
 ---@return nil
 function SkinNotesPreview:preview_toggle_bycursor()
-     local previewSkinToggleAnimsTag = 'previewSkinToggleAnims'
-     if heterosexual == true then
-          playAnim('mouseTexture', 'handClick', true)
-          return
-     end
-     if homosexual == true then
-          playAnim('mouseTexture', 'hand', true)
-          return
+     for fart = 1, math.max(#self.PREVIEW_SKIN_TOGGLE_HOVERED, #self.PREVIEW_SKIN_TOGGLE_CLICKED) do
+          if self.PREVIEW_SKIN_TOGGLE_CLICKED[fart] == true then
+               playAnim('mouseTexture', 'handClick', true)
+               return
+          end
+          if self.PREVIEW_SKIN_TOGGLE_HOVERED[fart] == true then
+               playAnim('mouseTexture', 'hand', true)
+               return
+          end
      end
 end
 
