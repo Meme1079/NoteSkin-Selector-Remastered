@@ -93,11 +93,8 @@ function SkinStates:update()
      self.__stateSkinMain:checkbox_selection()
      self.__stateSkinMain:checkbox_checking()
      self.__stateSkinMain:preview_selection()
+     self.__stateSkinMain:preview_toggle()
      self.__stateSkinMain:preview_animation()
-
-     
-     self.__stateSkinMain:preview_enable_byhover()
-     self.__stateSkinMain:preview_enable_byclick()
 end
 
 --- Main skinstate saving, obviously self-explanatory.

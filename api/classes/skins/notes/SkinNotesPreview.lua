@@ -444,6 +444,14 @@ function SkinNotesPreview:preview_selection_name()
      setTextString('previewSkinButtonSelectionText', previewSkinAnimationName)
 end
 
+---
+---@return nil
+function SkinNotesPreview:preview_toggle()
+     self:preview_toggle_byhover()
+     self:preview_toggle_byclick()
+     self:preview_toggle_bycursor()
+end
+
 local homosexual = false
 local heterosexual = false
 local er = 0
@@ -453,7 +461,7 @@ bisexual = {'inactive', 'active'}
 
 ---@private
 ---@return nil
-function SkinNotesPreview:preview_enable_byclick()
+function SkinNotesPreview:preview_toggle_byclick()
      local previewSkinToggleAnimsTag = 'previewSkinToggleAnims'
 
      local previewSkinToggleClicked  = clickObject(previewSkinToggleAnimsTag, 'camHUD')
@@ -474,7 +482,7 @@ end
 
 ---@private
 ---@return nil
-function SkinNotesPreview:preview_enable_byhover()
+function SkinNotesPreview:preview_toggle_byhover()
      local previewSkinToggleAnimsTag = 'previewSkinToggleAnims'
      if hoverObject(previewSkinToggleAnimsTag, 'camHUD') == true then
           homosexual = true
@@ -497,7 +505,16 @@ end
 
 ---@private
 ---@return nil
-function SkinNotesPreview:preview_enable_bycursor()
+function SkinNotesPreview:preview_toggle_bycursor()
+     local previewSkinToggleAnimsTag = 'previewSkinToggleAnims'
+     if heterosexual == true then
+          playAnim('mouseTexture', 'handClick', true)
+          return
+     end
+     if homosexual == true then
+          playAnim('mouseTexture', 'hand', true)
+          return
+     end
 end
 
 return SkinNotesPreview
