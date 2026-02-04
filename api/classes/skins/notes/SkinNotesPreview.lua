@@ -444,14 +444,55 @@ function SkinNotesPreview:preview_selection_name()
      setTextString('previewSkinButtonSelectionText', previewSkinAnimationName)
 end
 
+local homosexual = false
+local heterosexual = false
+local er = 0
+local yas = 1
+
+bisexual = {'inactive', 'active'}
+
 ---@private
 ---@return nil
 function SkinNotesPreview:preview_enable_byclick()
+     local previewSkinToggleAnimsTag = 'previewSkinToggleAnims'
+
+     local previewSkinToggleClicked  = clickObject(previewSkinToggleAnimsTag, 'camHUD')
+     local previewSkinToggleReleased = mouseReleased('left')
+
+     if previewSkinToggleClicked == true and heterosexual == false then
+          playAnim(previewSkinToggleAnimsTag, F"{bisexual[yas]}-focused", true)
+          heterosexual = true
+     end
+     if previewSkinToggleReleased == true and heterosexual == true then
+          er = er + 1
+          yas = er % 2 == 0 and 1 or 2
+
+          playAnim(previewSkinToggleAnimsTag, F"{bisexual[yas]}-static", true)
+          heterosexual = false
+     end
 end
 
 ---@private
 ---@return nil
 function SkinNotesPreview:preview_enable_byhover()
+     local previewSkinToggleAnimsTag = 'previewSkinToggleAnims'
+     if hoverObject(previewSkinToggleAnimsTag, 'camHUD') == true then
+          homosexual = true
+     end
+     if hoverObject(previewSkinToggleAnimsTag, 'camHUD') == false then
+          homosexual = false
+     end
+
+     yas = er % 2 == 0 and 1 or 2
+     if heterosexual == true then
+          return
+     end
+     if homosexual == true then
+          playAnim(previewSkinToggleAnimsTag, F"{bisexual[yas]}-hovered", true)
+     end
+     if homosexual == false then
+          playAnim(previewSkinToggleAnimsTag, F"{bisexual[yas]}-static", true)
+     end
 end
 
 ---@private
