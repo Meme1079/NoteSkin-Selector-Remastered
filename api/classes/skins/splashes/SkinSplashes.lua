@@ -104,13 +104,6 @@ function SkinSplashes:load()
           self.TOTAL_SKIN_LIMIT
      )
 
-     self.PREVIEW_SKIN_TOGGLE_HOVERED = {false}
-     self.PREVIEW_SKIN_TOGGLE_CLICKED = {false}
-
-     self.PREVIEW_SKIN_TOGGLE_STATES  = {'inactive', 'active'}
-     self.PREVIEW_SKIN_TOGGLE_COUNTER = 1
-     self.PREVIEW_SKIN_TOGGLE_INDEX   = 1
-
      -- Checkbox Skin Properties --
 
      local CHECKBOX_SKIN_OBJECT_CHARS_PLAYER = SkinSplashesGSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER', self.stateClass:upper(), 0)
