@@ -2,6 +2,7 @@ luaDebugMode = true
 
 local SkinSaves    = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinSaves'
 local SkinStates   = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinStates'
+local SkinToggleUI = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.ui.SkinToggleUI'
 local SkinNotes    = require 'mods.NoteSkin Selector Remastered.api.classes.skins.notes.SkinNotes'
 local SkinSplashes = require 'mods.NoteSkin Selector Remastered.api.classes.skins.splashes.SkinSplashes'
 
@@ -124,6 +125,7 @@ setObjectCamera('previewSkinButtonSelectionText', 'camHUD')
 setProperty('previewSkinButtonSelectionText.antialiasing', false)
 addLuaText('previewSkinButtonSelectionText')
 
+local previewSkinToggleAnims = SkinToggleUI:new('previewSkinToggleAnims')
 makeAnimatedLuaSprite('previewSkinToggleAnims', PREVIEW_SKIN_TOGGLE_SPRITE, 783, 600)
 addAnimationByPrefix('previewSkinToggleAnims', 'active-static', 'active-static', 24, false)
 addAnimationByPrefix('previewSkinToggleAnims', 'active-hovered', 'active-hovered', 24, false)
@@ -337,6 +339,8 @@ end
 function onUpdatePost(elapsed)
      Skins:switch()
      Skins:update()
+
+     previewSkinToggleAnims:update()
 end
 
 function onDestroy()

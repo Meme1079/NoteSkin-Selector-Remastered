@@ -1,6 +1,6 @@
 luaDebugMode = true
 
-local SkinSaves = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinSaves'
+local SkinSaves    = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinSaves'
 
 local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
@@ -509,12 +509,12 @@ end
 ---@private
 ---@return nil
 function SkinNotesPreview:preview_toggle_bycursor()
-     for fart = 1, math.max(#self.PREVIEW_SKIN_TOGGLE_HOVERED, #self.PREVIEW_SKIN_TOGGLE_CLICKED) do
-          if self.PREVIEW_SKIN_TOGGLE_CLICKED[fart] == true then
+     for toggleIndex = 1, math.max(#self.PREVIEW_SKIN_TOGGLE_HOVERED, #self.PREVIEW_SKIN_TOGGLE_CLICKED) do
+          if self.PREVIEW_SKIN_TOGGLE_CLICKED[toggleIndex] == true then
                playAnim('mouseTexture', 'handClick', true)
                return
           end
-          if self.PREVIEW_SKIN_TOGGLE_HOVERED[fart] == true then
+          if self.PREVIEW_SKIN_TOGGLE_HOVERED[toggleIndex] == true then
                playAnim('mouseTexture', 'hand', true)
                return
           end
