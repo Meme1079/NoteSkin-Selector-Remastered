@@ -159,7 +159,12 @@ end
 --- Page moving functionality, uses keys for switching pages.
 ---@return nil
 function SkinNotesPage:page_moved()
-     if self.SCROLLBAR_TRACK_THUMB_PRESSED == true then return end
+     if SkinNotesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == true then
+          return
+     end
+     if self.SCROLLBAR_TRACK_THUMB_PRESSED == true then 
+          return 
+     end
      local gameControlPressedDown = keyboardJustConditionPressed('E', getVar('skinSearchInputFocus') == false)
      local gameControlPressedUp   = keyboardJustConditionPressed('Q', getVar('skinSearchInputFocus') == false)
 

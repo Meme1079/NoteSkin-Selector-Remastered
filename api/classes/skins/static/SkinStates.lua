@@ -55,6 +55,10 @@ end
 --- Switches the current skinstate to another skinstate, self-explanatory.
 ---@return nil
 function SkinStates:switch()
+     if SkinStatesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == true then
+          return
+     end
+
      local conditionPressedSwitchLeft  = keyboardJustConditionPressed('O', not getVar('skinSearchInputFocus'))
      local conditionPressedSwitchRight = keyboardJustConditionPressed('P', not getVar('skinSearchInputFocus'))
      if not (conditionPressedSwitchLeft or conditionPressedSwitchRight) then 

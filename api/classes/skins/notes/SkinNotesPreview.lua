@@ -164,7 +164,7 @@ function SkinNotesPreview:preview_animation()
      if SkinNotesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == false then
           return
      end
-     
+
      local firstJustPressed  = callMethodFromClass('flixel.FlxG', 'keys.firstJustPressed', {''})
      local firstJustReleased = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
      local firstJustInputPressed  = firstJustPressed  == -1 and firstJustPressed  == nil
