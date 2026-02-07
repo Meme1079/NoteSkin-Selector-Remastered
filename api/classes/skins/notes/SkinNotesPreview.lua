@@ -403,7 +403,7 @@ function SkinNotesPreview:preview_selection_byhover()
      end
 end
 
---- Preview main strum animation selection button hovering functionality and animations.
+--- Preview main cursor interactive functionality and animations.
 ---@private
 ---@return nil
 function SkinNotesPreview:preview_selection_bycursor()

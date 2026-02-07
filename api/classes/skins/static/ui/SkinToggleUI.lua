@@ -8,14 +8,14 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 local hoverObject = funkinlua.hoverObject
 local clickObject = funkinlua.clickObject
 
----
+--- Toggle user-interface class for implementing its functionality.
 ---@class SkinToggleUI
 local SkinToggleUI = {}
 local SkinStatesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
----
----@param toggleTag string
----@param toggleStatus nil|bool
+--- Initializes the main and other attributes for the toggle UI.
+---@param toggleTag string The corresponding tag name to implement its functionality.
+---@param toggleStatus? bool The toggle status state being on or off, on being default.
 ---@return SkinToggleUI
 function SkinToggleUI:new(toggleTag, toggleStatus)
      local self = setmetatable({}, {__index = self})
@@ -33,8 +33,9 @@ function SkinToggleUI:new(toggleTag, toggleStatus)
      return self
 end
 
----
----@param extraCode fun(): nil
+--- Update function for the toggle, implements its toggleable ability and other UI related stuff.
+--- Additionally adds extra code for specific functions.
+---@param extraCode fun(): nil Adds extra code for extra functionability.
 ---@return nil
 function SkinToggleUI:update(extraCode)
      self:__click()
@@ -43,26 +44,26 @@ function SkinToggleUI:update(extraCode)
      extraCode()
 end
 
----
+--- Destroys the toggle functionality, that's it.
 ---@return nil
 function SkinToggleUI:destroy()
      setmetatable(self, nil)
 end
 
----
----@param value any
+--- Sets the status of the toggle.
+---@param value bool
 ---@return nil
 function SkinToggleUI:setStatus(value)
      self.toggleCounter = value == true and 1 or 0
 end
 
----
+--- Gets the current status of the toggle.
 ---@return bool
 function SkinToggleUI:getStatus()
      return self.toggleCurState == 'active' and true or false
 end
 
----
+--- Toggle main clicking functionality and animations.
 ---@private
 ---@return nil
 function SkinToggleUI:__click()
@@ -84,7 +85,7 @@ function SkinToggleUI:__click()
      end
 end
 
----
+--- Toggle main hovering functionality and animations.
 ---@private
 ---@return nil
 function SkinToggleUI:__hover()
@@ -107,7 +108,7 @@ function SkinToggleUI:__hover()
      end
 end
 
----
+--- Toggle main cursor interactive functionality and animations.
 ---@private
 ---@return nil
 function SkinToggleUI:__cursor()
@@ -118,7 +119,7 @@ function SkinToggleUI:__cursor()
      end
 end
 
----
+--- Updates the current state, self-explanatory.
 ---@private
 ---@return nil
 function SkinToggleUI:__update_state()
