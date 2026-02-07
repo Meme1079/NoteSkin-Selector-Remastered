@@ -15,7 +15,7 @@ function onCreatePost()
                removeLuaScript(v, true)
           end
      end
-     playMusic(getModSetting('song_select', modFolder):lower(), 0.5, true)
+     playMusic(getModSetting('SONG_SELECT', modFolder):lower(), 0.5, true)
 end
 
 --- Updates the mouse positions based on the current cursor position.

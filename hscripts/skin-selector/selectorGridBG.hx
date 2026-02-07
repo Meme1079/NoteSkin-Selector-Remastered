@@ -4,7 +4,7 @@ import psychlua.LuaUtils;
 import backend.Paths;
 
 var modFolder = 'NoteSkin Selector Remastered';
-if (getModSetting('remove_checker_bg', modFolder) == false) {
+if (getModSetting('REMOVE_CHECKER_BG', modFolder) == false) {
      var selectorGridBGBitmap = FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0xFF68CBFD, 0x0);
      var selectorGridBG:FlxBackdrop = new FlxBackdrop(selectorGridBGBitmap);
      selectorGridBG.velocity.set(20, 20);

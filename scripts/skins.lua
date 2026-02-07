@@ -237,7 +237,7 @@ function onSpawnNote(memberStrums, noteData, noteType, isSustainNote, strumTime)
 end
 
 function onUpdatePost(elapsed)
-     if getModSetting('enable_double-tapping_safe', modFolder) == true then
+     if getModSetting('ENABLE_DOUBLE-TAPPING_SAFE', modFolder) == true then
           if keyboardJustDoublePressed('TAB') then
                loadSkinSelectorState()
           end

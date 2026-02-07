@@ -3,6 +3,7 @@
 - Refactor the main source code to prevent shitty spaghetti code.
      - Skin Classes have been split into multiple subclasses each corresponding to their functions.
 - Added a warning for switching pages (i.e. using keys from your keyboard) while searching skins.
+- Added an ability to enable preview animation to fix conflicts with the note keybinds and controls.
 - Adjust scrollbar thumb offsets between the start and end page positions.
 - Selection of the skin will always remain constant, even when the skin has missing animations.
 - Optimize checkboxes, syncing and clicking now checks for its interaction instead of every updated frame.

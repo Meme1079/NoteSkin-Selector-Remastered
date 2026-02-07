@@ -1,27 +1,27 @@
 [
 	{
-		"save": "remove_checker_bg",
+		"save": "REMOVE_CHECKER_BG",
 		"name": "Remove Checker BG",
 		"type": "bool",
 		"description": "If checked, will removed the checker background",
 		"value": false
 	},
 	{
-		"save": "remove_color_changing_bg",
+		"save": "REMOVE_COLOR_CHANGING_BG",
 		"name": "Remove Color Changing BG",
 		"type": "bool",
 		"description": "If checked, will removed the color changing background",
 		"value": false
 	},
 	{
-		"save": "enable_double-tapping_safe",
+		"save": "ENABLE_DOUBLE-TAPPING_SAFE",
 		"name": "Enable Double-Tapping Safe",
 		"type": "bool",
 		"description": "Prevents you from accidentally going to the skin screen selection, when pressing the [Tab] key",
 		"value": false
 	},
 	{
-		"save": "song_select",
+		"save": "SONG_SELECT",
 		"name": "Song Select:",
 		"type": "string",
 		"description": "Select the background song to play",

@@ -283,7 +283,7 @@ local colorSwitchEnable   = true
 local colorTweenTimeValue = 0   -- start: 0   | end: 30
 local colorTweenHueValue  = 240 -- start: 240 | end: 270
 local function colorSelectorTransitions()
-     if getModSetting('remove_color_changing_bg', modFolder) == true then
+     if getModSetting('REMOVE_COLOR_CHANGING_BG', modFolder) == true then
           return
      end
 
