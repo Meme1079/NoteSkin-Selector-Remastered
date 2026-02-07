@@ -1,0 +1,44 @@
+{
+     "song": {
+          "player1": "bf",
+          "player2": "gf",
+          "gfVersion": "gf",
+          "events": [],
+          "notes": [
+               {
+                    "lengthInSteps": 16,
+                    "sectionNotes": [
+                         [
+                              0,
+                              1,
+                              0
+                         ],
+                         [
+                              300,
+                              3,
+                              0
+                         ],
+                         [
+                              600,
+                              1,
+                              0
+                         ],
+                         [
+                              900,
+                              2,
+                              0
+                         ]
+                    ],
+                    "mustHitSection": false
+               }
+          ],
+          "player3": "gf",
+          "song": "Skin Editor",
+          "needsVoices": true,
+          "stage": "void",
+          "arrowSkin": "",
+          "validScore": true,
+          "speed": 1,
+          "bpm": 200
+     }
+}
