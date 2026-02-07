@@ -193,7 +193,7 @@ end
 --- Creates the preview strums' animations, for testing its animations for visual aid.
 ---@return nil
 function SkinSplashesPreview:preview_animation()
-     if SkinNotesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == false then
+     if SkinSplashesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == false then
           return
      end
      
