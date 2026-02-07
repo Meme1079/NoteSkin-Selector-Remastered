@@ -191,19 +191,17 @@ function SkinSplashesPreview:preview_notes()
 end
 
 --- Creates the preview strums' animations, for testing its animations for visual aid.
----@param allowPreview? bool Allows for testing preview animations, if allowed.
 ---@return nil
-function SkinSplashesPreview:preview_animation(allowPreview)
-     local allowPreview = (allowPreview == nil) and true or false
-
+function SkinSplashesPreview:preview_animation()
+     if SkinNotesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == false then
+          return
+     end
+     
      local firstJustPressed  = callMethodFromClass('flixel.FlxG', 'keys.firstJustPressed', {''})
      local firstJustReleased = callMethodFromClass('flixel.FlxG', 'keys.firstJustReleased', {''})
      local firstJustInputPressed  = firstJustPressed  == -1 and firstJustPressed  == nil
      local firstJustInputReleased = firstJustReleased == -1 and firstJustReleased == nil
      if firstJustInputPressed or firstJustInputReleased then
-          return
-     end
-     if allowPreview == false then
           return
      end
 

@@ -125,7 +125,6 @@ setObjectCamera('previewSkinButtonSelectionText', 'camHUD')
 setProperty('previewSkinButtonSelectionText.antialiasing', false)
 addLuaText('previewSkinButtonSelectionText')
 
-local previewSkinToggleAnims = SkinToggleUI:new('previewSkinToggleAnims')
 makeAnimatedLuaSprite('previewSkinToggleAnims', PREVIEW_SKIN_TOGGLE_SPRITE, 783, 600)
 addAnimationByPrefix('previewSkinToggleAnims', 'active-static', 'active-static', 24, false)
 addAnimationByPrefix('previewSkinToggleAnims', 'active-hovered', 'active-hovered', 24, false)
@@ -324,6 +323,9 @@ local Splashes = SkinSplashes:new('splashes', 'noteSplashes', 'noteSplashes')
 local Skins    = SkinStates:new({Notes, Splashes}, SkinStatesGSave:get('dataStateName', '', 'notes'))
 Skins:load()
 Skins:create()
+
+local PREVIEW_TOGGLE_ANIM_STATUS = SkinStatesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', false)
+local previewSkinToggleAnims = SkinToggleUI:new('previewSkinToggleAnims', PREVIEW_TOGGLE_ANIM_STATUS)
 
 -- HScript Stuff --
 
