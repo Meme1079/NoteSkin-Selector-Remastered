@@ -342,7 +342,17 @@ function onUpdatePost(elapsed)
      Skins:switch()
      Skins:update()
 
-     previewSkinToggleAnims:update()
+     previewSkinToggleAnims:update(function()
+          for strumIndex = 1, 4 do
+               local skinStateKeybindsTag = F"skinStateKeybinds-{strumIndex}"
+     
+               if previewSkinToggleAnims.toggleCurState == 'active' then
+                    setProperty(F"{skinStateKeybindsTag}.alpha", 1)
+               elseif previewSkinToggleAnims.toggleCurState == 'inactive' then
+                    setProperty(F"{skinStateKeybindsTag}.alpha", 0.5)
+               end
+          end
+     end)
 end
 
 function onDestroy()

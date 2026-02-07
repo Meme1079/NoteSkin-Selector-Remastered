@@ -8,13 +8,18 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 local hoverObject = funkinlua.hoverObject
 local clickObject = funkinlua.clickObject
 
+---
 ---@class SkinToggleUI
 local SkinToggleUI = {}
 local SkinStatesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
+---
+---@param toggleTag string
+---@param toggleStatus nil|bool
+---@return SkinToggleUI
 function SkinToggleUI:new(toggleTag, toggleStatus)
      local self = setmetatable({}, {__index = self})
-     self.toggleTag    = toggleTag
+     self.toggleTag = toggleTag
 
      self.toggleStates  = {'inactive', 'active'}
      self.toggleHovered = false
@@ -28,24 +33,38 @@ function SkinToggleUI:new(toggleTag, toggleStatus)
      return self
 end
 
-function SkinToggleUI:update()
+---
+---@param extraCode fun(): nil
+---@return nil
+function SkinToggleUI:update(extraCode)
      self:__click()
      self:__hover()
      self:__cursor()
+     extraCode()
 end
 
+---
+---@return nil
 function SkinToggleUI:destroy()
      setmetatable(self, nil)
 end
 
-function SkinToggleUI:getStatus()
-     return self.toggleCurState == 'active' and true or false
-end
-
+---
+---@param value any
+---@return nil
 function SkinToggleUI:setStatus(value)
      self.toggleCounter = value == true and 1 or 0
 end
 
+---
+---@return bool
+function SkinToggleUI:getStatus()
+     return self.toggleCurState == 'active' and true or false
+end
+
+---
+---@private
+---@return nil
 function SkinToggleUI:__click()
      local previewSkinToggleClicked  = clickObject(self.toggleTag, 'camHUD')
      local previewSkinToggleReleased = mouseReleased('left')
@@ -65,6 +84,9 @@ function SkinToggleUI:__click()
      end
 end
 
+---
+---@private
+---@return nil
 function SkinToggleUI:__hover()
      if self.toggleClicked == true then
           return
@@ -85,6 +107,9 @@ function SkinToggleUI:__hover()
      end
 end
 
+---
+---@private
+---@return nil
 function SkinToggleUI:__cursor()
      if self.toggleClicked == true then
           playAnim('mouseTexture', 'handClick', true)
@@ -93,6 +118,9 @@ function SkinToggleUI:__cursor()
      end
 end
 
+---
+---@private
+---@return nil
 function SkinToggleUI:__update_state()
      self.toggleIndex    = self.toggleCounter % 2 == 0 and 1 or 2
      self.toggleCurState = self.toggleStates[self.toggleIndex]
