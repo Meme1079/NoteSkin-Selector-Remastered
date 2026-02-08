@@ -35,7 +35,6 @@ function onUpdatePost(elapsed)
      if mouseReleased('left') then playSound('clicks/clickUp', 0.5)   end
 
      mouseSetUpdatingPosition('mouseHitBox', -3, 0)
-     mouseSetUpdatingPosition('mouseTexture', 0, 0)
      mouseSetUpdatingPosition('mouseSkinToolTip', 35, 12)
      if keyboardJustConditionPressed('ENTER', not getVar('skinSearchInputFocus')) and songName == 'Skin Selector' then
           local GAME_SONG_NAME        = SkinStatesGSave:get('GAME_SONG_NAME', 'GENERAL')
