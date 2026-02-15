@@ -124,10 +124,10 @@ function SkinNotesPreview:preview()
           local previewSkinPositionY = 135
           makeAnimatedLuaSprite(previewSkinGroupTag, previewSkinGroupSprite, previewSkinPositionX, previewSkinPositionY)
           scaleObject(previewSkinGroupTag, metadataPreviewSize[1], metadataPreviewSize[2])
-          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewConfirmAnim.name, metadataPreviewConfirmAnim.prefix, metadataPreviewConfirmFrames)
-          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewPressedAnim.name, metadataPreviewPressedAnim.prefix, metadataPreviewPressedFrames)
-          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewColoredAnim.name, metadataPreviewColoredAnim.prefix, metadataPreviewColoredFrames)
-          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewStrumsAnim.name,  metadataPreviewStrumsAnim.prefix,  metadataPreviewStrumsFrames)
+          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewConfirmAnim.name, metadataPreviewConfirmAnim.prefix, metadataPreviewConfirmFrames, true)
+          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewPressedAnim.name, metadataPreviewPressedAnim.prefix, metadataPreviewPressedFrames, true)
+          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewColoredAnim.name, metadataPreviewColoredAnim.prefix, metadataPreviewColoredFrames, true)
+          addAnimationByPrefix(previewSkinGroupTag, metadataPreviewStrumsAnim.name,  metadataPreviewStrumsAnim.prefix,  metadataPreviewStrumsFrames, true)
 
           --- Adds the offset for the given preview skins.
           ---@param metadataPreviewAnim table The specified preview animation to use for offsetting.
@@ -242,7 +242,7 @@ function SkinNotesPreview:preview_animation()
           local previewSkinAnimations = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
 
           if previewSkinAnimations == 'colored' then
-               playAnim(previewSkinGroupTag, metadataPreviewAnimations['colored']['name'], true)
+               playAnim(previewSkinGroupTag, metadataPreviewAnimations['colored']['name'])
                goto SKIP_PREVIEW_ANIMATIONS
           end
 
@@ -258,15 +258,15 @@ function SkinNotesPreview:preview_animation()
                     ~ MemeFlavor
           ]]
           if (conditionPressedLeft or conditionPressedRight) or mouseReleased('left') then
-               playAnim(previewSkinGroupTag, metadataPreviewAnimations['strums']['name'], true)
+               playAnim(previewSkinGroupTag, metadataPreviewAnimations['strums']['name'])
           end
 
           if previewSkinObjectIsMissing() == false then
                if keyboardJustConditionPressed(getKeyBinds(strumIndex), not getVar('skinSearchInputFocus')) then
-                    playAnim(previewSkinGroupTag, metadataPreviewAnimations[previewSkinAnimations]['name'], true)
+                    playAnim(previewSkinGroupTag, metadataPreviewAnimations[previewSkinAnimations]['name'])
                end
                if keyboardJustConditionReleased(getKeyBinds(strumIndex), not getVar('skinSearchInputFocus')) then
-                    playAnim(previewSkinGroupTag, metadataPreviewAnimations['strums']['name'], true)
+                    playAnim(previewSkinGroupTag, metadataPreviewAnimations['strums']['name'])
                end
           end
           ::SKIP_PREVIEW_ANIMATIONS::

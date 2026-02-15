@@ -54,8 +54,8 @@ local skinMetadataObjectAllSplashPlayer = staticTotalMetaobjAllSplashes[SPLASHES
 ---@param element string The specified element to retrieve from the skin metadata.
 ---@return table<string, any>
 local function skinsMetadataObjectStrums(metadataConst, metadata, element)
-     assert(metadata.strums ~= nil, "Trying to get the non-existing strum element array within the metadata")
-     assert(element ~= nil,         "Trying to get an unidentified value within the metadata\'s strum JSON")
+     assert(element ~= nil, "Trying to get an unidentified value within the metadata\'s strum JSON")
+     
      local skinMetadataObject         = metadata
      local skinMetadataObjectByAnim   = metadata.strums
      local skinStaticDataObjectByAnim = metadataConst.strums

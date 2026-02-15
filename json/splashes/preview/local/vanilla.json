@@ -46,6 +46,5 @@
           }
      },
      "frames": {"note_splash1": 24, "note_splash2": 24},
-     "size": [0.55, 0.55],
-     "loop": false
+     "size": [0.55, 0.55]
 }

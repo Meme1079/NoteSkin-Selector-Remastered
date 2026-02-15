@@ -90,6 +90,5 @@
           }
      },
      "frames": {"confirm": 24, "pressed": 24, "colored": 24, "strums": 24},
-     "size": [0.65, 0.65],
-     "loop": false
+     "size": [0.65, 0.65]
 }

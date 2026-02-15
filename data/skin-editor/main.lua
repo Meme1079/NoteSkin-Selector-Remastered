@@ -9,12 +9,12 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 
 function onCreatePost()
-     for k,v in pairs(getRunningScripts()) do
-          if v:match(F"{modFolder}/scripts/skins") or not v:match(modFolder) then
-               removeLuaScript(v, true)
+     for _,scripts in pairs(getRunningScripts()) do
+          if scripts:match(F"{modFolder}/scripts/skins") or not scripts:match(modFolder) then
+               removeLuaScript(scripts, true)
           end
      end
-     playMusic('editor/machine girl', 0.3, true)
+     playMusic('editor/nostalgic breakdown', 0.5, true)
 end
 
 --- Updates the mouse positions based on the current cursor position.

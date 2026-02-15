@@ -10,9 +10,9 @@ local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 
 local SkinStatesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 function onCreatePost()
-     for k,v in pairs(getRunningScripts()) do
-          if v:match(F"{modFolder}/scripts/skins") or not v:match(modFolder) then
-               removeLuaScript(v, true)
+     for _,scripts in pairs(getRunningScripts()) do
+          if scripts:match(F"{modFolder}/scripts/skins") or not scripts:match(modFolder) then
+               removeLuaScript(scripts, true)
           end
      end
      playMusic(getModSetting('SONG_SELECT', modFolder):lower(), 0.5, true)
@@ -34,7 +34,7 @@ function onUpdatePost(elapsed)
      if mouseClicked('left')  then playSound('clicks/clickDown', 0.5) end
      if mouseReleased('left') then playSound('clicks/clickUp', 0.5)   end
 
-     mouseSetUpdatingPosition('mouseHitBox', -3, 0)
+     mouseSetUpdatingPosition('mouseTexture', -4, 0)
      mouseSetUpdatingPosition('mouseSkinToolTip', 35, 12)
      if keyboardJustConditionPressed('ENTER', not getVar('skinSearchInputFocus')) and songName == 'Skin Selector' then
           local GAME_SONG_NAME        = SkinStatesGSave:get('GAME_SONG_NAME', 'GENERAL')

@@ -15,11 +15,13 @@ local SkinStatesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Initializes the main and other attributes for the toggle UI.
 ---@param toggleTag string The corresponding tag name to implement its functionality.
+---@param toggleSaveTag string
 ---@param toggleStatus? bool The toggle status state being on or off, on being default.
 ---@return SkinToggleUI
-function SkinToggleUI:new(toggleTag, toggleStatus)
+function SkinToggleUI:new(toggleTag, toggleSaveTag, toggleStatus)
      local self = setmetatable({}, {__index = self})
-     self.toggleTag = toggleTag
+     self.toggleTag     = toggleTag
+     self.toggleSaveTag = toggleSaveTag
 
      self.toggleStates  = {'inactive', 'active'}
      self.toggleHovered = false
@@ -33,15 +35,33 @@ function SkinToggleUI:new(toggleTag, toggleStatus)
      return self
 end
 
+function SkinToggleUI:create(x, y)
+     makeAnimatedLuaSprite(self.toggleTag, 'ui/buttons/preview anim/previewAnimIcon_toggle', x, y)
+     addAnimationByPrefix(self.toggleTag, 'active-static', 'active-static', 24, false)
+     addAnimationByPrefix(self.toggleTag, 'active-hovered', 'active-hovered', 24, false)
+     addAnimationByPrefix(self.toggleTag, 'active-focused', 'active-focused', 24, false)
+     addAnimationByPrefix(self.toggleTag, 'inactive-static', 'inactive-static', 24, false)
+     addAnimationByPrefix(self.toggleTag, 'inactive-hovered', 'inactive-hovered', 24, false)
+     addAnimationByPrefix(self.toggleTag, 'inactive-focused', 'inactive-focused', 24, false)
+     playAnim(self.toggleTag, 'inactive-static', true)
+     scaleObject(self.toggleTag, 0.51, 0.562)
+     setObjectCamera(self.toggleTag, 'camHUD')
+     setProperty(F"{self.toggleTag}.antialiasing", false)
+     addLuaSprite(self.toggleTag)
+end
+
 --- Update function for the toggle, implements its toggleable ability and other UI related stuff.
 --- Additionally adds extra code for specific functions.
----@param extraCode fun(): nil Adds extra code for extra functionability.
+---@param extraCode? fun(): nil Adds extra code for extra functionability.
 ---@return nil
 function SkinToggleUI:update(extraCode)
      self:__click()
      self:__hover()
      self:__cursor()
-     extraCode()
+
+     if extraCode ~= nil then
+          extraCode()
+     end
 end
 
 --- Destroys the toggle functionality, that's it.
@@ -80,6 +100,7 @@ function SkinToggleUI:__click()
           self.toggleCounter = self.toggleCounter + 1
           self:__update_state()
           
+          playSound('exitWindow', 0.8)
           playAnim(self.toggleTag, F"{self.toggleCurState}-states", true)
           self.toggleClicked = false
      end
@@ -125,7 +146,7 @@ end
 function SkinToggleUI:__update_state()
      self.toggleIndex    = self.toggleCounter % 2 == 0 and 1 or 2
      self.toggleCurState = self.toggleStates[self.toggleIndex]
-     SkinStatesGSave:set('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', self.toggleCounter % 2 ~= 0)
+     SkinStatesGSave:set(self.toggleSaveTag, 'SAVE', self.toggleCounter % 2 ~= 0)
 end
 
 return SkinToggleUI
