@@ -14,7 +14,7 @@ function onCreatePost()
                removeLuaScript(scripts, true)
           end
      end
-     playMusic('editor/nostalgic breakdown', 0.5, true)
+     playMusic('editor/get on up again', 0.7, true)
 end
 
 --- Updates the mouse positions based on the current cursor position.
