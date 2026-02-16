@@ -103,9 +103,8 @@ addLuaSprite('notesTesta')
 
 
 local dx, dy = 0, 0 -- Directional input variables
+local di = 1.15        -- Amplifier
 function onUpdatePost(elapsed)
-
-
      if keyboardPressed('D') then dx = dx + 1 end
      if keyboardPressed('A') then dx = dx - 1 end
      if keyboardPressed('S') then dy = dy + 1 end
@@ -115,11 +114,12 @@ function onUpdatePost(elapsed)
      if length > 0 then
           dx = dx / length
           dy = dy / length
-          if keyboardPressed('D') or keyboardPressed('A') then
-               setProperty('notesTesta.x', getProperty('notesTesta.x') + dx)
+
+          if keyboardPressed('D') or keyboardPressed('A') and not (keyboardPressed('D') and keyboardPressed('A')) then
+               setProperty('notesTesta.x', getProperty('notesTesta.x') + dx*di)
           end
-          if keyboardPressed('S') or keyboardPressed('W') then
-               setProperty('notesTesta.y', getProperty('notesTesta.y') + dy)
+          if keyboardPressed('S') or keyboardPressed('W') and not (keyboardPressed('S') and keyboardPressed('W')) then
+               setProperty('notesTesta.y', getProperty('notesTesta.y') + dy*di)
           end
      end
 end
