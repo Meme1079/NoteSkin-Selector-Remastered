@@ -11,6 +11,49 @@ setObjectCamera('skinEditorBG', 'camHUD')
 setObjectOrder('skinEditorBG', 0)
 addLuaSprite('skinEditorBG')
 
+-- Shit DooDoo --
+
+makeLuaText('animation', ' Animation', 0, 10, 360)
+setTextFont('animation', 'sonic.ttf')
+setTextSize('animation', 23)
+setTextBorder('animation', 3, '000000')
+setObjectCamera('animation', 'camHUD')
+setProperty('animation.antialiasing', false)
+addLuaText('animation')
+
+makeLuaText('confirm', ' Confirm', 0, 50, 410)
+setTextFont('confirm', 'sonic.ttf')
+setTextSize('confirm', 23)
+setTextBorder('confirm', 3, '000000')
+setObjectCamera('confirm', 'camHUD')
+setProperty('confirm.antialiasing', false)
+addLuaText('confirm')
+
+makeLuaText('pressed', ' Pressed', 0, 50, 410*1.08)
+setTextFont('pressed', 'sonic.ttf')
+setTextSize('pressed', 23)
+setTextBorder('pressed', 3, '000000')
+setObjectCamera('pressed', 'camHUD')
+setProperty('pressed.antialiasing', false)
+addLuaText('pressed')
+
+makeLuaText('colored', ' Colored', 0, 50, 410*1.16)
+setTextFont('colored', 'sonic.ttf')
+setTextSize('colored', 23)
+setTextBorder('colored', 3, '000000')
+setObjectCamera('colored', 'camHUD')
+setProperty('colored.antialiasing', false)
+addLuaText('colored')
+
+makeLuaText('strums', ' Strums', 0, 50, 410*1.24)
+setTextFont('strums', 'sonic.ttf')
+setTextSize('strums', 23)
+setTextBorder('strums', 3, '000000')
+setObjectCamera('strums', 'camHUD')
+setProperty('strums.antialiasing', false)
+addLuaText('strums')
+
+-- FF6961
 
 -- Mouse Cursor --
 
@@ -44,13 +87,39 @@ setPropertyFromClass('flixel.FlxG', 'mouse.visible', false)
 
 local SkinEditorGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
-local editorSkinTest = SkinToggleUI:new('editorSkinTest', 'EDITOR_SKIN_TEST', SkinEditorGSave:get('EDITOR_SKIN_TEST', 'SAVE', true))
-editorSkinTest:create(100, 100)
 
-local editorSkinTest1 = SkinToggleUI:new('editorSkinTest1', 'EDITOR_SKIN_TEST1', SkinEditorGSave:get('EDITOR_SKIN_TEST1', 'SAVE', true))
-editorSkinTest1:create(100, 160)
 
+
+makeAnimatedLuaSprite('notesTesta', 'noteSkins/NOTE_assets-Arrow Funk', 330, 100)
+scaleObject('notesTesta', 0.65, 0.65)
+addAnimationByPrefix('notesTesta', 'left_confirm', 'left confirm', 24, false)
+addAnimationByPrefix('notesTesta', 'left_pressed', 'left press', 24, false)
+addAnimationByPrefix('notesTesta', 'left_colored', 'purple0', 24, false)
+addAnimationByPrefix('notesTesta', 'left', 'arrowLEFT', 24, false)
+playAnim('notesTesta', 'left', false)
+setObjectCamera('notesTesta', 'camHUD')
+addLuaSprite('notesTesta')
+
+
+
+local dx, dy = 0, 0 -- Directional input variables
 function onUpdatePost(elapsed)
-     editorSkinTest:update()
-     editorSkinTest1:update()
+
+
+     if keyboardPressed('D') then dx = dx + 1 end
+     if keyboardPressed('A') then dx = dx - 1 end
+     if keyboardPressed('S') then dy = dy + 1 end
+     if keyboardPressed('W') then dy = dy - 1 end
+
+     local length = math.sqrt(dx^2 + dy^2)
+     if length > 0 then
+          dx = dx / length
+          dy = dy / length
+          if keyboardPressed('D') or keyboardPressed('A') then
+               setProperty('notesTesta.x', getProperty('notesTesta.x') + dx)
+          end
+          if keyboardPressed('S') or keyboardPressed('W') then
+               setProperty('notesTesta.y', getProperty('notesTesta.y') + dy)
+          end
+     end
 end
