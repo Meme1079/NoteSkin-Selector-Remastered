@@ -21,7 +21,6 @@ setObjectCamera('animationEditorTitle', 'camHUD')
 setProperty('animationEditorTitle.antialiasing', true)
 addLuaText('animationEditorTitle')
 
-
 makeLuaText('animationEditorConfirmTitle', ' Confirm', 0, 50, 410)
 setTextFont('animationEditorConfirmTitle', 'sonic.ttf')
 setTextSize('animationEditorConfirmTitle', 23)
@@ -29,6 +28,32 @@ setTextBorder('animationEditorConfirmTitle', 3, '000000')
 setObjectCamera('animationEditorConfirmTitle', 'camHUD')
 setProperty('animationEditorConfirmTitle.antialiasing', false)
 addLuaText('animationEditorConfirmTitle')
+
+makeLuaText('animationEditorPressedTitle', ' Pressed', 0, 50, (410-1)*1.12)
+setTextFont('animationEditorPressedTitle', 'sonic.ttf')
+setTextSize('animationEditorPressedTitle', 23)
+setTextBorder('animationEditorPressedTitle', 3, '000000')
+setObjectCamera('animationEditorPressedTitle', 'camHUD')
+setProperty('animationEditorPressedTitle.antialiasing', false)
+addLuaText('animationEditorPressedTitle')
+
+makeLuaText('animationEditorColoredTitle', ' Colored', 0, 50, (410-2)*1.24)
+setTextFont('animationEditorColoredTitle', 'sonic.ttf')
+setTextSize('animationEditorColoredTitle', 23)
+setTextBorder('animationEditorColoredTitle', 3, '000000')
+setObjectCamera('animationEditorColoredTitle', 'camHUD')
+setProperty('animationEditorColoredTitle.antialiasing', false)
+addLuaText('animationEditorColoredTitle')
+
+makeLuaText('animationEditorStrumsTitle', ' Strums', 0, 50, (410-3)*1.36)
+setTextFont('animationEditorStrumsTitle', 'sonic.ttf')
+setTextSize('animationEditorStrumsTitle', 23)
+setTextBorder('animationEditorStrumsTitle', 3, '000000')
+setObjectCamera('animationEditorStrumsTitle', 'camHUD')
+setProperty('animationEditorStrumsTitle.antialiasing', false)
+addLuaText('animationEditorStrumsTitle')
+
+-- Input --
 
 makeLuaText('animationEditorConfirmInput', '1234567890', 0, 50 + 130, 410)
 setTextFont('animationEditorConfirmInput', 'sonic.ttf')
@@ -38,22 +63,13 @@ setObjectCamera('animationEditorConfirmInput', 'camHUD')
 setProperty('animationEditorConfirmInput.antialiasing', false)
 addLuaText('animationEditorConfirmInput')
 
-makeLuaSprite('animationEditorConfirmBackground', 'ui/buttons/value_input2', 50 + 120, 402)
+makeLuaSprite('animationEditorConfirmBackground', 'ui/buttons/value_input2', 50 + 120, 410-8)
 scaleObject('animationEditorConfirmBackground', 0.7, 0.8)
 setObjectCamera('animationEditorConfirmBackground', 'camHUD')
 setProperty('animationEditorConfirmBackground.antialiasing', false)
 addLuaSprite('animationEditorConfirmBackground')
 
-
-makeLuaText('animationEditorPressedTitle', ' Pressed', 0, 50, 408*1.12)
-setTextFont('animationEditorPressedTitle', 'sonic.ttf')
-setTextSize('animationEditorPressedTitle', 23)
-setTextBorder('animationEditorPressedTitle', 3, '000000')
-setObjectCamera('animationEditorPressedTitle', 'camHUD')
-setProperty('animationEditorPressedTitle.antialiasing', false)
-addLuaText('animationEditorPressedTitle')
-
-makeLuaText('animationEditorPressedInput', '1234567890', 0, 50 + 130, 408*1.12)
+makeLuaText('animationEditorPressedInput', '1234567890', 0, 50 + 130, (410-1)*1.12)
 setTextFont('animationEditorPressedInput', 'sonic.ttf')
 setTextSize('animationEditorPressedInput', 23)
 setTextBorder('animationEditorPressedInput', 0, '000000')
@@ -61,22 +77,13 @@ setObjectCamera('animationEditorPressedInput', 'camHUD')
 setProperty('animationEditorPressedInput.antialiasing', false)
 addLuaText('animationEditorPressedInput')
 
-makeLuaSprite('animationEditorPressedBackground', 'ui/buttons/value_input2', 50 + 120, 402*1.12)
+makeLuaSprite('animationEditorPressedBackground', 'ui/buttons/value_input2', 50 + 120, (410-8)*1.12)
 scaleObject('animationEditorPressedBackground', 0.7, 0.8)
 setObjectCamera('animationEditorPressedBackground', 'camHUD')
 setProperty('animationEditorPressedBackground.antialiasing', false)
 addLuaSprite('animationEditorPressedBackground')
 
-
-makeLuaText('animationEditorColoredTitle', ' Colored', 0, 50, 408*1.24)
-setTextFont('animationEditorColoredTitle', 'sonic.ttf')
-setTextSize('animationEditorColoredTitle', 23)
-setTextBorder('animationEditorColoredTitle', 3, '000000')
-setObjectCamera('animationEditorColoredTitle', 'camHUD')
-setProperty('animationEditorColoredTitle.antialiasing', false)
-addLuaText('animationEditorColoredTitle')
-
-makeLuaText('animationEditorColoredInput', '1234567890', 0, 50 + 130, 408*1.24)
+makeLuaText('animationEditorColoredInput', '1234567890', 0, 50 + 130, (410-2)*1.24)
 setTextFont('animationEditorColoredInput', 'sonic.ttf')
 setTextSize('animationEditorColoredInput', 23)
 setTextBorder('animationEditorColoredInput', 0, '000000')
@@ -84,22 +91,13 @@ setObjectCamera('animationEditorColoredInput', 'camHUD')
 setProperty('animationEditorColoredInput.antialiasing', false)
 addLuaText('animationEditorColoredInput')
 
-makeLuaSprite('animationEditorColoredBackground', 'ui/buttons/value_input2', 50 + 120, 402*1.24)
+makeLuaSprite('animationEditorColoredBackground', 'ui/buttons/value_input2', 50 + 120, (410-8)*1.24)
 scaleObject('animationEditorColoredBackground', 0.7, 0.8)
 setObjectCamera('animationEditorColoredBackground', 'camHUD')
 setProperty('animationEditorColoredBackground.antialiasing', false)
 addLuaSprite('animationEditorColoredBackground')
 
-
-makeLuaText('animationEditorStrumsTitle', ' Strums', 0, 50, 407*1.36)
-setTextFont('animationEditorStrumsTitle', 'sonic.ttf')
-setTextSize('animationEditorStrumsTitle', 23)
-setTextBorder('animationEditorStrumsTitle', 3, '000000')
-setObjectCamera('animationEditorStrumsTitle', 'camHUD')
-setProperty('animationEditorStrumsTitle.antialiasing', false)
-addLuaText('animationEditorStrumsTitle')
-
-makeLuaText('animationEditorStrumsInput', '1234567890', 0, 50 + 130, 407*1.36)
+makeLuaText('animationEditorStrumsInput', '1234567890', 0, 50 + 130, (410-3)*1.36)
 setTextFont('animationEditorStrumsInput', 'sonic.ttf')
 setTextSize('animationEditorStrumsInput', 23)
 setTextBorder('animationEditorStrumsInput', 0, '000000')
@@ -107,13 +105,11 @@ setObjectCamera('animationEditorStrumsInput', 'camHUD')
 setProperty('animationEditorStrumsInput.antialiasing', false)
 addLuaText('animationEditorStrumsInput')
 
-makeLuaSprite('animationEditorStrumsBackground', 'ui/buttons/value_input2', 50 + 120, 402*1.36)
+makeLuaSprite('animationEditorStrumsBackground', 'ui/buttons/value_input2', 50 + 120, (410-8)*1.36)
 scaleObject('animationEditorStrumsBackground', 0.7, 0.8)
 setObjectCamera('animationEditorStrumsBackground', 'camHUD')
 setProperty('animationEditorStrumsBackground.antialiasing', false)
 addLuaSprite('animationEditorStrumsBackground')
-
--- FF6961
 
 -- Mouse Cursor --
 
