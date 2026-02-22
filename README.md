@@ -90,6 +90,7 @@ NoteSkin Selector Remastered © 2024 by Meme1079 is licensed under CC BY-NC-ND 4
 - Arrow Funk - [Arrow Funk](https://gamebanana.com/mods/370234)
 - Bad - [FNF, but bad (REMAKE)](https://gamebanana.com/wips/79374)
 - Creepy - [Vs. Flippy](https://gamebanana.com/mods/300838)
+- DSides - [FNF' D-Sides Redux](https://gamebanana.com/mods/652786)
 - DokiDoki - [FNF: Doki Doki Takeover Plus!](https://gamebanana.com/mods/47364)
 - M1KU - [Hatsune Miku - Project Funkin'](https://gamebanana.com/mods/485992)
 - MM, MM Luigi - [FNF: Mario's Madness](https://gamebanana.com/mods/359554)
