@@ -1,0 +1,43 @@
+{
+     "strums": {
+          "height": 0,
+          "offsetX": 0
+     },
+     "types": [
+          "",
+          "Hey!",
+          "No Animation",
+          "Alt Animation",
+          "GF Sing",
+          "weekend-1-lightcan",
+          "weekend-1-kickcan",
+          "weekend-1-kneecan",
+          "weekend-1-firegun",
+          "weekend-1-cockgun",
+          "weekend-1-blockhigh",
+          "weekend-1-blocklow",
+          "weekend-1-blockspin",
+          "weekend-1-punchhigh",
+          "weekend-1-punchhighblocked",
+          "weekend-1-punchhighdodged",
+          "weekend-1-punchhighlocked",
+          "weekend-1-punchhighspin",
+          "weekend-1-punchlow",
+          "weekend-1-punchlowblocked",
+          "weekend-1-punchlowdodged",
+          "weekend-1-punchlowlocked",
+          "weekend-1-punchlowspin",
+          "weekend-1-dodgehigh",
+          "weekend-1-dodgelow",
+          "weekend-1-hithigh",
+          "weekend-1-hitlow",
+          "weekend-1-picouppercut",
+          "weekend-1-picouppercutprep",
+          "weekend-1-darnelluppercut",
+          "weekend-1-darnelluppercutprep",
+          "weekend-1-taunt",
+          "weekend-1-fakeout",
+          "weekend-1-idle"
+     ],
+     "rgbshader": true
+}
