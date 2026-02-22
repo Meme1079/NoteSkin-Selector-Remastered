@@ -23,7 +23,6 @@ setTextFont('animationEditorConfirmTitle', 'tomo.otf')
 setTextSize('animationEditorConfirmTitle', 23)
 setTextBorder('animationEditorConfirmTitle', 3, '000000')
 setObjectCamera('animationEditorConfirmTitle', 'camHUD')
---setProperty('animationEditorConfirmTitle.antialiasing', false)
 addLuaText('animationEditorConfirmTitle')
 
 makeLuaText('animationEditorPressedTitle', ' Pressed', 0, 30, (theUniversalY-1)*1.12)
@@ -31,7 +30,6 @@ setTextFont('animationEditorPressedTitle', 'tomo.otf')
 setTextSize('animationEditorPressedTitle', 23)
 setTextBorder('animationEditorPressedTitle', 3, '000000')
 setObjectCamera('animationEditorPressedTitle', 'camHUD')
---setProperty('animationEditorPressedTitle.antialiasing', false)
 addLuaText('animationEditorPressedTitle')
 
 makeLuaText('animationEditorColoredTitle', ' Colored', 0, 30, (theUniversalY-2)*1.24)
@@ -39,7 +37,6 @@ setTextFont('animationEditorColoredTitle', 'tomo.otf')
 setTextSize('animationEditorColoredTitle', 23)
 setTextBorder('animationEditorColoredTitle', 3, '000000')
 setObjectCamera('animationEditorColoredTitle', 'camHUD')
---setProperty('animationEditorColoredTitle.antialiasing', false)
 addLuaText('animationEditorColoredTitle')
 
 makeLuaText('animationEditorStrumsTitle', ' Strums', 0, 30, (theUniversalY-3)*1.36)
@@ -47,7 +44,6 @@ setTextFont('animationEditorStrumsTitle', 'tomo.otf')
 setTextSize('animationEditorStrumsTitle', 23)
 setTextBorder('animationEditorStrumsTitle', 3, '000000')
 setObjectCamera('animationEditorStrumsTitle', 'camHUD')
---setProperty('animationEditorStrumsTitle.antialiasing', false)
 addLuaText('animationEditorStrumsTitle')
 
 for i = 1, 4 do
@@ -155,7 +151,6 @@ addLuaSprite('mouseTexture', true)
 
 local SkinEditorGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
-
 local directions = {'left', 'down', 'up', 'right'}
 local colors = {'purple0', 'blue0', 'green0', 'red0'}
 for strumIndex = 1, 4 do
@@ -174,7 +169,7 @@ end
 local dir = 1
 
 local dx, dy = 0, 0 -- Directional input variables
-local di = 1.15        -- Amplifier
+local di = 1        -- Amplifier
 function onUpdatePost(elapsed)
      if keyboardPressed('D') then dx = dx + 1 end
      if keyboardPressed('A') then dx = dx - 1 end
@@ -194,7 +189,6 @@ function onUpdatePost(elapsed)
           if keyboardPressed('S') or keyboardPressed('W') and not (keyboardPressed('S') and keyboardPressed('W')) then
                setProperty(F"{giX}.y", getProperty(F"{giX}.y") + dy*di)
           end
-
           setTextString('animationEditorStrumsInput', math.round(getProperty(F"{giX}.x"), 2))
      end
 

@@ -37,6 +37,7 @@ function SkinNotesPage:page_scrollbar(snapToPage)
      if self.TOTAL_SKIN_LIMIT > MINIMUM_SKIN_LIMIT and self.SCROLLBAR_TRACK_THUMB_PRESSED == true then
           local DISPLAY_SCROLL_THUMB_HEIGHT   = getProperty(F"{pageScrollbarThumb}.height")
           local DISPLAY_SCROLL_THUMB_OFFSET_Y = getMouseY('camHUD') - (DISPLAY_SCROLL_THUMB_HEIGHT / 2)
+
           if mousePressed('left') then
                playAnim(pageScrollbarThumb, 'pressed')
                setProperty(F"{pageScrollbarThumb}.y", DISPLAY_SCROLL_THUMB_OFFSET_Y)
@@ -48,7 +49,7 @@ function SkinNotesPage:page_scrollbar(snapToPage)
      end
 
      local DISPLAY_SCROLL_THUMB_MIN_POSITION_Y = 127
-     local DISPLAY_SCROLL_THUMB_MAX_POSITION_Y = 643
+     local DISPLAY_SCROLL_THUMB_MAX_POSITION_Y = 640
      if getProperty(F"{pageScrollbarThumb}.y") <= DISPLAY_SCROLL_THUMB_MIN_POSITION_Y then
           setProperty(F"{pageScrollbarThumb}.y", DISPLAY_SCROLL_THUMB_MIN_POSITION_Y)
      end
