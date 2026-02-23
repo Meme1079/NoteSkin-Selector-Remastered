@@ -10,13 +10,13 @@ local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
 local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
+local calculateSearch  = states.calculateSearch
 
-local calculateSearch = states.calculateSearch
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Childclass extension, main search component functionality for the splash skin state.
 ---@class SkinSplashesSearch
 local SkinSplashesSearch = {}
-local SkinSplashesGSave  = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Creates a 4x4 chunk gallery of skins to select from while searching.
 ---@private

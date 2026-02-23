@@ -149,7 +149,6 @@ addLuaSprite('mouseTexture', true)
 
 -- DooDoo Stuff --
 
-local SkinEditorGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 local directions = {'left', 'down', 'up', 'right'}
 local colors = {'purple0', 'blue0', 'green0', 'red0'}

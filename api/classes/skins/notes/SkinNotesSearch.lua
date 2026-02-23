@@ -10,8 +10,6 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
 local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
-local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
-
 local CHARACTERS       = global.CHARACTERS
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 
@@ -19,10 +17,11 @@ local calculateSearch = states.calculateSearch
 local hoverObject     = funkinlua.hoverObject
 local clickObject     = funkinlua.clickObject
 
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+
 --- Childclass extension, main searching component functionality for the note skin state.
 ---@class SkinNotesSearch
 local SkinNotesSearch = {}
-local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Search main component group.
 ---@return nil
@@ -327,10 +326,10 @@ function SkinNotesSearch:search_preview()
           setObjectCamera(previewSkinGroupTag, 'camHUD')
           addLuaSprite(previewSkinGroupTag)
 
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  'PREVIEW', previewMetadataObjectAnims('strums', strumIndex, true))
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_PATH',   'PREVIEW', previewSkinGroupSprite)
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', 'PREVIEW', metadataPreviewStrumsFrames)
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   'PREVIEW', metadataPreviewSize)
+          NoteSkinSelector:set('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  'PREVIEW', previewMetadataObjectAnims('strums', strumIndex, true))
+          NoteSkinSelector:set('PREV_NOTES_METAOBJ_STRUMS_PATH',   'PREVIEW', previewSkinGroupSprite)
+          NoteSkinSelector:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', 'PREVIEW', metadataPreviewStrumsFrames)
+          NoteSkinSelector:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   'PREVIEW', metadataPreviewSize)
      end
      setTextString('skinStatePreviewName', currentPreviewDataNames)
 end
@@ -419,7 +418,7 @@ function SkinNotesSearch:search_selection_byclick()
                     self.SELECT_SKIN_PRE_SELECTION_INDEX = totalSkinObjectsPagePerIds[searchSkinPresentIDs]
                     self.SELECT_SKIN_CLICKED_SELECTION   = true
 
-                    SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                     totalSkinObjectsPagePerClicked[searchSkinPresentIDs] = true
                end
 
@@ -432,9 +431,9 @@ function SkinNotesSearch:search_selection_byclick()
                     self.SELECT_SKIN_CLICKED_SELECTION    = false
                     
                     self:search_preview()
-                    SkinNotesGSave:set('SELECT_SKIN_PAGE_INDEX',           self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
-                    SkinNotesGSave:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
-                    SkinNotesGSave:set('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_PAGE_INDEX',           self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
                     totalSkinObjectsPagePerSelected[searchSkinPresentIDs] = true
                     totalSkinObjectsPagePerClicked[searchSkinPresentIDs]  = false
                end
@@ -448,7 +447,7 @@ function SkinNotesSearch:search_selection_byclick()
                     self.SELECT_SKIN_PRE_SELECTION_INDEX = totalSkinObjectsPagePerIds[searchSkinPresentIDs]
                     self.SELECT_SKIN_CLICKED_SELECTION   = true
 
-                    SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                     totalSkinObjectsPagePerClicked[searchSkinPresentIDs] = true
                end
 
@@ -460,8 +459,8 @@ function SkinNotesSearch:search_selection_byclick()
                     self.SELECT_SKIN_CLICKED_SELECTION   = false
 
                     self:search_preview()
-                    SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
-                    SkinNotesGSave:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
                     totalSkinObjectsPagePerSelected[searchSkinPresentIDs] = false
                     totalSkinObjectsPagePerClicked[searchSkinPresentIDs]  = false
                     totalSkinObjectsPagePerHovered[searchSkinPresentIDs]  = false
@@ -473,8 +472,8 @@ function SkinNotesSearch:search_selection_byclick()
                self.SELECT_SKIN_CLICKED_SELECTION   = false
 
                self:search_preview()
-               SkinNotesGSave:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
-               SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+               NoteSkinSelector:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+               NoteSkinSelector:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                totalSkinObjectsPagePerSelected[searchSkinPresentIDs] = false
                totalSkinObjectsPagePerClicked[searchSkinPresentIDs]  = false
                totalSkinObjectsPagePerHovered[searchSkinPresentIDs]  = false
@@ -498,7 +497,7 @@ function SkinNotesSearch:search_selection_byclick()
                self.SELECT_SKIN_INIT_SELECTION_INDEX = 0
                totalSkinObjectsPagePerSelected[searchSkinPresentIDs] = false
 
-               SkinNotesGSave:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
+               NoteSkinSelector:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
           end
      end
 end

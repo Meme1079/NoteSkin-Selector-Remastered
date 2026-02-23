@@ -8,7 +8,7 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 
 local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 
-local SkinStatesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 function onCreatePost()
      for _,scripts in pairs(getRunningScripts()) do
           if scripts:match(F"{modFolder}/scripts/skins") or not scripts:match(modFolder) then
@@ -37,9 +37,9 @@ function onUpdatePost(elapsed)
      mouseSetUpdatingPosition('mouseTexture', -4, 0)
      mouseSetUpdatingPosition('mouseSkinToolTip', 35, 12)
      if keyboardJustConditionPressed('ENTER', not getVar('skinSearchInputFocus')) and songName == 'Skin Selector' then
-          local GAME_SONG_NAME        = SkinStatesGSave:get('GAME_SONG_NAME', 'GENERAL')
-          local GAME_DIFFICULTY_ID    = SkinStatesGSave:get('GAME_DIFFICULTY_ID', 'GENERAL')
-          local GAME_DIFFICULTY_LISTS = SkinStatesGSave:get('GAME_DIFFICULTY_LISTS', 'GENERAL')
+          local GAME_SONG_NAME        = NoteSkinSelector:get('GAME_SONG_NAME', 'GENERAL')
+          local GAME_DIFFICULTY_ID    = NoteSkinSelector:get('GAME_DIFFICULTY_ID', 'GENERAL')
+          local GAME_DIFFICULTY_LISTS = NoteSkinSelector:get('GAME_DIFFICULTY_LISTS', 'GENERAL')
           loadNewSong(GAME_SONG_NAME, tonumber(GAME_DIFFICULTY_ID), GAME_DIFFICULTY_LISTS)
      end
 end

@@ -8,10 +8,11 @@ local states    = require 'mods.NoteSkin Selector Remastered.api.modules.states'
 
 local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+
 --- Maintains the skin classes' creation, switching, and saving.
 ---@class SkinStates
 local SkinStates = {}
-local SkinStatesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Initializes the main attributes for the skinstate.
 ---@param stateSkins table The skinstate classes to maintain.
@@ -49,13 +50,13 @@ function SkinStates:_swap()
           end
      end
      self:create()
-     SkinStatesGSave:set('dataStateName', '', self.__stateSkinNames[self.__stateSkinIndex])
+     NoteSkinSelector:set('dataStateName', '', self.__stateSkinNames[self.__stateSkinIndex])
 end
 
 --- Switches the current skinstate to another skinstate, self-explanatory.
 ---@return nil
 function SkinStates:switch()
-     if SkinStatesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == true then
+     if NoteSkinSelector:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == true then
           return
      end
 

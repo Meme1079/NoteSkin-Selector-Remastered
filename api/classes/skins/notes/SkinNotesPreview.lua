@@ -16,10 +16,11 @@ local clickObject                   = funkinlua.clickObject
 local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+
 --- Childclass extension, main preview strums component functionality for the note skin state.
 ---@class SkinNotesPreview
 local SkinNotesPreview = {}
-local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Creates the preview strums' graphic sprites and text.
 ---@return nil
@@ -150,10 +151,10 @@ function SkinNotesPreview:preview()
           setObjectCamera(previewSkinGroupTag, 'camHUD')
           addLuaSprite(previewSkinGroupTag)
 
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  'PREVIEW', previewMetadataObjectAnims('strums', strumIndex, true))
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_PATH',   'PREVIEW', previewSkinGroupSprite)
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', 'PREVIEW', metadataPreviewStrumsFrames)
-          SkinNotesGSave:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   'PREVIEW', metadataPreviewSize)
+          NoteSkinSelector:set('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  'PREVIEW', previewMetadataObjectAnims('strums', strumIndex, true))
+          NoteSkinSelector:set('PREV_NOTES_METAOBJ_STRUMS_PATH',   'PREVIEW', previewSkinGroupSprite)
+          NoteSkinSelector:set('PREV_NOTES_METAOBJ_STRUMS_FRAMES', 'PREVIEW', metadataPreviewStrumsFrames)
+          NoteSkinSelector:set('PREV_NOTES_METAOBJ_STRUMS_SIZE',   'PREVIEW', metadataPreviewSize)
      end
      setTextString('skinStatePreviewName', currentPreviewDataNames)
 end
@@ -161,7 +162,7 @@ end
 --- Creates the preview strums' animations, for testing its animations for visual aid.
 ---@return nil
 function SkinNotesPreview:preview_animation()
-     if SkinNotesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == false then
+     if NoteSkinSelector:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == false then
           return
      end
 
@@ -297,14 +298,14 @@ function SkinNotesPreview:preview_selection_moved()
           PREVIEW_SELECTION_TOGGLE  = true
 
           playSound('ding', 0.5)
-          SkinNotesGSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
+          NoteSkinSelector:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
      end
      if conditionPressedRight and previewAnimationMaxIndex then
           self.PREVIEW_SKIN_OBJECT_INDEX = self.PREVIEW_SKIN_OBJECT_INDEX + 1
           PREVIEW_SELECTION_TOGGLE  = true
 
           playSound('ding', 0.5)
-          SkinNotesGSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
+          NoteSkinSelector:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
      end
      
      if PREVIEW_SELECTION_TOGGLE == true then --! DO NOT DELETE
@@ -348,7 +349,7 @@ function SkinNotesPreview:preview_selection_byclick()
                self.PREVIEW_SKIN_OBJECT_INDEX                      = self.PREVIEW_SKIN_OBJECT_INDEX + iteration
                self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] = false
 
-               SkinNotesGSave:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
+               NoteSkinSelector:set('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), self.PREVIEW_SKIN_OBJECT_INDEX)
           end
      end
 

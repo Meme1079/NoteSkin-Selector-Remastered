@@ -13,10 +13,11 @@ local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 local hoverObject = funkinlua.hoverObject
 local clickObject = funkinlua.clickObject
 
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+
 --- Childclass extension, main selecting component functionality for the note skin state.
 ---@class SkinNotesSelection
 local SkinNotesSelection = {}
-local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Selection component group.
 ---@return nil
@@ -55,7 +56,7 @@ function SkinNotesSelection:selection_byclick()
                     self.SELECT_SKIN_PRE_SELECTION_INDEX = curIDs
                     self.SELECT_SKIN_CLICKED_SELECTION   = true
 
-                    SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                     totalSkinObjectsPagePerClicked[curSkinIDs] = true
                end
 
@@ -68,9 +69,9 @@ function SkinNotesSelection:selection_byclick()
                     self.SELECT_SKIN_CLICKED_SELECTION    = false
                     self:preview()
 
-                    SkinNotesGSave:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
-                    SkinNotesGSave:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
-                    SkinNotesGSave:set('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_PAGE_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PAGE_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
                     totalSkinObjectsPagePerSelected[curSkinIDs] = true
                     totalSkinObjectsPagePerClicked[curSkinIDs]  = false
                end
@@ -84,7 +85,7 @@ function SkinNotesSelection:selection_byclick()
                     self.SELECT_SKIN_PRE_SELECTION_INDEX = curIDs
                     self.SELECT_SKIN_CLICKED_SELECTION   = true
 
-                    SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                     totalSkinObjectsPagePerClicked[curSkinIDs] = true
                end
 
@@ -96,8 +97,8 @@ function SkinNotesSelection:selection_byclick()
                     self.SELECT_SKIN_CLICKED_SELECTION   = false
 
                     self:preview()
-                    SkinNotesGSave:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
-                    SkinNotesGSave:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_CUR_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_CUR_SELECTION_INDEX)
+                    NoteSkinSelector:set('SELECT_SKIN_PRE_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_PRE_SELECTION_INDEX)
                     totalSkinObjectsPagePerSelected[curSkinIDs] = false
                     totalSkinObjectsPagePerClicked[curSkinIDs]  = false
                     totalSkinObjectsPagePerHovered[curSkinIDs]  = false
@@ -132,7 +133,7 @@ function SkinNotesSelection:selection_byclick()
                end
 
                self.SELECT_SKIN_INIT_SELECTION_INDEX = 0
-               SkinNotesGSave:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
+               NoteSkinSelector:set('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), self.SELECT_SKIN_INIT_SELECTION_INDEX)
           end
      end
 end

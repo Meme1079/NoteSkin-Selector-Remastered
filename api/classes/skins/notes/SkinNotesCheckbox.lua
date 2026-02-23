@@ -16,10 +16,11 @@ local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 local keyboardJustConditionPress    = funkinlua.keyboardJustConditionPress
 local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+
 --- Childclass extension, main checkbox component functionality for the noteskin state.
 ---@class SkinNotesCheckbox
 local SkinNotesCheckbox = {}
-local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Creates the checkboxes' graphic sprites and text.
 --- Additionally it also creates the selection highlight for the chunk gallery here.
@@ -188,7 +189,7 @@ function SkinNotesCheckbox:checkbox_selection_byclick()
                     playAnim(checkboxSkinButtonTag, 'checking')
                     
                     local CHECKBOX_SKIN_OBJECT_CHARS = F"CHECKBOX_SKIN_OBJECT_CHARS_{CharNames:upperAtStart()}"
-                    SkinNotesGSave:set(CHECKBOX_SKIN_OBJECT_CHARS, self.stateClass:upper(), self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues])
+                    NoteSkinSelector:set(CHECKBOX_SKIN_OBJECT_CHARS, self.stateClass:upper(), self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues])
                end
                if self.CHECKBOX_SKIN_OBJECT_TOGGLE[CharValues] == true then
                     self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues] = 0
@@ -197,7 +198,7 @@ function SkinNotesCheckbox:checkbox_selection_byclick()
                     playAnim(checkboxSkinButtonTag, 'unchecking')
      
                     local CHECKBOX_SKIN_OBJECT_CHARS = F"CHECKBOX_SKIN_OBJECT_CHARS_{CharNames:upperAtStart()}"
-                    SkinNotesGSave:set(CHECKBOX_SKIN_OBJECT_CHARS, self.stateClass:upper(), self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues])
+                    NoteSkinSelector:set(CHECKBOX_SKIN_OBJECT_CHARS, self.stateClass:upper(), self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues])
                end
                playSound('remote_click')
 

@@ -80,12 +80,8 @@ function FlavorUI_Toggle:_cursor()
      if pressedObject(self.tag, 'camHUD') and self.clicked == true then
           playAnim(self.cursorTexture, 'handClick', true)
      end
-
-     if hoverObject(self.tag, 'camHUD') == true  and not pressedObject(self.tag, 'camHUD') then
+     if hoverObject(self.tag, 'camHUD') == true and not pressedObject(self.tag, 'camHUD') then
           playAnim(self.cursorTexture, 'hand', true)
-     end
-     if hoverObject(self.tag, 'camHUD') == false and not pressedObject(self.tag, 'camHUD') then
-          playAnim(self.cursorTexture, 'idle', true)
      end
 end
 

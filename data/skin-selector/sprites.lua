@@ -11,6 +11,8 @@ local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-str
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local ease      = require 'mods.NoteSkin Selector Remastered.api.libraries.ease.ease'
 
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+
 -- Prechaching --
 
 precacheImage('menuDesat')
@@ -303,14 +305,11 @@ end
 
 -- SkinState Stuff --
 
-local SkinStatesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
-
 local Notes    = SkinNotes:new('notes', 'noteSkins', 'NOTE_assets')
 local Splashes = SkinSplashes:new('splashes', 'noteSplashes', 'noteSplashes')
-local Skins    = SkinStates:new({Notes, Splashes}, SkinStatesGSave:get('dataStateName', '', 'notes'))
+local Skins    = SkinStates:new({Notes, Splashes}, NoteSkinSelector:get('dataStateName', '', 'notes'))
 Skins:load()
 Skins:create()
-
 
 makeAnimatedLuaSprite('previewSkinToggleAnims', 'ui/buttons/preview anim/previewAnimIcon_toggle', 783, 600)
 addAnimationByPrefix('previewSkinToggleAnims', 'active-static', 'active-static', 24, false)
@@ -325,7 +324,7 @@ setObjectCamera('previewSkinToggleAnims', 'camHUD')
 setProperty(F"previewSkinToggleAnims.antialiasing", false)
 addLuaSprite('previewSkinToggleAnims')
 
-local previewSkinToggleAnims = FlavorUI_Toggle:new('previewSkinToggleAnims', SkinStatesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true))
+local previewSkinToggleAnims = FlavorUI_Toggle:new('previewSkinToggleAnims', NoteSkinSelector:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true))
 previewSkinToggleAnims.cursorTexture = 'mouseTexture'
 previewSkinToggleAnims.onPostClick   = function(this)
      for strumIndex = 1, 4 do
@@ -336,7 +335,7 @@ previewSkinToggleAnims.onPostClick   = function(this)
                setProperty(F"{skinStateKeybindsTag}.alpha", 0.5)
           end
      end
-     SkinStatesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true)
+     NoteSkinSelector:set('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', this.status)
 end
 
 -- HScript Stuff --

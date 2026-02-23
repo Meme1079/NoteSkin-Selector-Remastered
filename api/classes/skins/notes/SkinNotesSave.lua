@@ -9,22 +9,22 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
-
 local keyboardJustConditionPressed = funkinlua.keyboardJustConditionPressed
+
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Childclass extension, main saving data component functionality for the note skin state.
 ---@class SkinNotesSave
 local SkinNotesSave = {}
-local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Saves all the current component attribute values, and other data for the noteskin state.
 ---@return nil
 function SkinNotesSave:save()
      if keyboardJustConditionPressed('ONE', not getVar('skinSearchInputFocus')) then 
-          SkinNotesGSave:flush()
+          NoteSkinSelector:flush()
      end
      if keyboardJustConditionPressed('ESCAPE', not getVar('skinSearchInputFocus')) then 
-          SkinNotesGSave:flush() 
+          NoteSkinSelector:flush() 
      end
 end
 

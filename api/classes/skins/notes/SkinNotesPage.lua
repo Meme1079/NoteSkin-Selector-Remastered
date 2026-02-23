@@ -13,10 +13,11 @@ local clickObject                   = funkinlua.clickObject
 local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+
 --- Childclass extension, main page component functionality for the noteskin state.
 ---@class SkinNotesPage
 local SkinNotesPage = {}
-local SkinNotesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 local SCROLLBAR_THUMB_SYNC = false -- * Ignore this btw
 --- Page scrollbar functionality, that's it.
@@ -93,7 +94,7 @@ function SkinNotesPage:page_scrollbar(snapToPage)
 
           playSound('ding', 0.5)
           callOnScripts('skinSearchInput_callResetSearch')
-          SkinNotesGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
+          NoteSkinSelector:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
      end
 
      if self.TOTAL_SKIN_LIMIT > MINIMUM_SKIN_LIMIT and self.SCROLLBAR_TRACK_THUMB_PRESSED == false then
@@ -160,7 +161,7 @@ end
 --- Page moving functionality, uses keys for switching pages.
 ---@return nil
 function SkinNotesPage:page_moved()
-     if SkinNotesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == true then
+     if NoteSkinSelector:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == true then
           return
      end
      if self.SCROLLBAR_TRACK_THUMB_PRESSED == true then 
@@ -208,7 +209,7 @@ function SkinNotesPage:page_moved()
           setProperty(F"{pageScrollbarThumb}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX])
           callOnScripts('skinSearchInput_callResetSearch')
 
-          SkinNotesGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
+          NoteSkinSelector:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
      end
      if gameControlPressedDown and self.SCROLLBAR_PAGE_INDEX < SCROLLBAR_MAX_RANGE_PAGE_INDEX then
           self.SCROLLBAR_PAGE_INDEX = self.SCROLLBAR_PAGE_INDEX + 1
@@ -219,7 +220,7 @@ function SkinNotesPage:page_moved()
           setProperty(F"{pageScrollbarThumb}.y", self.SCROLLBAR_TRACK_MAJOR_SNAP[self.SCROLLBAR_PAGE_INDEX])
           callOnScripts('skinSearchInput_callResetSearch')
           
-          SkinNotesGSave:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
+          NoteSkinSelector:set('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), self.SCROLLBAR_PAGE_INDEX)
      end
 
      local SCROLLBAR_MAJOR_SNAP_OFFSET_Y = 25

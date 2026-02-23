@@ -15,13 +15,14 @@ local global    = require 'mods.NoteSkin Selector Remastered.api.modules.global'
 local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 local inheritedClasses = global.inheritedClasses
 
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+
 --- Main class for the splashskin state inherited by many of its extended subclasses.
 ---@class SkinSplashes: SkinSplashesPreview, SkinSplashesSearch
 local SkinSplashes = inheritedClasses({
      inherit = {SkinNotes},
      extends = {SkinSplashesPreview, SkinSplashesSearch}
 })
-local SkinSplashesGSave = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Initializes the main attributes for the splashskin state.
 ---@param stateClass string The corresponding global name for this skin state.
@@ -64,7 +65,7 @@ function SkinSplashes:load()
 
      -- Slider Properties --
 
-     local SCROLLBAR_PAGE_INDEX = SkinSplashesGSave:get('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
+     local SCROLLBAR_PAGE_INDEX = NoteSkinSelector:get('SCROLLBAR_PAGE_INDEX', self.stateClass:upper(), 1)
 
      self.SCROLLBAR_PAGE_INDEX          = 1
      self.SCROLLBAR_TRACK_THUMB_PRESSED = false
@@ -73,10 +74,10 @@ function SkinSplashes:load()
 
      -- Display Selection Properties --
 
-     local SELECT_SKIN_PAGE_INDEX           = SkinSplashesGSave:get('SELECT_SKIN_PAGE_INDEX',           self.stateClass:upper(), 1)
-     local SELECT_SKIN_INIT_SELECTION_INDEX = SkinSplashesGSave:get('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), 1)
-     local SELECT_SKIN_PRE_SELECTION_INDEX  = SkinSplashesGSave:get('SELECT_SKIN_PRE_SELECTION_INDEX',  self.stateClass:upper(), 1)
-     local SELECT_SKIN_CUR_SELECTION_INDEX  = SkinSplashesGSave:get('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), 1)
+     local SELECT_SKIN_PAGE_INDEX           = NoteSkinSelector:get('SELECT_SKIN_PAGE_INDEX',           self.stateClass:upper(), 1)
+     local SELECT_SKIN_INIT_SELECTION_INDEX = NoteSkinSelector:get('SELECT_SKIN_INIT_SELECTION_INDEX', self.stateClass:upper(), 1)
+     local SELECT_SKIN_PRE_SELECTION_INDEX  = NoteSkinSelector:get('SELECT_SKIN_PRE_SELECTION_INDEX',  self.stateClass:upper(), 1)
+     local SELECT_SKIN_CUR_SELECTION_INDEX  = NoteSkinSelector:get('SELECT_SKIN_CUR_SELECTION_INDEX',  self.stateClass:upper(), 1)
 
      self.SELECT_SKIN_PAGE_INDEX           = SELECT_SKIN_PAGE_INDEX           -- current page index
      self.SELECT_SKIN_INIT_SELECTION_INDEX = SELECT_SKIN_INIT_SELECTION_INDEX -- current pressed selected skin
@@ -86,7 +87,7 @@ function SkinSplashes:load()
 
      -- Preview Animation Properties --
 
-     local PREVIEW_SKIN_OBJECT_INDEX = SkinSplashesGSave:get('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
+     local PREVIEW_SKIN_OBJECT_INDEX = NoteSkinSelector:get('PREVIEW_SKIN_OBJECT_INDEX', self.stateClass:upper(), 1)
 
      self.PREVIEW_CONST_METADATA_PREVIEW       = json.parse(getTextFromFile('json/splashes/constant/preview.json'))
      self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS = json.parse(getTextFromFile('json/splashes/constant/preview_anims.json'))
@@ -106,7 +107,7 @@ function SkinSplashes:load()
 
      -- Checkbox Skin Properties --
 
-     local CHECKBOX_SKIN_OBJECT_CHARS_PLAYER = SkinSplashesGSave:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER', self.stateClass:upper(), 0)
+     local CHECKBOX_SKIN_OBJECT_CHARS_PLAYER = NoteSkinSelector:get('CHECKBOX_SKIN_OBJECT_CHARS_PLAYER', self.stateClass:upper(), 0)
 
      self.CHECKBOX_SKIN_OBJECT_HOVERED = {false} -- use the fuckass CHARACTERS enum for reference
      self.CHECKBOX_SKIN_OBJECT_CLICKED = {false} -- use the fuckass CHARACTERS enum for reference
@@ -123,10 +124,10 @@ function SkinSplashes:load()
 
      -- Note Preview Properties --
 
-     local PREV_NOTES_METAOBJ_STRUMS_ANIMS  = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  'PREVIEW', self.PREVIEW_CONST_METADATA_STRUMS)
-     local PREV_NOTES_METAOBJ_STRUMS_PATH   = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_PATH',   'PREVIEW', {24, 24, 24, 24})
-     local PREV_NOTES_METAOBJ_STRUMS_FRAMES = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_FRAMES', 'PREVIEW', {0.65, 0.65, 0.65, 0.65})
-     local PREV_NOTES_METAOBJ_STRUMS_SIZE   = SkinSplashesGSave:get('PREV_NOTES_METAOBJ_STRUMS_SIZE',   'PREVIEW', {0.65, 0.65, 0.65, 0.65})
+     local PREV_NOTES_METAOBJ_STRUMS_ANIMS  = NoteSkinSelector:get('PREV_NOTES_METAOBJ_STRUMS_ANIMS',  'PREVIEW', self.PREVIEW_CONST_METADATA_STRUMS)
+     local PREV_NOTES_METAOBJ_STRUMS_PATH   = NoteSkinSelector:get('PREV_NOTES_METAOBJ_STRUMS_PATH',   'PREVIEW', {24, 24, 24, 24})
+     local PREV_NOTES_METAOBJ_STRUMS_FRAMES = NoteSkinSelector:get('PREV_NOTES_METAOBJ_STRUMS_FRAMES', 'PREVIEW', {0.65, 0.65, 0.65, 0.65})
+     local PREV_NOTES_METAOBJ_STRUMS_SIZE   = NoteSkinSelector:get('PREV_NOTES_METAOBJ_STRUMS_SIZE',   'PREVIEW', {0.65, 0.65, 0.65, 0.65})
      self.PREV_NOTES_METAOBJ_STRUMS_ANIMS   = PREV_NOTES_METAOBJ_STRUMS_ANIMS
      self.PREV_NOTES_METAOBJ_STRUMS_PATH    = PREV_NOTES_METAOBJ_STRUMS_PATH
      self.PREV_NOTES_METAOBJ_STRUMS_FRAMES  = PREV_NOTES_METAOBJ_STRUMS_FRAMES

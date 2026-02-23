@@ -14,10 +14,11 @@ local MAX_NUMBER_CHUNK = global.MAX_NUMBER_CHUNK
 local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 local keyboardJustConditionReleased = funkinlua.keyboardJustConditionReleased
 
+local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
+
 --- Childclass extension, main preview splashes component functionality for the splash skin state.
 ---@class SkinSplashesPreview
 local SkinSplashesPreview = {}
-local SkinSplashesGSave   = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
 --- Creates the preview strums' graphic sprites and text.
 ---@return nil
@@ -193,7 +194,7 @@ end
 --- Creates the preview strums' animations, for testing its animations for visual aid.
 ---@return nil
 function SkinSplashesPreview:preview_animation()
-     if SkinSplashesGSave:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == false then
+     if NoteSkinSelector:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true) == false then
           return
      end
      
