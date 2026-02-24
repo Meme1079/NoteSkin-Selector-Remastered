@@ -1,7 +1,6 @@
 luaDebugMode = true
 
 local SkinSaves    = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinSaves'
-local SkinToggleUI = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.ui.SkinToggleUI'
 
 local F    = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local math = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
@@ -130,11 +129,11 @@ local MOUSE_ANIMATION_OFFSETS = {
 
 makeAnimatedLuaSprite('mouseTexture', 'ui/cursor', getMouseX('camOther'), getMouseY('camOther'))
 scaleObject('mouseTexture', 0.4, 0.4)
-addAnimationByPrefix('mouseTexture', 'idle', 'idle', 24, false)
+addAnimationByPrefix('mouseTexture', 'idle', 'idle0', 24, false)
 addAnimationByPrefix('mouseTexture', 'idleClick', 'idleClick', 24, false)
-addAnimationByPrefix('mouseTexture', 'hand', 'hand', 24, false)
+addAnimationByPrefix('mouseTexture', 'hand', 'hand0', 24, false)
 addAnimationByPrefix('mouseTexture', 'handClick', 'handClick', 24, false)
-addAnimationByPrefix('mouseTexture', 'disabled', 'disabled', 24, false)
+addAnimationByPrefix('mouseTexture', 'disabled', 'disabled0', 24, false)
 addAnimationByPrefix('mouseTexture', 'disabledClick', 'disabledClick', 24, false)
 addAnimationByPrefix('mouseTexture', 'waiting', 'waiting', 5, true)
 addOffset('mouseTexture', 'idle', MOUSE_ANIMATION_OFFSETS.IDLE[1], MOUSE_ANIMATION_OFFSETS.IDLE[2])
@@ -146,6 +145,7 @@ addOffset('mouseTexture', 'disabledClick', MOUSE_ANIMATION_OFFSETS.DISABLED[1], 
 playAnim('mouseTexture', 'idle')
 setObjectCamera('mouseTexture', 'camOther')
 addLuaSprite('mouseTexture', true)
+setPropertyFromClass('flixel.FlxG', 'mouse.visible', false)
 
 -- DooDoo Stuff --
 

@@ -1,7 +1,12 @@
 local FlavorUI_Toggle = require 'mods.NoteSkin Selector Remastered.api.classes.ui.FlavorUI_Toggle'
 local SkinSaves       = require 'mods.NoteSkin Selector Remastered.api.classes.skins.static.SkinSaves'
 
-local F = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
+local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
+local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
+
+local hoverObject   = funkinlua.hoverObject
+local clickObject   = funkinlua.clickObject
+local pressedObject = funkinlua.pressedObject
 
 local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 
@@ -20,10 +25,11 @@ addLuaSprite('test')
 
 local doodoo = FlavorUI_Toggle:new('test', NoteSkinSelector:get('DOODOO', 'SAVE', false))
 doodoo.cursorTexture = 'mouseTexture'
-doodoo.onClick = function(this)
+doodoo.onPostClick = function(this)
+     playSound('exitWindow', 0.8)
      NoteSkinSelector:set('DOODOO', 'SAVE', this.status)
 end
 
-function onUpdate(elapsed)
+function onUpdatePost(elapsed)
      doodoo:update()
 end

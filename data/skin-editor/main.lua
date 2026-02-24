@@ -34,9 +34,9 @@ function onUpdatePost(elapsed)
      if mouseReleased('left') then playSound('clicks/clickUp', 0.5)   end
 
      if mouseClicked('left') or mousePressed('left') then 
-          playAnim('mouseTexture', 'idleClick', true)
+          playAnim('mouseTexture', 'idleClick')
      else
-          playAnim('mouseTexture', 'idle', true)
+          playAnim('mouseTexture', 'idle')
      end
      mouseSetUpdatingPosition('mouseTexture', 0, 0)
 end

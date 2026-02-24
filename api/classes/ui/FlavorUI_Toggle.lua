@@ -26,9 +26,15 @@ function FlavorUI_Toggle:new(tag, status)
      return self
 end
 
+local CREATE_EXECUTE = true
 ---
 ---@return nil
 function FlavorUI_Toggle:update()
+     if CREATE_EXECUTE == true then
+          self:onCreate(self)
+          CREATE_EXECUTE = false
+     end
+
      self:_click()
      self:_hover()
      self:_cursor()
@@ -73,14 +79,14 @@ end
 ---@protected
 ---@return nil
 function FlavorUI_Toggle:_cursor()
-     if not luaSpriteExists(self.cursorTexture) then
+     if self.cursorTexture == '' or self.cursorTexture == nil then
           return
      end
-
+     
      if pressedObject(self.tag, 'camHUD') and self.clicked == true then
           playAnim(self.cursorTexture, 'handClick', true)
      end
-     if hoverObject(self.tag, 'camHUD') == true and not pressedObject(self.tag, 'camHUD') then
+     if hoverObject(self.tag, 'camHUD') == true  and not pressedObject(self.tag, 'camHUD') then
           playAnim(self.cursorTexture, 'hand', true)
      end
 end
@@ -96,6 +102,12 @@ end
 ---@return nil
 function FlavorUI_Toggle:destroy()
      setmetatable(self, nil)
+end
+
+---
+---@param this any
+---@return nil
+function FlavorUI_Toggle:onCreate(this)
 end
 
 ---

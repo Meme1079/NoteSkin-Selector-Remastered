@@ -134,6 +134,21 @@ setObjectCamera('previewSkinToggleAnimDescText', 'camHUD')
 setProperty('previewSkinToggleAnimDescText.antialiasing', false)
 addLuaText('previewSkinToggleAnimDescText')
 
+-- Toggle --
+
+makeAnimatedLuaSprite('previewSkinToggleAnims', 'ui/buttons/preview anim/previewAnimIcon_toggle', 783, 600)
+addAnimationByPrefix('previewSkinToggleAnims', 'active-static', 'active-static', 24, false)
+addAnimationByPrefix('previewSkinToggleAnims', 'active-hovered', 'active-hovered', 24, false)
+addAnimationByPrefix('previewSkinToggleAnims', 'active-focused', 'active-focused', 24, false)
+addAnimationByPrefix('previewSkinToggleAnims', 'inactive-static', 'inactive-static', 24, false)
+addAnimationByPrefix('previewSkinToggleAnims', 'inactive-hovered', 'inactive-hovered', 24, false)
+addAnimationByPrefix('previewSkinToggleAnims', 'inactive-focused', 'inactive-focused', 24, false)
+playAnim('previewSkinToggleAnims', 'inactive-static', true)
+scaleObject('previewSkinToggleAnims', 0.51, 0.562)
+setObjectCamera('previewSkinToggleAnims', 'camHUD')
+setProperty(F"previewSkinToggleAnims.antialiasing", false)
+addLuaSprite('previewSkinToggleAnims')
+
 -- General Infos --
 
 makeLuaText('skinStatePreviewState', 'Notes', 0, 20, 13)
@@ -311,22 +326,10 @@ local Skins    = SkinStates:new({Notes, Splashes}, NoteSkinSelector:get('dataSta
 Skins:load()
 Skins:create()
 
-makeAnimatedLuaSprite('previewSkinToggleAnims', 'ui/buttons/preview anim/previewAnimIcon_toggle', 783, 600)
-addAnimationByPrefix('previewSkinToggleAnims', 'active-static', 'active-static', 24, false)
-addAnimationByPrefix('previewSkinToggleAnims', 'active-hovered', 'active-hovered', 24, false)
-addAnimationByPrefix('previewSkinToggleAnims', 'active-focused', 'active-focused', 24, false)
-addAnimationByPrefix('previewSkinToggleAnims', 'inactive-static', 'inactive-static', 24, false)
-addAnimationByPrefix('previewSkinToggleAnims', 'inactive-hovered', 'inactive-hovered', 24, false)
-addAnimationByPrefix('previewSkinToggleAnims', 'inactive-focused', 'inactive-focused', 24, false)
-playAnim('previewSkinToggleAnims', 'inactive-static', true)
-scaleObject('previewSkinToggleAnims', 0.51, 0.562)
-setObjectCamera('previewSkinToggleAnims', 'camHUD')
-setProperty(F"previewSkinToggleAnims.antialiasing", false)
-addLuaSprite('previewSkinToggleAnims')
-
 local previewSkinToggleAnims = FlavorUI_Toggle:new('previewSkinToggleAnims', NoteSkinSelector:get('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', true))
 previewSkinToggleAnims.cursorTexture = 'mouseTexture'
-previewSkinToggleAnims.onPostClick   = function(this)
+
+local function keybindCharStates(this)
      for strumIndex = 1, 4 do
           local skinStateKeybindsTag = F"skinStateKeybinds-{strumIndex}"
           if this:status_state() == 'active' then
@@ -335,6 +338,13 @@ previewSkinToggleAnims.onPostClick   = function(this)
                setProperty(F"{skinStateKeybindsTag}.alpha", 0.5)
           end
      end
+end
+previewSkinToggleAnims.onCreate = function(this)
+     keybindCharStates(this)
+end
+previewSkinToggleAnims.onPostClick = function(this)
+     keybindCharStates(this)
+     playSound('exitWindow', 0.8)
      NoteSkinSelector:set('PREVIEW_TOGGLE_ANIM_STATUS', 'SAVE', this.status)
 end
 
