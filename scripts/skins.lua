@@ -188,7 +188,7 @@ local function onSetSkinTexture(memberStrums, noteType, isSustainNote)
           local strumHeight  = skinStrumMetadata:object_strums('height')
           setPropertyFromGroup('notes', memberStrums, 'offsetX', ultimateWidth - strumOffsetX)
 
-          local isTailName = getProperty(F"game.notes.members[{memberStrums}].animation.curAnim.name")
+          local isTailName = getProperty(F"game.notes.members[${memberStrums}].animation.curAnim.name")
           local isTailNote = stringEndsWith(isTailName, 'end')
           if not isTailNote then
                local noteSustainHeightStrum   = noteSustainHeight / strumHeight % noteSustainHeight

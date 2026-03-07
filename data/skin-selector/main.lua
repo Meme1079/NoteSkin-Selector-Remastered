@@ -11,7 +11,7 @@ local keyboardJustConditionPressed  = funkinlua.keyboardJustConditionPressed
 local NoteSkinSelector = SkinSaves:new('noteskin_selector', 'NoteSkin Selector')
 function onCreatePost()
      for _,scripts in pairs(getRunningScripts()) do
-          if scripts:match(F"{modFolder}/scripts/skins") or not scripts:match(modFolder) then
+          if scripts:match(F"${modFolder}/scripts/skins") or not scripts:match(modFolder) then
                removeLuaScript(scripts, true)
           end
      end
@@ -24,8 +24,8 @@ end
 ---@param offsetY number The offset of the y position.
 ---@return nil
 local function mouseSetUpdatingPosition(mouseTag, offsetX, offsetY)
-     setProperty(F"{mouseTag}.x", getMouseX('camHUD') + offsetX)
-     setProperty(F"{mouseTag}.y", getMouseY('camHUD') + offsetY)
+     setProperty(F"${mouseTag}.x", getMouseX('camHUD') + offsetX)
+     setProperty(F"${mouseTag}.y", getMouseY('camHUD') + offsetY)
 end
 
 function onUpdatePost(elapsed)

@@ -24,10 +24,10 @@ function EditorNotes:create(strum, x, y, size)
 
      makeAnimatedLuaSprite(ddoodoo, self.sprite, x, y)
      scaleObject(ddoodoo, size[1], size[2])
-     addAnimationByPrefix(ddoodoo, F"{SKIN_DIRECTIONS[strum]}_confirm", F"{SKIN_DIRECTIONS[strum]} confirm", 24, false)
-     addAnimationByPrefix(ddoodoo, F"{SKIN_DIRECTIONS[strum]}_pressed", F"{SKIN_DIRECTIONS[strum]} pressed", 24, false)
-     addAnimationByPrefix(ddoodoo, F"{SKIN_DIRECTIONS[strum]}_colored", SKIN_COLORS[strum], 24, false)
-     addAnimationByPrefix(ddoodoo, SKIN_DIRECTIONS[strum], F"arrow{SKIN_DIRECTIONS[strum]:upper()}", 24, false)
+     addAnimationByPrefix(ddoodoo, F"${SKIN_DIRECTIONS[strum]}_confirm", F"${SKIN_DIRECTIONS[strum]} confirm", 24, false)
+     addAnimationByPrefix(ddoodoo, F"${SKIN_DIRECTIONS[strum]}_pressed", F"${SKIN_DIRECTIONS[strum]} pressed", 24, false)
+     addAnimationByPrefix(ddoodoo, F"${SKIN_DIRECTIONS[strum]}_colored", SKIN_COLORS[strum], 24, false)
+     addAnimationByPrefix(ddoodoo, SKIN_DIRECTIONS[strum], F"arrow${SKIN_DIRECTIONS[strum]:upper()}", 24, false)
      playAnim(ddoodoo, SKIN_DIRECTIONS[strum], false)
      setObjectCamera(ddoodoo, 'camHUD')
      addLuaSprite(ddoodoo)
@@ -39,7 +39,7 @@ local dx, dy = 0, 0 -- Directional input variables
 local di = 1        -- Amplifier
 function EditorNotes:update_movement()
      if getVar('skinSearchInputFocus') == true then
-          local giX = F"{self.tag}{dir}"
+          local giX = F"${self.tag}${dir}"
 
           if keyboardJustPressed('ENTER') then
                local pp = runHaxeCode([[
@@ -55,7 +55,7 @@ function EditorNotes:update_movement()
      if keyboardPressed('S') then dy = dy + 1 end
      if keyboardPressed('W') then dy = dy - 1 end
 
-     local giX = F"{self.tag}{dir}"
+     local giX = F"${self.tag}${dir}"
 
      local length = math.sqrt(dx^2 + dy^2)
      if length > 0 then
@@ -63,31 +63,31 @@ function EditorNotes:update_movement()
           dy = dy / length
 
           if keyboardPressed('D') or keyboardPressed('A') and not (keyboardPressed('D') and keyboardPressed('A')) then
-               setProperty(F"{giX}.x", getProperty(F"{giX}.x") + dx*di)
+               setProperty(F"${giX}.x", getProperty(F"${giX}.x") + dx*di)
           end
           if keyboardPressed('S') or keyboardPressed('W') and not (keyboardPressed('S') and keyboardPressed('W')) then
-               setProperty(F"{giX}.y", getProperty(F"{giX}.y") + dy*di)
+               setProperty(F"${giX}.y", getProperty(F"${giX}.y") + dy*di)
           end
           setTextString('skinSearchInput', math.round(getProperty(F"{giX}.x"), 2))
 
-          local do2odoo = math.round(getProperty(F"{giX}.x"), 2)
-          runHaxeCode(F" getVar('skinSearchInput').set_text('{do2odoo}'); ")
+          local do2odoo = math.round(getProperty(F"${giX}.x"), 2)
+          runHaxeCode(F" getVar('skinSearchInput').set_text('${do2odoo}'); ")
           runHaxeCode(" getVar('skinSearchInput_placeholder').text = ''; ")
      end
 
      if keyboardJustPressed('LBRACKET') and dir > 1 then
           dir = dir - 1
-          setTextString('animationEditorStrumsInput', math.round(getProperty(F"{giX}.x"), 2))
+          setTextString('animationEditorStrumsInput', math.round(getProperty(F"${giX}.x"), 2))
 
-          local do2odoo = math.round(getProperty(F"{giX}.x"), 2)
-          runHaxeCode(F" getVar('skinSearchInput').set_text('{do2odoo}'); ")   
+          local do2odoo = math.round(getProperty(F"${giX}.x"), 2)
+          runHaxeCode(F" getVar('skinSearchInput').set_text('${do2odoo}'); ")
      end
      if keyboardJustPressed('RBRACKET') and dir < 4 then
           dir = dir + 1
-          setTextString('animationEditorStrumsInput', math.round(getProperty(F"{giX}.x"), 2))
+          setTextString('animationEditorStrumsInput', math.round(getProperty(F"${giX}.x"), 2))
 
-          local do2odoo = math.round(getProperty(F"{giX}.x"), 2)
-          runHaxeCode(F" getVar('skinSearchInput').set_text('{do2odoo}'); ")   
+          local do2odoo = math.round(getProperty(F"${giX}.x"), 2)
+          runHaxeCode(F" getVar('skinSearchInput').set_text('${do2odoo}'); ")
      end
 end
 

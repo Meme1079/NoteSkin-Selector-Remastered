@@ -40,7 +40,7 @@ function SkinNotesSave:save_load()
      local scrollbarMajorPositionIsReal = math.isReal(scrollbarMajorPositionIndex)
      local scrollbarMajorPositionFixed  = scrollbarMajorPositionIsReal and scrollbarMajorPositionIndex or 0
      playAnim(displayScrollThumbTag, 'static')
-     setProperty(F"{displayScrollThumbTag}.y", scrollbarMajorPositionFixed)
+     setProperty(F"${displayScrollThumbTag}.y", scrollbarMajorPositionFixed)
      setTextString('skinStatePreviewState', self.stateClass:upperAtStart())
 end
 
@@ -52,7 +52,7 @@ function SkinNotesSave:save_selection()
           return
      end
 
-     local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{self.SELECT_SKIN_PRE_SELECTION_INDEX}"
+     local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${self.SELECT_SKIN_PRE_SELECTION_INDEX}"
      if luaSpriteExists(displaySkinIconButtonTag) == true then
           playAnim(displaySkinIconButtonTag, 'selected', true)
 

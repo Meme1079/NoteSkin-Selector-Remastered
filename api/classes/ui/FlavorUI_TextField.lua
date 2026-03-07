@@ -1,12 +1,62 @@
+local F = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
+
+---@class FlavorUI_TextField
 local FlavorUI_TextField = {}
 
-function FlavorUI_TextField:new()
+function FlavorUI_TextField:new(tag, sprite, x, y, width, content)
      local self = setmetatable({}, {__index = self})
+     self.tag     = tag
+     self.sprite  = sprite
+     self.x       = x
+     self.y       = y
+     self.width   = width
+     self.content = content
 
+     self.font            = ''
+     self.size            = 16
+     self.antialiasing    = true
+     self.color           = '0xffffffff'
+     self.selection_color = '0xff1565de'
+     self.max_length      = 50
+
+     runHaxeCode([[
+          import flixel.FlxG;
+          import flixel.util.FlxTimer;
+          import backend.ClientPrefs;
+          import backend.Paths;
+          import backend.ui.PsychUIInputText;
+          import psychlua.LuaUtils;
+     ]])
      return self
 end
 
-function FlavorUI_TextField:create()
+function FlavorUI_TextField:create_test()
+     runHaxeCode(F[[
+          var skinSearchInput:PsychUIInputText = new PsychUIInputText(${self.x}, ${self.y}, ${self.width}, "${self.content}", ${self.size});
+
+          skinSearchInput.textObj.font  = Paths.mods('${self.font}');
+          skinSearchInput.textObj.color = ${self.color};
+          skinSearchInput.textObj.antialiasing = ${self.antialiasing};
+          skinSearchInput.bg.visible           = false;
+          skinSearchInput.behindText.visible   = false;
+          skinSearchInput.caret.alpha     = 0;
+          skinSearchInput.selection.color = ${self.selection_color};
+          skinSearchInput.cameras   = [game.camHUD];
+          skinSearchInput.maxLength = ${self.max_length};
+
+          debugPrint('if {{}} else {{}}');
+          setVar('skinSearchInput', skinSearchInput);
+     ]])
+end
+
+function FlavorUI_TextField:add()
+     runHaxeCode(F[[
+          var skinSearchInput = getVar('skinSearchInput');
+          add(skinSearchInput);
+     ]])
+end
+
+--[=[ function FlavorUI_TextField:create()
      runHaxeCode([[
           import flixel.FlxG;
           import flixel.util.FlxTimer;
@@ -19,7 +69,6 @@ function FlavorUI_TextField:create()
           var skinSearchInput_caret:FlxSprite      = new FlxSprite(0, 0);
           var skinSearchInput:PsychUIInputText     = new PsychUIInputText(34, 54+12, 385, '', 23);
 
-     
           skinSearchInput_placeholder.font  = Paths.font('tomo.otf');
           skinSearchInput_placeholder.size  = 23;
           skinSearchInput_placeholder.color = 0xffb3b3b5;
@@ -114,6 +163,6 @@ function FlavorUI_TextField:update()
           skinSearchInput_caret.visible = PsychUIInputText.focusOn == null ? false : skinSearchInput.caret.visible;
           skinSearchInput_caret.x       = skinSearchInput.caret.x + 1;
      ]])
-end
+end ]=]
 
 return FlavorUI_TextField

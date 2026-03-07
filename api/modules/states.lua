@@ -35,12 +35,12 @@ function states.getTotalSkins(skin, withPath)
      local totalSkinPrefix = states[skin]['prefix']
      local totalSkinFolder = states[skin]['folder']
 
-     local directorySkinLocalFolderPath = F"assets/shared/images/{totalSkinFolder}"
+     local directorySkinLocalFolderPath = F"assets/shared/images/${totalSkinFolder}"
      local directorySkinLocalFolder     = directoryFileList(directorySkinLocalFolderPath)
      for _,skins in ipairs(directorySkinLocalFolder) do
-          local skinMatchFile    = F"^({totalSkinPrefix}%-.+)%.png$"
-          local skinMatchDefault = F"^({totalSkinPrefix})%.png$"
-          local skinIncludedPath = F"{directorySkinLocalFolderPath}/"
+          local skinMatchFile    = F"^(${totalSkinPrefix}%-.+)%.png$"
+          local skinMatchDefault = F"^(${totalSkinPrefix})%.png$"
+          local skinIncludedPath = F"${directorySkinLocalFolderPath}/"
           if skins:match(skinMatchFile) then
                local includedPath = withPath == true and skinIncludedPath or ''
                totalSkins[#totalSkins + 1] = includedPath..skins:match(skinMatchFile)
@@ -51,12 +51,12 @@ function states.getTotalSkins(skin, withPath)
      end
      
      local directorySkinFolderGroup = table.new(MAX_ALLOCATED_SPACE, 0)
-     local directorySkinFolderPath  = F"mods/NoteSkin Selector Remastered/images/{totalSkinFolder}"
+     local directorySkinFolderPath  = F"mods/NoteSkin Selector Remastered/images/${totalSkinFolder}"
      local directorySkinFolder      = directoryFileList(directorySkinFolderPath)
      for _,skins in ipairs(directorySkinFolder) do
-          local skinMatchFile    = F"^({totalSkinPrefix}%-.+)%.png$"
-          local skinMatchDefault = F"^({totalSkinPrefix})%.png$"
-          local skinIncludedPath = F"{totalSkinFolder}/"
+          local skinMatchFile    = F"^(${totalSkinPrefix}%-.+)%.png$"
+          local skinMatchDefault = F"^(${totalSkinPrefix})%.png$"
+          local skinIncludedPath = F"${totalSkinFolder}/"
           if skins:match(skinMatchFile) then
                local includedPath = withPath == true and skinIncludedPath or ''
                totalSkins[#totalSkins + 1] = includedPath..skins:match(skinMatchFile)
@@ -70,18 +70,18 @@ function states.getTotalSkins(skin, withPath)
      end
 
      for _,folders in ipairs(directorySkinFolderGroup) do
-          local directorySkinSubFolderPath = F"mods/NoteSkin Selector Remastered/images/{totalSkinFolder}/{folders}"
+          local directorySkinSubFolderPath = F"mods/NoteSkin Selector Remastered/images/${totalSkinFolder}/${folders}"
           local directorySkinSubFolder     = directoryFileList(directorySkinSubFolderPath)
 
           for _,skins in ipairs(directorySkinSubFolder) do
-               local skinMatchFile    = F"^({totalSkinPrefix}%-.+)%.png$"
-               local skinMatchDefault = F"^({totalSkinPrefix})%.png$"
-               local skinIncludedPath = F"{totalSkinFolder}/{folders}/"
+               local skinMatchFile    = F"^(${totalSkinPrefix}%-.+)%.png$"
+               local skinMatchDefault = F"^(${totalSkinPrefix})%.png$"
+               local skinIncludedPath = F"${totalSkinFolder}/${folders}/"
                if skins:match(skinMatchFile) then
-                    local includedPath = withPath == true and skinIncludedPath or F"{folders}/"
+                    local includedPath = withPath == true and skinIncludedPath or F"${folders}/"
                     totalSkins[#totalSkins + 1] = includedPath..skins:match(skinMatchFile)
                elseif skins:match(skinMatchDefault) then
-                    local includedPath = withPath == true and skinIncludedPath or F"{folders}/"
+                    local includedPath = withPath == true and skinIncludedPath or F"${folders}/"
                     table.insert(totalSkins, 1, includedPath..skins:match(skinMatchDefault))
                end
           end
@@ -97,12 +97,12 @@ function states.getTotalSkinNames(skin)
      local totalSkinPrefix = states[skin]['prefix']
      local totalSkinFolder = states[skin]['folder']
 
-     local directorySkinLocalFolderPath = F"assets/shared/images/{totalSkinFolder}"
+     local directorySkinLocalFolderPath = F"assets/shared/images/${totalSkinFolder}"
      local directorySkinLocalFolder     = directoryFileList(directorySkinLocalFolderPath)
      for _,skins in ipairs(directorySkinLocalFolder) do
-          local skinMatchFile    = F"^({totalSkinPrefix}%-.+)%.png$"
-          local skinMatchName    = F"^{totalSkinPrefix}%-(.+)%.png$"
-          local skinMatchDefault = F"^({totalSkinPrefix})%.png$"
+          local skinMatchFile    = F"^(${totalSkinPrefix}%-.+)%.png$"
+          local skinMatchName    = F"^${totalSkinPrefix}%-(.+)%.png$"
+          local skinMatchDefault = F"^(${totalSkinPrefix})%.png$"
           if skins:match(skinMatchFile) then
                totalSkins[#totalSkins + 1] = skins:match(skinMatchName):upperAtStart()
           elseif skins:match(skinMatchDefault) then
@@ -111,11 +111,11 @@ function states.getTotalSkinNames(skin)
      end
 
      local directorySkinFolderGroup = table.new(MAX_ALLOCATED_SPACE, 0)
-     local directorySkinFolderPath  = F"mods/NoteSkin Selector Remastered/images/{totalSkinFolder}"
+     local directorySkinFolderPath  = F"mods/NoteSkin Selector Remastered/images/${totalSkinFolder}"
      local directorySkinFolder      = directoryFileList(directorySkinFolderPath)
      for _,skins in ipairs(directorySkinFolder) do
-          local skinMatchFile = F"^({totalSkinPrefix}%-.+)%.png$"
-          local skinMatchName = F"^{totalSkinPrefix}%-(.+)%.png$"
+          local skinMatchFile = F"^(${totalSkinPrefix}%-.+)%.png$"
+          local skinMatchName = F"^${totalSkinPrefix}%-(.+)%.png$"
           if skins:match(skinMatchFile) then
                totalSkins[#totalSkins + 1] = skins:match(skinMatchName):upperAtStart()
           end
@@ -125,11 +125,11 @@ function states.getTotalSkinNames(skin)
      end
 
      for _,folders in ipairs(directorySkinFolderGroup) do
-          local directorySkinSubFolderPath = F"{directorySkinFolderPath}/{folders}"
+          local directorySkinSubFolderPath = F"${directorySkinFolderPath}/${folders}"
           local directorySkinSubFolder     = directoryFileList(directorySkinSubFolderPath)
           for _,skins in next, directorySkinSubFolder do
-               local skinMatchFile = F"^({totalSkinPrefix}%-.+)%.png$"
-               local skinMatchName = F"^{totalSkinPrefix}%-(.+)%.png$"
+               local skinMatchFile = F"^(${totalSkinPrefix}%-.+)%.png$"
+               local skinMatchName = F"^${totalSkinPrefix}%-(.+)%.png$"
                if skins:match(skinMatchFile) then
                     totalSkins[#totalSkins + 1] = skins:match(skinMatchName):upperAtStart()
                end
@@ -182,7 +182,7 @@ function states.getTotalSkinObjects(skin, elements)
           elseif elements == ELEMENTS.BOOLS then
                table.insert(totalSkinObjectGroup, false)
           else
-               error(F"Unidentified element argument: {elements}", 2)
+               error(F"Unidentified element argument: ${elements}", 2)
           end
      end
      return totalSkinObjects[skin]
@@ -229,12 +229,12 @@ end
 function states.calculateSearch(skin, prefix, data, withPath)
      local skinInputContent = getVar('SEARCH_INPUT_TEXT_CONTENT') or ''
      local skinListTotal    = states.getTotalSkins(skin, false)
-     local skinMatchPattern = F"{prefix}%-"
+     local skinMatchPattern = F"${prefix}%-"
 
      local skinSearchResult = table.new(MAX_ALLOCATED_SPACE, 0)
      for skinListTotalID = 1, #skinListTotal do
-          local skinRawName   = skinListTotal[skinListTotalID]:match(F"{skinMatchPattern}(.+)")
-          local skinRawFolder = skinListTotal[skinListTotalID]:match(F"(%w+/){skinMatchPattern}")
+          local skinRawName   = skinListTotal[skinListTotalID]:match(F"${skinMatchPattern}(.+)")
+          local skinRawFolder = skinListTotal[skinListTotalID]:match(F"(%w+/)${skinMatchPattern}")
           local skinName   = skinRawName   == nil and 'funkin' or skinRawName
           local skinFolder = skinRawFolder == nil and ''       or skinRawFolder
 
@@ -244,7 +244,7 @@ function states.calculateSearch(skin, prefix, data, withPath)
                local skinFilePathName = skinFolder..skinMatchPattern:gsub('%%%-', '-')..skinName
                local skinFileName     = withPath == true and skinFilePathName or skinName
 
-               local skinDefMatch   = skinFileName:match(F"{skinMatchPattern}funkin")
+               local skinDefMatch   = skinFileName:match(F"${skinMatchPattern}funkin")
                local skinFileFilter = skinDefMatch == nil and skinFileName or skinMatchPattern:gsub('%%%-', '')
                skinSearchResult[skinListTotalID] = skinFileFilter
           end
@@ -271,24 +271,24 @@ function states.getTotalMetadataSkins(skin, folder)
      local totalSkinFolder = states[skin]['folder']
 
      local directorySkinLocalFolderGroup = {'funkin.json'}
-     local directorySkinLocalFolderPath  = F"assets/shared/images/{totalSkinFolder}"
+     local directorySkinLocalFolderPath  = F"assets/shared/images/${totalSkinFolder}"
      local directorySkinLocalFolder      = directoryFileList(directorySkinLocalFolderPath)
      for _,skins in ipairs(directorySkinLocalFolder) do
-          local skinMatchFile = F"^({totalSkinPrefix}%-.+)%.png$"
-          local skinMatchName = F"^{totalSkinPrefix}%-(.+)%.png$"
+          local skinMatchFile = F"^(${totalSkinPrefix}%-.+)%.png$"
+          local skinMatchName = F"^${totalSkinPrefix}%-(.+)%.png$"
           if skins:match(skinMatchFile) then
                local skinName = skins:match(skinMatchName:gsub('%s', '_')):lower()
-               table.insert(directorySkinLocalFolderGroup, F"{skinName}.json")
+               table.insert(directorySkinLocalFolderGroup, F"${skinName}.json")
           end
      end
 
      local directoryMetadataFolderGroup = table.new(MAX_ALLOCATED_SPACE, 0)
-     local directoryMetadataFolderPath  = F"mods/NoteSkin Selector Remastered/json/{skin}/{folder}"
+     local directoryMetadataFolderPath  = F"mods/NoteSkin Selector Remastered/json/${skin}/${folder}"
      local directoryMetadataFolder      = directoryFileList(directoryMetadataFolderPath)
      for _,skins in ipairs(directoryMetadataFolder) do
           local files = skins:match('.-%.json$')
           if files then
-               table.insert(totalSkins, F"json/{skin}/{folder}/{files}")
+               table.insert(totalSkins, F"json/${skin}/${folder}/${files}")
           end
           if not skins:match('%.%w+$') then
                table.insert(directoryMetadataFolderGroup, skins)
@@ -296,12 +296,12 @@ function states.getTotalMetadataSkins(skin, folder)
      end
 
      for _,subfolders in ipairs(directoryMetadataFolderGroup) do
-          local directoryMetadataSubFolderPath = F"mods/NoteSkin Selector Remastered/json/{skin}/{folder}/{subfolders}"
+          local directoryMetadataSubFolderPath = F"mods/NoteSkin Selector Remastered/json/${skin}/${folder}/${subfolders}"
           local directoryMetadataSubFolder     = directoryFileList(directoryMetadataSubFolderPath)
           for _,skins in ipairs(directoryMetadataSubFolder) do
                local files = skins:match('.-%.json$')
                if files then
-                    table.insert(totalSkins, F"json/{skin}/{folder}/{subfolders}/{files}")
+                    table.insert(totalSkins, F"json/${skin}/${folder}/${subfolders}/${files}")
                end
           end
      end
@@ -360,7 +360,7 @@ function states.getTotalMetadataSkinObjects(skin, folder, converted)
                if stateMetadataObjectNames[totalSkinObjectMetadataFindIndex] == nil then
                     local metadataNames  = stateMetadataObjectNames[objects]
                     local metadataFolder = stateMetadataObjectFolder[metadataNames]
-                    local metadataPaths  = F"{metadataFolder}{metadataNames}.json"
+                    local metadataPaths  = F"${metadataFolder}${metadataNames}.json"
 
                     local metadataValue = converted == true and json.parse(getTextFromFile(metadataPaths)) or metadataPaths
                     table.insert(totalSkinObjectMetadataGroup, metadataValue)

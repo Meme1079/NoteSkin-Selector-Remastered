@@ -110,8 +110,8 @@ function SkinSplashesPreview:preview()
           local metadataPreviewNoteSplash1 = previewMetadataObjectAnims('note_splash1', strumIndex)
           local metadataPreviewNoteSplash2 = previewMetadataObjectAnims('note_splash2', strumIndex)
 
-          local previewSkinGroupTag    = F"previewSkinGroup{self.stateClass:upperAtStart()}-{strumIndex}"
-          local previewSkinGroupSprite = F"{self.statePaths}/{currentPreviewDataSkins}"
+          local previewSkinGroupTag    = F"previewSkinGroup${self.stateClass:upperAtStart()}-${strumIndex}"
+          local previewSkinGroupSprite = F"${self.statePaths}/${currentPreviewDataSkins}"
 
           local previewSkinPositionX = 790 + (105*(strumIndex - 1))
           local previewSkinPositionY = 135
@@ -124,8 +124,8 @@ function SkinSplashesPreview:preview()
           ---@param metadataPreviewAnim table The specified preview animation to use for offsetting.
           ---@return number, number
           local function addMetadataPreviewOffset(metadataPreviewAnim)
-               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"{previewSkinGroupTag}.offset.x")
-               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"{previewSkinGroupTag}.offset.y")
+               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"${previewSkinGroupTag}.offset.x")
+               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"${previewSkinGroupTag}.offset.y")
                local PREVIEW_SKIN_DATA_OFFSET_X    = metadataPreviewAnim.offsets[1]
                local PREVIEW_SKIN_DATA_OFFSET_Y    = metadataPreviewAnim.offsets[2]
 
@@ -138,7 +138,7 @@ function SkinSplashesPreview:preview()
           playAnim(previewSkinGroupTag, self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS['names']['note_splash1'][strumIndex])
           setObjectCamera(previewSkinGroupTag, 'camHUD')
           addLuaSprite(previewSkinGroupTag)
-          setProperty(F"{previewSkinGroupTag}.visible", false)
+          setProperty(F"${previewSkinGroupTag}.visible", false)
      end
      setTextString('skinStatePreviewName', currentPreviewDataNames)
 end
@@ -158,7 +158,7 @@ function SkinSplashesPreview:preview_notes()
      local metadataPreviewFrames = self.PREV_NOTES_METAOBJ_STRUMS_FRAMES
      local metadataPreviewSize   = self.PREV_NOTES_METAOBJ_STRUMS_SIZE
      for strumIndex = 1, 4 do
-          local previewSkinGroupTag    = F"previewSkinGroupNotes-{strumIndex}"
+          local previewSkinGroupTag    = F"previewSkinGroupNotes-${strumIndex}"
           local previewSkinGroupSprite = self.PREV_NOTES_METAOBJ_STRUMS_PATH
 
           local previewSkinPositionX = 790 + (105*(strumIndex - 1))
@@ -170,8 +170,8 @@ function SkinSplashesPreview:preview_notes()
           ---@param metadataPreviewAnim table The specified preview animation to use for offsetting.
           ---@return number, number
           local function addMetadataPreviewOffset(metadataPreviewAnim)
-               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"{previewSkinGroupTag}.offset.x")
-               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"{previewSkinGroupTag}.offset.y")
+               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"${previewSkinGroupTag}.offset.x")
+               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"${previewSkinGroupTag}.offset.y")
                local PREVIEW_SKIN_DATA_OFFSET_X    = metadataPreviewAnim.offsets[1]
                local PREVIEW_SKIN_DATA_OFFSET_Y    = metadataPreviewAnim.offsets[2]
 
@@ -270,20 +270,20 @@ function SkinSplashesPreview:preview_animation()
                note_splash1 = previewMetadataObjectAnims('note_splash1', strumIndex),
                note_splash2 = previewMetadataObjectAnims('note_splash2', strumIndex)
           }
-          local previewSkinGroupTag   = F"previewSkinGroup{self.stateClass:upperAtStart()}-{strumIndex}"
+          local previewSkinGroupTag   = F"previewSkinGroup${self.stateClass:upperAtStart()}-${strumIndex}"
           local previewSkinAnimations = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
 
           if (conditionPressedLeft or conditionPressedRight) or mouseReleased('left') then
-               setProperty(F"{previewSkinGroupTag}.visible", false)
+               setProperty(F"${previewSkinGroupTag}.visible", false)
           end
           if previewSkinObjectIsMissing() == false then
                if keyboardJustConditionPressed(getKeyBinds(strumIndex), not getVar('skinSearchInputFocus')) then
                     playAnim(previewSkinGroupTag, metadataPreviewAnimations[previewSkinAnimations]['name'], true)
-                    setProperty(F"{previewSkinGroupTag}.visible", true)
+                    setProperty(F"${previewSkinGroupTag}.visible", true)
                end
                if keyboardJustConditionReleased(getKeyBinds(strumIndex), not getVar('skinSearchInputFocus')) then
                     playAnim(previewSkinGroupTag, metadataPreviewAnimations['note_splash1']['name'], true)
-                    setProperty(F"{previewSkinGroupTag}.visible", false)
+                    setProperty(F"${previewSkinGroupTag}.visible", false)
                end
           end  
      end
@@ -297,7 +297,7 @@ function SkinSplashesPreview:preview_selection_name()
      local previewSkinAnimationName = ''
      for prevSkinWords in previewSkinAnimations:gmatch('%w+') do
           local prevSkinWordsFilter = prevSkinWords:upperAtStart():gsub('_', ' '):gsub('(%w)(%d)', '%1 %2')
-          previewSkinAnimationName = previewSkinAnimationName .. F"{prevSkinWordsFilter} "
+          previewSkinAnimationName = previewSkinAnimationName .. F"${prevSkinWordsFilter} "
      end
 
      previewSkinAnimationName = previewSkinAnimationName:sub(1, #previewSkinAnimationName-1)

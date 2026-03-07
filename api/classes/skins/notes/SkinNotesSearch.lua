@@ -81,8 +81,8 @@ function SkinNotesSearch:search_create()
                end
 
                local skinObjectID = self.TOTAL_SKIN_OBJECTS_IDS[skinPages][skinDisplays]
-               local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
-               local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
+               local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${skinObjectID}"
+               local displaySkinIconSkinTag   = F"displaySkinIconSkin${self.stateClass:upperAtStart()}-${skinObjectID}"
                if luaSpriteExists(displaySkinIconButtonTag) == true and luaSpriteExists(displaySkinIconSkinTag) == true then
                     removeLuaSprite(displaySkinIconButtonTag, true)
                     removeLuaSprite(displaySkinIconSkinTag, true)
@@ -134,8 +134,8 @@ function SkinNotesSearch:search_create()
      self.SEARCH_SKIN_OBJECT_PRESENT = searchFilterSkinRange
 
      for skinSearchIndex, skinSearchIDs in pairs(searchFilterSkinRange) do
-          local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinSearchIDs}"
-          local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinSearchIDs}"
+          local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${skinSearchIDs}"
+          local displaySkinIconSkinTag   = F"displaySkinIconSkin${self.stateClass:upperAtStart()}-${skinSearchIDs}"
           local displaySkinIconPosX = displaySkinIconPositions()[skinSearchIndex][1]
           local displaySkinIconPosY = displaySkinIconPositions()[skinSearchIndex][2]
           makeAnimatedLuaSprite(displaySkinIconButtonTag, 'ui/buttons/display_button', displaySkinIconPosX, displaySkinIconPosY)
@@ -147,7 +147,7 @@ function SkinNotesSearch:search_create()
           playAnim(displaySkinIconButtonTag, 'static', true)
           scaleObject(displaySkinIconButtonTag, 0.8, 0.8)
           setObjectCamera(displaySkinIconButtonTag, 'camHUD')
-          setProperty(F"{displaySkinIconButtonTag}.antialiasing", false)
+          setProperty(F"${displaySkinIconButtonTag}.antialiasing", false)
           addLuaSprite(displaySkinIconButtonTag)
 
           --- Gets the skins' display metadata value, acts as a helper function.
@@ -171,13 +171,13 @@ function SkinNotesSearch:search_create()
           local displaySkinIconPosOffsetX = displaySkinIconPosX + DISPLAY_SKIN_POSITION_OFFSET_X
           local displaySkinIconPosOffsetY = displaySkinIconPosY + DISPLAY_SKIN_POSITION_OFFSET_Y
 
-          local displaySkinIconSkinSprite = F"{self.statePaths}/{filterSearchBySkin[skinSearchIndex]}"
+          local displaySkinIconSkinSprite = F"${self.statePaths}/${filterSearchBySkin[skinSearchIndex]}"
           makeAnimatedLuaSprite(displaySkinIconSkinTag, displaySkinIconSkinSprite, displaySkinIconPosOffsetX, displaySkinIconPosOffsetY)
           scaleObject(displaySkinIconSkinTag, displaySkinMetadataSize[1], displaySkinMetadataSize[2])
           addAnimationByPrefix(displaySkinIconSkinTag, 'static', displaySkinMetadataPrefixes, displaySkinMetadataFrames, true)
 
-          local DISPLAY_SKIN_OFFSET_X = getProperty(F"{displaySkinIconSkinTag}.offset.x")
-          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"{displaySkinIconSkinTag}.offset.y")
+          local DISPLAY_SKIN_OFFSET_X = getProperty(F"${displaySkinIconSkinTag}.offset.x")
+          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"${displaySkinIconSkinTag}.offset.y")
           local displaySkinIconOffsetX = DISPLAY_SKIN_OFFSET_X - displaySkinMetadataOffsets[1]
           local displaySkinIconOffsetY = DISPLAY_SKIN_OFFSET_Y + displaySkinMetadataOffsets[2]
           addOffset(displaySkinIconSkinTag, 'static', displaySkinIconOffsetX, displaySkinIconOffsetY)
@@ -292,8 +292,8 @@ function SkinNotesSearch:search_preview()
           local metadataPreviewColoredAnim = previewMetadataObjectAnims('colored', strumIndex)
           local metadataPreviewStrumsAnim  = previewMetadataObjectAnims('strums', strumIndex)
 
-          local previewSkinGroupTag    = F"previewSkinGroup{self.stateClass:upperAtStart()}-{strumIndex}"
-          local previewSkinGroupSprite = F"{self.statePaths}/{currentPreviewDataSkins}"
+          local previewSkinGroupTag    = F"previewSkinGroup${self.stateClass:upperAtStart()}-${strumIndex}"
+          local previewSkinGroupSprite = F"${self.statePaths}/${currentPreviewDataSkins}"
 
           local previewSkinPositionX = 790 + (105*(strumIndex - 1))
           local previewSkinPositionY = 135
@@ -309,8 +309,8 @@ function SkinNotesSearch:search_preview()
           ---@param metadataPreviewAnim table The specified preview animation to use for offsetting.
           ---@return number, number
           local function addMetadataPreviewOffset(metadataPreviewAnim)
-               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"{previewSkinGroupTag}.offset.x")
-               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"{previewSkinGroupTag}.offset.y")
+               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"${previewSkinGroupTag}.offset.x")
+               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"${previewSkinGroupTag}.offset.y")
                local PREVIEW_SKIN_DATA_OFFSET_X    = metadataPreviewAnim.offsets[1]
                local PREVIEW_SKIN_DATA_OFFSET_Y    = metadataPreviewAnim.offsets[2]
 
@@ -350,13 +350,13 @@ function SkinNotesSearch:search_checkbox_sync()
                local CHECK_CHECKBOX_SKIN_INDEX_IS_CURRENT = checkboxSkinChars == self.SELECT_SKIN_CUR_SELECTION_INDEX
                local CHECK_CHECKBOX_SKIN_INDEX_IS_PRESENT = checkboxSkinChars == table.find(totalSkinObjectIDs, checkboxSkinChars) 
 
-               local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{checkboxSkinChars}"
-               local checkboxSkinSelectionTag = F"displaySelection{CharNames:upperAtStart(true)}"
-               local checkboxSkinButtonTag    = F"selectionSkinButton{CharNames:upperAtStart(true)}"
+               local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${checkboxSkinChars}"
+               local checkboxSkinSelectionTag = F"displaySelection${CharNames:upperAtStart(true)}"
+               local checkboxSkinButtonTag    = F"selectionSkinButton${CharNames:upperAtStart(true)}"
 
                if CHECK_CHECKBOX_SKIN_INDEX_IS_CURRENT or CHECK_CHECKBOX_SKIN_INDEX_IS_PRESENT or luaSpriteExists(displaySkinIconButtonTag) == true then
-                    setProperty(F"{checkboxSkinSelectionTag}.x", getProperty(F"{displaySkinIconButtonTag}.x"))
-                    setProperty(F"{checkboxSkinSelectionTag}.y", getProperty(F"{displaySkinIconButtonTag}.y"))
+                    setProperty(F"${checkboxSkinSelectionTag}.x", getProperty(F"${displaySkinIconButtonTag}.x"))
+                    setProperty(F"${checkboxSkinSelectionTag}.y", getProperty(F"${displaySkinIconButtonTag}.y"))
                end
                if checkboxSkinChars == 0 or luaSpriteExists(checkboxSkinSelectionTag) == false then
                     removeLuaSprite(checkboxSkinSelectionTag, false)
@@ -368,7 +368,7 @@ function SkinNotesSearch:search_checkbox_sync()
 
      for CharNames, CharValues in pairs(CHARACTERS) do --! DO NOT DELETE; VISUAL FIX STUFF
           local checkboxSkinChars        = self.CHECKBOX_SKIN_OBJECT_CHARS[CharValues]
-          local checkboxSkinSelectionTag = F"displaySelection{CharNames:upperAtStart(true)}"
+          local checkboxSkinSelectionTag = F"displaySelection${CharNames:upperAtStart(true)}"
 
           local LENGHT_SEARCH_SKIN_OBJECT_IDS     = #self.SEARCH_SKIN_OBJECT_IDS     == 0
           local LENGTH_SEARCH_SKIN_OBJECT_PRESENT = #self.SEARCH_SKIN_OBJECT_PRESENT == 0
@@ -408,7 +408,7 @@ function SkinNotesSearch:search_selection_byclick()
           local totalSkinObjectsPagePerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[searchSkinPage]
           local totalSkinObjectsPagePerSelected = self.TOTAL_SKIN_OBJECTS_SELECTED[searchSkinPage]
 
-          local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{searchSkinIDs}"
+          local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${searchSkinIDs}"
           local function displaySkinSelect()
                local byClick   = clickObject(displaySkinIconButtonTag, 'camHUD')
                local byRelease = mouseReleased('left') and self.SELECT_SKIN_PRE_SELECTION_INDEX == searchSkinIDs
@@ -522,7 +522,7 @@ function SkinNotesSearch:search_selection_byhover()
           local totalSkinObjectsPagePerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[searchSkinPage]
           local totalSkinObjectsPagePerSelected = self.TOTAL_SKIN_OBJECTS_SELECTED[searchSkinPage]
 
-          local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{searchSkinIDs}"
+          local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${searchSkinIDs}"
           if hoverObject(displaySkinIconButtonTag, 'camHUD') == true then
                totalSkinObjectsPagePerHovered[searchSkinPresentIDs] = true
           end
@@ -580,7 +580,7 @@ function SkinNotesSearch:search_selection_cursor()
           local totalSkinObjectsPagePerHovered  = self.TOTAL_SKIN_OBJECTS_HOVERED[searchSkinPage]
           local totalSkinObjectsPagePerClicked  = self.TOTAL_SKIN_OBJECTS_CLICKED[searchSkinPage]
 
-          local displaySkinIconButtonTag       = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{searchSkinIDs}"
+          local displaySkinIconButtonTag       = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${searchSkinIDs}"
           local displaySkinIconButtonTagFilter = displaySkinIconButtonTag:gsub('%d+', tostring(self.SELECT_SKIN_CUR_SELECTION_INDEX))
           if hoverObject(displaySkinIconButtonTagFilter, 'camHUD') == false then
                if totalSkinObjectsPagePerClicked[searchSkinPresentIDs] == true and luaSpriteExists(displaySkinIconButtonTag) == true then

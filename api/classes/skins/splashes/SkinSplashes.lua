@@ -147,8 +147,8 @@ function SkinSplashes:create(page)
                end
 
                local skinObjectID = self.TOTAL_SKIN_OBJECTS_IDS[skinPages][skinDisplays]
-               local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
-               local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
+               local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${skinObjectID}"
+               local displaySkinIconSkinTag   = F"displaySkinIconSkin${self.stateClass:upperAtStart()}-${skinObjectID}"
                if luaSpriteExists(displaySkinIconButtonTag) == true and luaSpriteExists(displaySkinIconSkinTag) == true then
                     removeLuaSprite(displaySkinIconButtonTag, true)
                     removeLuaSprite(displaySkinIconSkinTag, true)
@@ -189,8 +189,8 @@ function SkinSplashes:create(page)
           local skinObjectsID = self.TOTAL_SKIN_OBJECTS_IDS[page][skinDisplays]
           local skinObjects   = self.TOTAL_SKIN_OBJECTS[page][skinDisplays]
 
-          local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectsID}"
-          local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectsID}"
+          local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${skinObjectsID}"
+          local displaySkinIconSkinTag   = F"displaySkinIconSkin${self.stateClass:upperAtStart()}-${skinObjectsID}"
           local displaySkinIconPosX = displaySkinIconPositions()[skinDisplays][1]
           local displaySkinIconPosY = displaySkinIconPositions()[skinDisplays][2]
 
@@ -203,7 +203,7 @@ function SkinSplashes:create(page)
           playAnim(displaySkinIconButtonTag, 'static', true)
           scaleObject(displaySkinIconButtonTag, 0.8, 0.8)
           setObjectCamera(displaySkinIconButtonTag, 'camHUD')
-          setProperty(F"{displaySkinIconButtonTag}.antialiasing", false)
+          setProperty(F"${displaySkinIconButtonTag}.antialiasing", false)
           addLuaSprite(displaySkinIconButtonTag)
 
           --- Gets the skins' display metadata value, acts as a helper function.
@@ -231,13 +231,13 @@ function SkinSplashes:create(page)
           local displaySkinIconPositionX = displaySkinIconPosX + DISPLAY_SKIN_POSITION_OFFSET_X
           local displaySkinIconPositionY = displaySkinIconPosY + DISPLAY_SKIN_POSITION_OFFSET_Y
 
-          local displaySkinIconSprite = F"{self.statePaths}/{skinObjects}"
+          local displaySkinIconSprite = F"${self.statePaths}/${skinObjects}"
           makeAnimatedLuaSprite(displaySkinIconSkinTag, displaySkinIconSprite, displaySkinIconPositionX, displaySkinIconPositionY)
           scaleObject(displaySkinIconSkinTag, displaySkinMetadataSize[1], displaySkinMetadataSize[2])
           addAnimationByPrefix(displaySkinIconSkinTag, 'static', displaySkinMetadataPrefixes, displaySkinMetadataFrames, true)
 
-          local DISPLAY_SKIN_OFFSET_X = getProperty(F"{displaySkinIconSkinTag}.offset.x")
-          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"{displaySkinIconSkinTag}.offset.y")
+          local DISPLAY_SKIN_OFFSET_X = getProperty(F"${displaySkinIconSkinTag}.offset.x")
+          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"${displaySkinIconSkinTag}.offset.y")
           local displaySkinIconOffsetX = DISPLAY_SKIN_OFFSET_X - displaySkinMetadataOffsets[1]
           local displaySkinIconOffsetY = DISPLAY_SKIN_OFFSET_Y + displaySkinMetadataOffsets[2]
           addOffset(displaySkinIconSkinTag, 'static', displaySkinIconOffsetX, displaySkinIconOffsetY)

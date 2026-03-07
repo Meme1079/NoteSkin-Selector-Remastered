@@ -200,11 +200,11 @@ end
 
 local keybindOrderPos = calculateKeybindOrderPos()
 for keybindIndex = 1, #keybindOrderPos do
-     local skinStateKeybindsTag = F"skinStateKeybinds-{keybindIndex}"
+     local skinStateKeybindsTag = F"skinStateKeybinds-${keybindIndex}"
      local skinStateKeybindsPositionX = keybindOrderPos[keybindIndex]
      local skinStateKeybindsPositionY = 250
 
-     makeLuaText(skinStateKeybindsTag, F" {tostring(getKeyBinds(keybindIndex))}", nil, skinStateKeybindsPositionX, skinStateKeybindsPositionY)
+     makeLuaText(skinStateKeybindsTag, F" ${tostring(getKeyBinds(keybindIndex))}", nil, skinStateKeybindsPositionX, skinStateKeybindsPositionY)
      setTextFont(skinStateKeybindsTag, 'FridayNight.ttf')
      setTextSize(skinStateKeybindsTag, 35)
      setTextBorder(skinStateKeybindsTag, 4, '000000')
@@ -315,7 +315,7 @@ local function colorSelectorTransitions()
 
      local COLOR_RGB = HSL_RGBConv(colorTweenHueValue, 54, 43)
      local COLOR_HEX = RGB_HEXConv(unpack(COLOR_RGB))
-     setProperty('skinSelectorBG.color', tonumber(F"0x{COLOR_HEX}"))
+     setProperty('skinSelectorBG.color', tonumber(F"0x${COLOR_HEX}"))
 end
 
 -- SkinState Stuff --
@@ -331,11 +331,11 @@ previewSkinToggleAnims.cursorTexture = 'mouseTexture'
 
 local function keybindCharStates(this)
      for strumIndex = 1, 4 do
-          local skinStateKeybindsTag = F"skinStateKeybinds-{strumIndex}"
+          local skinStateKeybindsTag = F"skinStateKeybinds-${strumIndex}"
           if this:status_state() == 'active' then
-               setProperty(F"{skinStateKeybindsTag}.alpha", 1)
+               setProperty(F"${skinStateKeybindsTag}.alpha", 1)
           elseif this:status_state() == 'inactive' then
-               setProperty(F"{skinStateKeybindsTag}.alpha", 0.5)
+               setProperty(F"${skinStateKeybindsTag}.alpha", 0.5)
           end
      end
 end

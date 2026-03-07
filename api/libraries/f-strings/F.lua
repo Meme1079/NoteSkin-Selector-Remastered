@@ -29,9 +29,10 @@ local function snd(_, b) return b end
 
 local function format(_, str)
    local outer_env = _ENV and (snd(scan_using(debug.getlocal, 3, "_ENV")) or snd(scan_using(debug.getupvalue, debug.getinfo(2, "f").func, "_ENV")) or _ENV) or getfenv(2)
-   return (str:gsub("%b{}", function(block)
+   return (str:gsub("%$%b{}", function(block)
       local code, fmt = block:match("{(.*):(%%.*)}")
       code = code or block:match("{(.*)}")
+     
       local exp_env = {}
       setmetatable(exp_env, { __index = function(_, k)
          local level = 6

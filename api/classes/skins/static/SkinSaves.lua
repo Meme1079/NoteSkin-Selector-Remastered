@@ -29,7 +29,7 @@ end
 ---@param value any The given new value to set it to.
 ---@return nil
 function SkinSaves:set(tag, prefix, value)
-     local tagFormat = tag == '' and prefix..tag or F"{prefix}_{tag}"
+     local tagFormat = tag == '' and prefix..tag or F"${prefix}_${tag}"
      setDataFromSave(self.saveName, tagFormat, value)
 end
 
@@ -39,7 +39,7 @@ end
 ---@param value any The default value, if said data field doesn't have one.
 ---@return any
 function SkinSaves:get(tag, prefix, default)
-     local tagFormat = tag == '' and prefix..tag or F"{prefix}_{tag}"
+     local tagFormat = tag == '' and prefix..tag or F"${prefix}_${tag}"
      return getDataFromSave(self.saveName, tagFormat, default)
 end
 

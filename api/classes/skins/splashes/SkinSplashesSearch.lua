@@ -40,8 +40,8 @@ function SkinSplashesSearch:search_create()
                end
 
                local skinObjectID = self.TOTAL_SKIN_OBJECTS_IDS[skinPages][skinDisplays]
-               local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinObjectID}"
-               local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinObjectID}"
+               local displaySkinIconTagButton = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${skinObjectID}"
+               local displaySkinIconTagSkin   = F"displaySkinIconSkin${self.stateClass:upperAtStart()}-${skinObjectID}"
                if luaSpriteExists(displaySkinIconTagButton) == true and luaSpriteExists(displaySkinIconTagSkin) == true then
                     removeLuaSprite(displaySkinIconTagButton, true)
                     removeLuaSprite(displaySkinIconTagSkin, true)
@@ -93,8 +93,8 @@ function SkinSplashesSearch:search_create()
      self.SEARCH_SKIN_OBJECT_PRESENT = searchFilterSkinRange
 
      for skinSearchIndex, skinSearchIDs in pairs(searchFilterSkinRange) do
-          local displaySkinIconTagButton = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{skinSearchIDs}"
-          local displaySkinIconTagSkin   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{skinSearchIDs}"
+          local displaySkinIconTagButton = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${skinSearchIDs}"
+          local displaySkinIconTagSkin   = F"displaySkinIconSkin${self.stateClass:upperAtStart()}-${skinSearchIDs}"
           local displaySkinIconPosX = displaySkinIconPositions()[skinSearchIndex][1]
           local displaySkinIconPosY = displaySkinIconPositions()[skinSearchIndex][2]
           makeAnimatedLuaSprite(displaySkinIconTagButton, 'ui/buttons/display_button', displaySkinIconPosX, displaySkinIconPosY)
@@ -130,13 +130,13 @@ function SkinSplashesSearch:search_create()
           local displaySkinIconPosOffsetX = displaySkinIconPosX + DISPLAY_SKIN_POSITION_OFFSET_X
           local displaySkinIconPosOffsetY = displaySkinIconPosY + DISPLAY_SKIN_POSITION_OFFSET_Y
 
-          local displaySkinIconSkinSprite = F"{self.statePaths}/{filterSearchBySkin[skinSearchIndex]}"
+          local displaySkinIconSkinSprite = F"${self.statePaths}/${filterSearchBySkin[skinSearchIndex]}"
           makeAnimatedLuaSprite(displaySkinIconTagSkin, displaySkinIconSkinSprite, displaySkinIconPosOffsetX, displaySkinIconPosOffsetY)
           scaleObject(displaySkinIconTagSkin, displaySkinMetadataSize[1], displaySkinMetadataSize[2])
           addAnimationByPrefix(displaySkinIconTagSkin, 'static', displaySkinMetadataPrefixes, displaySkinMetadataFrames, true)
 
-          local DISPLAY_SKIN_OFFSET_X = getProperty(F"{displaySkinIconTagSkin}.offset.x")
-          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"{displaySkinIconTagSkin}.offset.y")
+          local DISPLAY_SKIN_OFFSET_X = getProperty(F"${displaySkinIconTagSkin}.offset.x")
+          local DISPLAY_SKIN_OFFSET_Y = getProperty(F"${displaySkinIconTagSkin}.offset.y")
           local displaySkinIconOffsetX = DISPLAY_SKIN_OFFSET_X - displaySkinMetadataOffsets[1]
           local displaySkinIconOffsetY = DISPLAY_SKIN_OFFSET_Y + displaySkinMetadataOffsets[2]
           addOffset(displaySkinIconTagSkin, 'static', displaySkinIconOffsetX, displaySkinIconOffsetY)
@@ -246,8 +246,8 @@ function SkinSplashesSearch:search_preview()
           local metadataPreviewNoteSplash1 = previewMetadataObjectAnims('note_splash1', strumIndex)
           local metadataPreviewNoteSplash2 = previewMetadataObjectAnims('note_splash2', strumIndex)
 
-          local previewSkinGroupTag    = F"previewSkinGroup{self.stateClass:upperAtStart()}-{strumIndex}"
-          local previewSkinGroupSprite = F"{self.statePaths}/{currentPreviewDataSkins}"
+          local previewSkinGroupTag    = F"previewSkinGroup${self.stateClass:upperAtStart()}-${strumIndex}"
+          local previewSkinGroupSprite = F"${self.statePaths}/${currentPreviewDataSkins}"
 
           local previewSkinPositionX = 790 + (105*(strumIndex - 1))
           local previewSkinPositionY = 135
@@ -260,8 +260,8 @@ function SkinSplashesSearch:search_preview()
           ---@param metadataPreviewAnim table The specified preview animation to use for offsetting.
           ---@return number, number
           local function addMetadataPreviewOffset(metadataPreviewAnim)
-               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"{previewSkinGroupTag}.offset.x")
-               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"{previewSkinGroupTag}.offset.y")
+               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"${previewSkinGroupTag}.offset.x")
+               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"${previewSkinGroupTag}.offset.y")
                local PREVIEW_SKIN_DATA_OFFSET_X    = metadataPreviewAnim.offsets[1]
                local PREVIEW_SKIN_DATA_OFFSET_Y    = metadataPreviewAnim.offsets[2]
 
@@ -274,7 +274,7 @@ function SkinSplashesSearch:search_preview()
           playAnim(previewSkinGroupTag, self.PREVIEW_CONST_METADATA_PREVIEW_ANIMS['names']['note_splash1'][strumIndex])
           setObjectCamera(previewSkinGroupTag, 'camHUD')
           addLuaSprite(previewSkinGroupTag)
-          setProperty(F"{previewSkinGroupTag}.visible", false)
+          setProperty(F"${previewSkinGroupTag}.visible", false)
      end
      setTextString('skinStatePreviewName', currentPreviewDataNames)
      self:preview_animation(true)

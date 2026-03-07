@@ -44,8 +44,8 @@ function SkinNotesSelection:selection_byclick()
      for curIDs = totalSkinObjectsPagePerIds[1], totalSkinObjectsPagePerIds[#totalSkinObjectsPagePerIds] do
           local curSkinIDs = curIDs - (MAX_NUMBER_CHUNK * (self.SCROLLBAR_PAGE_INDEX - 1))
 
-          local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{curIDs}"
-          local displaySkinIconSkinTag   = F"displaySkinIconSkin{self.stateClass:upperAtStart()}-{curIDs}"
+          local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${curIDs}"
+          local displaySkinIconSkinTag   = F"displaySkinIconSkin${self.stateClass:upperAtStart()}-${curIDs}"
           local function displaySkinSelect()
                local byClick   = clickObject(displaySkinIconButtonTag, 'camHUD')
                local byRelease = mouseReleased('left') and self.SELECT_SKIN_PRE_SELECTION_INDEX == curIDs
@@ -155,7 +155,7 @@ function SkinNotesSelection:selection_byhover()
      for curIDs = totalSkinObjectsPagePerIds[1], totalSkinObjectsPagePerIds[#totalSkinObjectsPagePerIds] do
           local curSkinIDs = curIDs - (MAX_NUMBER_CHUNK * (self.SCROLLBAR_PAGE_INDEX - 1))
 
-          local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{curIDs}"
+          local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${curIDs}"
           if hoverObject(displaySkinIconButtonTag, 'camHUD') == true then
                totalSkinObjectsPagePerHovered[curSkinIDs] = true
           end
@@ -210,7 +210,7 @@ function SkinNotesSelection:selection_bycursor()
           playAnim('mouseTexture', 'idle', true)
      end
 
-     local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{self.SELECT_SKIN_CUR_SELECTION_INDEX}"
+     local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${self.SELECT_SKIN_CUR_SELECTION_INDEX}"
      for curIDs = 1, math.max(#totalSkinObjectsPagePerClicked, #totalSkinObjectsPagePerHovered) do
           if hoverObject(displaySkinIconButtonTag, 'camHUD') == true then
                goto SKIP_SELECTED_SKIN_HOVERED -- disabled deselecting
@@ -232,7 +232,7 @@ function SkinNotesSelection:selection_bycursor()
           local previewSkinObjectMissingAnims = self.PREVIEW_SKIN_OBJECT_ANIMS_MISSING[self.SCROLLBAR_PAGE_INDEX][curSkinIDs]
           local previewSkinObjectDefaultAnims = previewSkinObjectMissingAnims[previewSkinObjectAnims]
           if previewSkinObjectDefaultAnims == true then
-               local displaySkinIconButtonTag = F"displaySkinIconButton{self.stateClass:upperAtStart()}-{curIDs}"
+               local displaySkinIconButtonTag = F"displaySkinIconButton${self.stateClass:upperAtStart()}-${curIDs}"
                if hoverObject(displaySkinIconButtonTag, 'camHUD') == false then
                     goto SKIP_SELECTED_SKIN_MISSING_ANIMS_HOVERED
                end

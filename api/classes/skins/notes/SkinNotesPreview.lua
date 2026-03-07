@@ -118,8 +118,8 @@ function SkinNotesPreview:preview()
           local metadataPreviewColoredAnim = previewMetadataObjectAnims('colored', strumIndex)
           local metadataPreviewStrumsAnim  = previewMetadataObjectAnims('strums', strumIndex)
 
-          local previewSkinGroupTag    = F"previewSkinGroup{self.stateClass:upperAtStart()}-{strumIndex}"
-          local previewSkinGroupSprite = F"{self.statePaths}/{currentPreviewDataSkins}"
+          local previewSkinGroupTag    = F"previewSkinGroup${self.stateClass:upperAtStart()}-${strumIndex}"
+          local previewSkinGroupSprite = F"${self.statePaths}/${currentPreviewDataSkins}"
 
           local previewSkinPositionX = 790 + (105*(strumIndex - 1))
           local previewSkinPositionY = 135
@@ -134,8 +134,8 @@ function SkinNotesPreview:preview()
           ---@param metadataPreviewAnim table The specified preview animation to use for offsetting.
           ---@return number, number
           local function addMetadataPreviewOffset(metadataPreviewAnim)
-               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"{previewSkinGroupTag}.offset.x")
-               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"{previewSkinGroupTag}.offset.y")
+               local PREVIEW_SKIN_CURRENT_OFFSET_X = getProperty(F"${previewSkinGroupTag}.offset.x")
+               local PREVIEW_SKIN_CURRENT_OFFSET_Y = getProperty(F"${previewSkinGroupTag}.offset.y")
                local PREVIEW_SKIN_DATA_OFFSET_X    = metadataPreviewAnim.offsets[1]
                local PREVIEW_SKIN_DATA_OFFSET_Y    = metadataPreviewAnim.offsets[2]
 
@@ -239,7 +239,7 @@ function SkinNotesPreview:preview_animation()
                colored = previewMetadataObjectAnims('colored', strumIndex),
                strums  = previewMetadataObjectAnims('strums',  strumIndex)
           }
-          local previewSkinGroupTag   = F"previewSkinGroup{self.stateClass:upperAtStart()}-{strumIndex}"
+          local previewSkinGroupTag   = F"previewSkinGroup${self.stateClass:upperAtStart()}-${strumIndex}"
           local previewSkinAnimations = self.PREVIEW_SKIN_OBJECT_ANIMS[self.PREVIEW_SKIN_OBJECT_INDEX]
 
           if previewSkinAnimations == 'colored' then
@@ -333,7 +333,7 @@ end
 ---@return nil
 function SkinNotesPreview:preview_selection_byclick()
      local function previewSelectionButtonClick(directIndex, directName, iteration)
-          local previewSkinButtonTag = F"previewSkinButton{directName:upperAtStart()}"
+          local previewSkinButtonTag = F"previewSkinButton${directName:upperAtStart()}"
 
           local previewSkinButtonClicked  = clickObject(previewSkinButtonTag, 'camHUD')
           local previewSkinButtonReleased = mouseReleased('left')
@@ -368,7 +368,7 @@ end
 ---@return nil
 function SkinNotesPreview:preview_selection_byhover()
      local function previewSelectionButtonHover(directIndex, directName)
-          local previewSkinButtonTag = F"previewSkinButton{directName:upperAtStart()}"
+          local previewSkinButtonTag = F"previewSkinButton${directName:upperAtStart()}"
           if self.PREVIEW_SKIN_OBJECT_ANIMS_CLICKED[directIndex] == true then
                return
           end

@@ -9,12 +9,14 @@ for strums = 1,4 do
      fart:create(strums, 410 + (105*(strums - 1)), 100, {0.65, 0.65})
 end
 
-local gard = FlavorUI_TextField:new()
-gard:create()
+local text = FlavorUI_TextField:new('hi', '',  34, 54+12, 385, 'hahaha')
+text.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
+text.size = 23
+
+text:create_test()
 
 function onUpdatePost(elapsed)
-     fart:update_movement()
-     gard:update()
+     --fart:update_movement()
 end
 
 

@@ -46,12 +46,12 @@ end
 ---@return nil
 function FlavorUI_Toggle:_click()
      if clickObject(self.tag, 'camHUD') then
-          playAnim(self.tag, F"{self:status_state()}-focused", true)
+          playAnim(self.tag, F"${self:status_state()}-focused", true)
           self.clicked = true
           self:onClick(self)
      end
      if hoverObject(self.tag, 'camHUD') == true and mouseReleased('left') then
-          playAnim(self.tag, F"{self:status_state()}-static", true)
+          playAnim(self.tag, F"${self:status_state()}-static", true)
           self.clicked = false
           self.status = not self.status
 
@@ -64,13 +64,13 @@ end
 ---@return nil
 function FlavorUI_Toggle:_hover()
      if hoverObject(self.tag, 'camHUD') == true and not pressedObject(self.tag, 'camHUD') then
-          playAnim(self.tag, F"{self:status_state()}-hovered", true)
+          playAnim(self.tag, F"${self:status_state()}-hovered", true)
           self.hovered = true
           
           self:onHover(self)
      end
      if hoverObject(self.tag, 'camHUD') == false and not pressedObject(self.tag, 'camHUD') then
-          playAnim(self.tag, F"{self:status_state()}-static", true)
+          playAnim(self.tag, F"${self:status_state()}-static", true)
           self.hovered = false
      end
 end
