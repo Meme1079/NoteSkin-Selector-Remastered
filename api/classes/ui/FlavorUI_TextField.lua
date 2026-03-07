@@ -92,11 +92,38 @@ function FlavorUI_TextField:create_test()
           setVar('skinSearchInput', skinSearchInput);
           setVar('skinSearchInput_placeholder', skinSearchInput_placeholder);
           setVar('skinSearchInput_caret', skinSearchInput_caret);
+
+          var skinSearchInputFocusToggle = false;
+          var skinSearchInputFocus       = false;
+          function skinSearchInput_onFocus() {
+               skinSearchInputFocus = PsychUIInputText.focusOn != null && PsychUIInputText.focusOn == skinSearchInput;
+               setVar('skinSearchInputFocus', skinSearchInputFocus);
+          
+               if (skinSearchInputFocus == true && skinSearchInputFocusToggle == false) {
+                    ClientPrefs.toggleVolumeKeys(false);
+                    game.allowDebugKeys = false;
+          
+                    skinSearchInputFocusToggle = true;
+               }
+               if (skinSearchInputFocus == false && skinSearchInputFocusToggle == true){
+                    ClientPrefs.toggleVolumeKeys(true);
+                    game.allowDebugKeys = true;
+          
+                    skinSearchInputFocusToggle = false;
+               }
+          
+               if (FlxG.keys.pressed.ENTER) {
+                    PsychUIInputText.focusOn   = skinSearchInput;
+                    skinSearchInput.caretIndex = skinSearchInput.text.length;
+               }
+          }
      ]])
 end
 
 function FlavorUI_TextField:update()
      runHaxeCode(F[[
+          skinSearchInput_onFocus();
+          
           var skinSearchInput       = getVar('skinSearchInput');
           var skinSearchInput_caret = getVar('skinSearchInput_caret');
 
