@@ -1,8 +1,10 @@
 local FlavorUI_TextField = require 'mods.NoteSkin Selector Remastered.api.classes.ui.FlavorUI_TextField'
-local EditorNotes = require 'mods.NoteSkin Selector Remastered.api.classes.editor.notes.EditorNotes'
+local FlavorUI_Mouse     = require 'mods.NoteSkin Selector Remastered.api.classes.ui.FlavorUI_Mouse'
+local EditorNotes        = require 'mods.NoteSkin Selector Remastered.api.classes.editor.notes.EditorNotes'
 
 local F    = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local math = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
+
 
 local fart = EditorNotes:new('fartdoodoo', 'noteSkins/NOTE_assets-DSides')
 for strums = 1,4 do
@@ -17,8 +19,14 @@ text.placeholder_content = '000.00'
 
 text:create()
 
+local mouse = FlavorUI_Mouse:new('ui/cursor', 0.4, {-4,0})
+mouse:create()
+
+
 function onUpdatePost(elapsed)
      text:update()
+
+     mouse:update()
 end
 
 

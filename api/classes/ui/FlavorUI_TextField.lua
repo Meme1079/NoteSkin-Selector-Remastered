@@ -1,4 +1,9 @@
 local F = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
+local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
+
+local hoverObject   = funkinlua.hoverObject
+local clickObject   = funkinlua.clickObject
+local pressedObject = funkinlua.pressedObject
 
 ---@class FlavorUI_TextField
 local FlavorUI_TextField = {}
@@ -30,7 +35,7 @@ function FlavorUI_TextField:new(tag, sprite, x, y, width, content)
 end
 
 function FlavorUI_TextField:create()
-     runHaxeCode(F[[
+     runHaxeCode((F[[
           import flixel.FlxG;
           import flixel.util.FlxTimer;
           import backend.ClientPrefs;
@@ -119,23 +124,23 @@ function FlavorUI_TextField:create()
                     skinSearchInput.caretIndex = skinSearchInput.text.length;
                }
           }
-     ]])
+     ]]):gsub('skinSearchInput', self.tag))
 end
 
 function FlavorUI_TextField:update()
-     runHaxeCode(F[[
-          var skinSearchInput             = getVar('skinSearchInput');
-          var skinSearchInput_caret       = getVar('skinSearchInput_caret');
+     runHaxeCode((F[[
+          var skinSearchInput       = getVar('skinSearchInput');
+          var skinSearchInput_caret = getVar('skinSearchInput_caret');
 
           skinSearchInput_onFocus();          
           skinSearchInput_caret.visible = PsychUIInputText.focusOn == null ? false : skinSearchInput.caret.visible;
           skinSearchInput_caret.x       = skinSearchInput.caret.x;
           skinSearchInput_caret.y       = skinSearchInput.caret.y;
-     ]])
+     ]]):gsub('skinSearchInput', self.tag))
 end
 
 function FlavorUI_TextField:invalid_field(invalidColor, invalidContent)
-     runHaxeCode(F[[
+     runHaxeCode((F[[
           var skinSearchInput             = getVar('skinSearchInput');
           var skinSearchInput_placeholder = getVar('skinSearchInput_placeholder');
 
@@ -146,11 +151,11 @@ function FlavorUI_TextField:invalid_field(invalidColor, invalidContent)
           skinSearchInput_placeholder.color = ${invalidColor};     // 0xFFB50000
           FlxG.sound.play(Paths.sound('cancel'), 0.5);
           return;
-     ]])
+     ]]):gsub('skinSearchInput', self.tag))
 end
 
 function FlavorUI_TextField:reset_field()
-     runHaxeCode(F[[
+     runHaxeCode((F[[
           var skinSearchInput             = getVar('skinSearchInput');
           var skinSearchInput_placeholder = getVar('skinSearchInput_placeholder');
 
@@ -159,7 +164,7 @@ function FlavorUI_TextField:reset_field()
 
           skinSearchInput_placeholder.text = '${self.placeholder_content}';
           return;
-     ]])
+     ]]):gsub('skinSearchInput', self.tag))
 end
 
 return FlavorUI_TextField

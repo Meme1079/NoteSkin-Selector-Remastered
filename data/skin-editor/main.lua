@@ -14,31 +14,12 @@ function onCreatePost()
                removeLuaScript(scripts, true)
           end
      end
-     playMusic('editor/get on up again', 0.7, true)
-end
-
---- Updates the mouse positions based on the current cursor position.
----@param mouseTag string The specified mouse tag to update its position.
----@param offsetX number The offset of the x position.
----@param offsetY number The offset of the y position.
----@return nil
-local function mouseSetUpdatingPosition(mouseTag, offsetX, offsetY)
-     setProperty(F"${mouseTag}.x", getMouseX('camHUD') + offsetX)
-     setProperty(F"${mouseTag}.y", getMouseY('camHUD') + offsetY)
+     playMusic('editor/sherbet lobby', 0.5, true)
 end
 
 function onUpdatePost(elapsed)
-     if keyboardJustConditionPressed('ONE',    not getVar('skinSearchInputFocus')) then restartSong(true) end
-     if keyboardJustConditionPressed('ESCAPE', not getVar('skinSearchInputFocus')) then exitSong()        end
-     if mouseClicked('left')  then playSound('clicks/clickDown', 0.5) end
-     if mouseReleased('left') then playSound('clicks/clickUp', 0.5)   end
-
-     if mouseClicked('left') or mousePressed('left') then 
-          playAnim('mouseTexture', 'idleClick')
-     else
-          playAnim('mouseTexture', 'idle')
-     end
-     mouseSetUpdatingPosition('mouseTexture', 0, 0)
+     if keyboardJustConditionPressed('ONE',    getPropertyFromClass('backend.ui.PsychUIInputText', 'focusOn') == nil) then restartSong(true) end
+     if keyboardJustConditionPressed('ESCAPE', getPropertyFromClass('backend.ui.PsychUIInputText', 'focusOn') == nil) then exitSong()        end
 end
 
 local allowCountdown = false;
