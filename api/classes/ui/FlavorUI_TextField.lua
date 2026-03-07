@@ -19,6 +19,11 @@ function FlavorUI_TextField:new(tag, sprite, x, y, width, content)
      self.selection_color = '0xff1565de'
      self.max_length      = 50
 
+     self.caret_width   = 3
+     self.caret_height  = 25
+     self.caret_offsetY = 1
+     self.caret_color   = '0xffffffff'
+
      runHaxeCode([[
           import flixel.FlxG;
           import flixel.util.FlxTimer;
@@ -32,7 +37,13 @@ end
 
 function FlavorUI_TextField:create_test()
      runHaxeCode(F[[
+          var skinSearchInput_caret:FlxSprite  = new FlxSprite(0, 0);
           var skinSearchInput:PsychUIInputText = new PsychUIInputText(${self.x}, ${self.y}, ${self.width}, "${self.content}", ${self.size});
+     
+          skinSearchInput_caret.makeGraphic(${self.caret_width}, ${self.caret_height}, ${self.caret_color});
+          skinSearchInput_caret.y            = skinSearchInput.caret.y + ${self.caret_offsetY};
+          skinSearchInput_caret.cameras      = [game.camHUD];
+          skinSearchInput_caret.antialiasing = false;
 
           skinSearchInput.textObj.font  = Paths.mods('${self.font}');
           skinSearchInput.textObj.color = ${self.color};
@@ -43,16 +54,40 @@ function FlavorUI_TextField:create_test()
           skinSearchInput.selection.color = ${self.selection_color};
           skinSearchInput.cameras   = [game.camHUD];
           skinSearchInput.maxLength = ${self.max_length};
+          skinSearchInput.onChange  = function(preText:String, curText:String) {
+               FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1);
+     
+               if (curText.length > 0) {
+                    //skinSearchInput_placeholder.text  = '';
+               } else {
+                    //skinSearchInput_placeholder.text  = 'Search Skins...';
+                    //skinSearchInput_placeholder.color = 0xFFB3B3B5;
+               }
+     
+               if (curText.length >= ${self.max_length}) {
+                    FlxG.sound.play(Paths.sound('cancel'), 0.5);
+                    skinSearchInput.textObj.color = FlxColor.RED;
+               } else {
+                    skinSearchInput.textObj.color = FlxColor.WHITE;
+               }
+          };
 
-          debugPrint('if {{}} else {{}}');
+          add(skinSearchInput);
+          add(skinSearchInput_caret);
+
           setVar('skinSearchInput', skinSearchInput);
+          setVar('skinSearchInput_caret', skinSearchInput_caret);
      ]])
 end
 
-function FlavorUI_TextField:add()
+function FlavorUI_TextField:update()
      runHaxeCode(F[[
-          var skinSearchInput = getVar('skinSearchInput');
-          add(skinSearchInput);
+          var skinSearchInput       = getVar('skinSearchInput');
+          var skinSearchInput_caret = getVar('skinSearchInput_caret');
+
+          skinSearchInput_caret.visible = PsychUIInputText.focusOn == null ? false : skinSearchInput.caret.visible;
+          skinSearchInput_caret.x       = skinSearchInput.caret.x + 1;
+          skinSearchInput_caret.y       = skinSearchInput.caret.y;
      ]])
 end
 

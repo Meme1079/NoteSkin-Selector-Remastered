@@ -16,7 +16,7 @@ text.size = 23
 text:create_test()
 
 function onUpdatePost(elapsed)
-     --fart:update_movement()
+     text:update()
 end
 
 
