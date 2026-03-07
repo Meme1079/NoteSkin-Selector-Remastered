@@ -44,7 +44,6 @@ addLuaText('editorTitleStrumTag')
 
 -- b --
 
-
 local function doodoo(tag, label, color, x, y)
      local editorLabelTag = F"editorLabelTag${tag:upperAtStart()}${label:upper()}"
      local editorBGTag    = F"editorBGTag${tag:upperAtStart()}${label:upper()}"

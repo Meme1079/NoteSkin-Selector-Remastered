@@ -74,8 +74,6 @@ function FlavorUI_TextField:create()
           skinSearchInput.deleteSelection();
           skinSearchInput.onChange  = function(preText:String, curText:String) {
                FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1);
-               ClientPrefs.toggleVolumeKeys(PsychUIInputText.focusOn == null);
-               game.allowDebugKeys = PsychUIInputText.focusOn == null;
                
                if (curText.length > 0) {
                     skinSearchInput_placeholder.text  = '';
@@ -110,6 +108,9 @@ function FlavorUI_TextField:update()
           skinSearchInput_caret.visible = PsychUIInputText.focusOn == null ? false : skinSearchInput.caret.visible;
           skinSearchInput_caret.x       = skinSearchInput.caret.x;
           skinSearchInput_caret.y       = skinSearchInput.caret.y;
+
+          ClientPrefs.toggleVolumeKeys(PsychUIInputText.focusOn == null);
+          game.allowDebugKeys = PsychUIInputText.focusOn == null;
      ]]):gsub('skinSearchInput', self.tag))
 end
 
