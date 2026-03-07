@@ -20,9 +20,9 @@ end
 
 
 function EditorNotes:create(strum, x, y, size)
-     local ddoodoo = self:tag_strums(strum)
+     local ddoodoo = self:set_tag(strum)
 
-     makeAnimatedLuaSprite(ddoodoo, 'noteSkins/NOTE_assets-DSides', x, y)
+     makeAnimatedLuaSprite(ddoodoo, self.sprite, x, y)
      scaleObject(ddoodoo, size[1], size[2])
      addAnimationByPrefix(ddoodoo, F"{SKIN_DIRECTIONS[strum]}_confirm", F"{SKIN_DIRECTIONS[strum]} confirm", 24, false)
      addAnimationByPrefix(ddoodoo, F"{SKIN_DIRECTIONS[strum]}_pressed", F"{SKIN_DIRECTIONS[strum]} pressed", 24, false)
@@ -44,8 +44,6 @@ function EditorNotes:update_movement()
      if keyboardPressed('W') then dy = dy - 1 end
 
      local giX = F"{self.tag}{dir}"
-
-     debugPrint(giX)
 
      local length = math.sqrt(dx^2 + dy^2)
      if length > 0 then
@@ -71,11 +69,15 @@ function EditorNotes:update_movement()
      end
 end
 
+function EditorNotes:dih(value)
+     di = value
+end
+
 
 function EditorNotes:set_sprite(sprite)
 end
 
-function EditorNotes:tag_strums(strum)
+function EditorNotes:set_tag(strum)
      return self.tag..tostring(strum)
 end
 

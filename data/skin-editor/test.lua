@@ -1,16 +1,20 @@
+local FlavorUI_TextField = require 'mods.NoteSkin Selector Remastered.api.classes.ui.FlavorUI_TextField'
 local EditorNotes = require 'mods.NoteSkin Selector Remastered.api.classes.editor.notes.EditorNotes'
 
 local F    = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local math = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
 
 local fart = EditorNotes:new('fartdoodoo', 'noteSkins/NOTE_assets-DSides')
-fart:create(1, 410 + (105*(1 - 1)), 100, {0.65, 0.65})
-fart:create(2, 410 + (105*(2 - 1)), 100, {0.65, 0.65})
-fart:create(3, 410 + (105*(3 - 1)), 100, {0.65, 0.65})
-fart:create(4, 410 + (105*(4 - 1)), 100, {0.65, 0.65})
+for strums = 1,4 do
+     fart:create(strums, 410 + (105*(strums - 1)), 100, {0.65, 0.65})
+end
+
+local gard = FlavorUI_TextField:new()
+gard:create()
 
 function onUpdatePost(elapsed)
      fart:update_movement()
+     gard:update()
 end
 
 
