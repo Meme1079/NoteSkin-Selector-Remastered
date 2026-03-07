@@ -38,6 +38,8 @@ function FlavorUI_TextField:create()
           import backend.ui.PsychUIInputText;
           import psychlua.LuaUtils;
 
+          /* Sprites */
+
           var skinSearchInput_caret:FlxSprite     = new FlxSprite(0, 0);
           var skinSearchInput_placeholder:FlxText = new FlxText(${self.x}, ${self.y}, 0, "${self.content}");
           var skinSearchInput:PsychUIInputText    = new PsychUIInputText(${self.x}, ${self.y}, ${self.width}, "${self.content}", ${self.size});
@@ -90,6 +92,33 @@ function FlavorUI_TextField:create()
           setVar('skinSearchInput', skinSearchInput);
           setVar('skinSearchInput_placeholder', skinSearchInput_placeholder);
           setVar('skinSearchInput_caret', skinSearchInput_caret);
+
+          /* Miscellaneous */
+
+          var skinSearchInputFocusToggle = false;
+          var skinSearchInputFocus       = false;
+          function skinSearchInput_onFocus() {
+               skinSearchInputFocus = PsychUIInputText.focusOn != null && PsychUIInputText.focusOn == skinSearchInput;
+               setVar('skinSearchInputFocus', skinSearchInputFocus);
+          
+               if (skinSearchInputFocus == true && skinSearchInputFocusToggle == false) {
+                    ClientPrefs.toggleVolumeKeys(false);
+                    game.allowDebugKeys = false;
+          
+                    skinSearchInputFocusToggle = true;
+               }
+               if (skinSearchInputFocus == false && skinSearchInputFocusToggle == true){
+                    ClientPrefs.toggleVolumeKeys(true);
+                    game.allowDebugKeys = true;
+          
+                    skinSearchInputFocusToggle = false;
+               }
+          
+               if (FlxG.keys.pressed.ENTER) {
+                    PsychUIInputText.focusOn   = skinSearchInput;
+                    skinSearchInput.caretIndex = skinSearchInput.text.length;
+               }
+          }
      ]])
 end
 
@@ -98,27 +127,7 @@ function FlavorUI_TextField:update()
           var skinSearchInput             = getVar('skinSearchInput');
           var skinSearchInput_caret       = getVar('skinSearchInput_caret');
 
-          var skinSearchInputFocusToggle = false;
-          var skinSearchInputFocus       = PsychUIInputText.focusOn != null && PsychUIInputText.focusOn == skinSearchInput;
-          setVar('skinSearchInputFocus', skinSearchInputFocus);
-          
-          if (skinSearchInputFocus == true && skinSearchInputFocusToggle == false) {
-               ClientPrefs.toggleVolumeKeys(false);
-               game.allowDebugKeys = false;
-     
-               skinSearchInputFocusToggle = true;
-          }
-          if (skinSearchInputFocus == false && skinSearchInputFocusToggle == true){
-               ClientPrefs.toggleVolumeKeys(true);
-               game.allowDebugKeys = true;
-     
-               skinSearchInputFocusToggle = false;
-          }
-          if (FlxG.keys.pressed.ENTER) {
-               PsychUIInputText.focusOn   = skinSearchInput;
-               skinSearchInput.caretIndex = skinSearchInput.text.length;
-          }
-          
+          skinSearchInput_onFocus();          
           skinSearchInput_caret.visible = PsychUIInputText.focusOn == null ? false : skinSearchInput.caret.visible;
           skinSearchInput_caret.x       = skinSearchInput.caret.x;
           skinSearchInput_caret.y       = skinSearchInput.caret.y;

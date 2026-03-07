@@ -19,13 +19,6 @@ text:create()
 
 function onUpdatePost(elapsed)
      text:update()
-
-     if keyboardJustPressed('E') then
-          text:invalid_field()
-     end
-     if keyboardJustPressed('R') then
-          text:reset_field()
-     end
 end
 
 
