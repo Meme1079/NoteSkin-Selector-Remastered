@@ -68,7 +68,6 @@ doodoo('colored', 'x', 'ff746c', 0, 25*-2)
 doodoo('pressed', 'x', 'ff746c', 0, 25*-4)
 doodoo('confirm', 'x', 'ff746c', 0, 25*-6)
 
-
 doodoo('strums', 'y', '77dd77', 280, 0)
 doodoo('colored', 'y', '77dd77', 280, 25*-2)
 doodoo('pressed', 'y', '77dd77', 280, 25*-4)

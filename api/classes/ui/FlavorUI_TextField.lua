@@ -74,7 +74,9 @@ function FlavorUI_TextField:create()
           skinSearchInput.deleteSelection();
           skinSearchInput.onChange  = function(preText:String, curText:String) {
                FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1);
-     
+               ClientPrefs.toggleVolumeKeys(PsychUIInputText.focusOn == null);
+               game.allowDebugKeys = PsychUIInputText.focusOn == null;
+               
                if (curText.length > 0) {
                     skinSearchInput_placeholder.text  = '';
                } else {
@@ -97,33 +99,6 @@ function FlavorUI_TextField:create()
           setVar('skinSearchInput', skinSearchInput);
           setVar('skinSearchInput_placeholder', skinSearchInput_placeholder);
           setVar('skinSearchInput_caret', skinSearchInput_caret);
-
-          /* Miscellaneous */
-
-          var skinSearchInputFocusToggle = false;
-          var skinSearchInputFocus       = false;
-          function skinSearchInput_onFocus() {
-               skinSearchInputFocus = PsychUIInputText.focusOn != null && PsychUIInputText.focusOn == skinSearchInput;
-               setVar('skinSearchInputFocus', skinSearchInputFocus);
-          
-               if (skinSearchInputFocus == true && skinSearchInputFocusToggle == false) {
-                    ClientPrefs.toggleVolumeKeys(false);
-                    game.allowDebugKeys = false;
-          
-                    skinSearchInputFocusToggle = true;
-               }
-               if (skinSearchInputFocus == false && skinSearchInputFocusToggle == true){
-                    ClientPrefs.toggleVolumeKeys(true);
-                    game.allowDebugKeys = true;
-          
-                    skinSearchInputFocusToggle = false;
-               }
-          
-               if (FlxG.keys.pressed.ENTER) {
-                    PsychUIInputText.focusOn   = skinSearchInput;
-                    skinSearchInput.caretIndex = skinSearchInput.text.length;
-               }
-          }
      ]]):gsub('skinSearchInput', self.tag))
 end
 
@@ -132,7 +107,6 @@ function FlavorUI_TextField:update()
           var skinSearchInput       = getVar('skinSearchInput');
           var skinSearchInput_caret = getVar('skinSearchInput_caret');
 
-          skinSearchInput_onFocus();          
           skinSearchInput_caret.visible = PsychUIInputText.focusOn == null ? false : skinSearchInput.caret.visible;
           skinSearchInput_caret.x       = skinSearchInput.caret.x;
           skinSearchInput_caret.y       = skinSearchInput.caret.y;
