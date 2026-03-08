@@ -6,6 +6,9 @@ local math   = require 'mods.NoteSkin Selector Remastered.api.libraries.standard
 
 local SKIN_EDITOR_BG_WIDTH  = getPropertyFromClass('flixel.FlxG', 'width')
 local SKIN_EDITOR_BG_HEIGHT = getPropertyFromClass('flixel.FlxG', 'height')
+
+-- IDK --
+
 makeLuaSprite('skinEditorBG', '', 0, 0)
 makeGraphic('skinEditorBG', SKIN_EDITOR_BG_WIDTH, SKIN_EDITOR_BG_HEIGHT, '242424')
 setObjectCamera('skinEditorBG', 'camHUD')
@@ -17,104 +20,96 @@ makeGraphic('testSidebar', 420, SKIN_EDITOR_BG_HEIGHT, '101010')
 setObjectCamera('testSidebar', 'camHUD')
 addLuaSprite('testSidebar')
 
--- @ --
+-- Offset --
 
-makeLuaText('editorTitleConfirm', ('Offsets'):pad(1, ' '), 0, 10-5, (163.44 - 5.72) + 8 - 45)
-setTextFont('editorTitleConfirm', 'tomo.otf')
-setTextSize('editorTitleConfirm', 20)
-setTextBorder('editorTitleConfirm', 3, '000000')
-setObjectCamera('editorTitleConfirm', 'camHUD')
-addLuaText('editorTitleConfirm')
+local OFFSET_SECTION_Y = (163.44 - 5.72)
+local OFFSET_SECTION_TITLE_Y = OFFSET_SECTION_Y - 37
+local OFFSET_SECTION_LABEL_Y = OFFSET_SECTION_Y + 8
 
-makeLuaText('editorLabelX', ('x'):upper():pad(1, ' '), 0, 10-5, (163.44 - 5.72) + 8)
-setTextFont('editorLabelX', 'tomo.otf')
-setTextColor('editorLabelX', 'ff746c')
-setTextSize('editorLabelX', 20)
-setTextBorder('editorLabelX', 3, '000000')
-setObjectCamera('editorLabelX', 'camHUD')
-addLuaText('editorLabelX')
+local OFFSET_LABEL1_X = 10-5
+local OFFSET_LABEL2_X = 240-33
 
-makeLuaText('editorLabelY', ('y'):upper():pad(1, ' '), 0, 240-33, (163.44 - 5.72) + 8)
-setTextFont('editorLabelY', 'tomo.otf')
-setTextColor('editorLabelY', '77dd77')
-setTextSize('editorLabelY', 20)
-setTextBorder('editorLabelY', 3, '000000')
-setObjectCamera('editorLabelY', 'camHUD')
-addLuaText('editorLabelY')
+local OFFSET_SPRITE1_X = 40
+local OFFSET_SPRITE2_X = 240
 
-makeLuaSprite('editorInputSpriteX', 'ui/buttons/value_input6', 40, (163.44 - 5.72))
-scaleObject('editorInputSpriteX', 0.65, 0.85)
-setObjectCamera('editorInputSpriteX', 'camHUD')
-setProperty('editorInputSpriteX.antialiasing', false)
-addLuaSprite('editorInputSpriteX')
+makeLuaText('editorTitleOffset', ('Offsets'):pad(1, ' '), 0, OFFSET_LABEL1_X, OFFSET_SECTION_TITLE_Y)
+setTextFont('editorTitleOffset', 'tomo.otf')
+setTextSize('editorTitleOffset', 20)
+setTextBorder('editorTitleOffset', 3, '000000')
+setObjectCamera('editorTitleOffset', 'camHUD')
+addLuaText('editorTitleOffset')
 
-makeLuaSprite('editorInputSpriteY', 'ui/buttons/value_input6', 240, (163.44 - 5.72))
-scaleObject('editorInputSpriteY', 0.65, 0.85)
-setObjectCamera('editorInputSpriteY', 'camHUD')
-setProperty('editorInputSpriteY.antialiasing', false)
-addLuaSprite('editorInputSpriteY')
+makeLuaText('editorLabelOffsetX', ('x'):upper():pad(1, ' '), 0, OFFSET_LABEL1_X, OFFSET_SECTION_LABEL_Y)
+setTextFont('editorLabelOffsetX', 'tomo.otf')
+setTextColor('editorLabelOffsetX', 'ff746c')
+setTextSize('editorLabelOffsetX', 20)
+setTextBorder('editorLabelOffsetX', 3, '000000')
+setObjectCamera('editorLabelOffsetX', 'camHUD')
+addLuaText('editorLabelOffsetX')
 
--- a --
+makeLuaText('editorLabelOffsetY', ('y'):upper():pad(1, ' '), 0, OFFSET_LABEL2_X, OFFSET_SECTION_LABEL_Y)
+setTextFont('editorLabelOffsetY', 'tomo.otf')
+setTextColor('editorLabelOffsetY', '77dd77')
+setTextSize('editorLabelOffsetY', 20)
+setTextBorder('editorLabelOffsetY', 3, '000000')
+setObjectCamera('editorLabelOffsetY', 'camHUD')
+addLuaText('editorLabelOffsetY')
 
---[[ makeLuaText('editorTitleConfirmTag', ' Confirm ', 0, 30, 563.44+(25*-6))
-setTextFont('editorTitleConfirmTag', 'tomo.otf')
-setTextSize('editorTitleConfirmTag', 25)
-setTextBorder('editorTitleConfirmTag', 3, '000000')
-setObjectCamera('editorTitleConfirmTag', 'camHUD')
-addLuaText('editorTitleConfirmTag')
+makeLuaSprite('editorInputSpriteOffsetX', 'ui/buttons/value_input6', OFFSET_SPRITE1_X, OFFSET_SECTION_Y)
+scaleObject('editorInputSpriteOffsetX', 0.65, 0.85)
+setObjectCamera('editorInputSpriteOffsetX', 'camHUD')
+setProperty('editorInputSpriteOffsetX.antialiasing', false)
+addLuaSprite('editorInputSpriteOffsetX')
 
-makeLuaText('editorTitlePressedTag', ' Pressed ', 0, 30, 563.44+(25*-4))
-setTextFont('editorTitlePressedTag', 'tomo.otf')
-setTextSize('editorTitlePressedTag', 25)
-setTextBorder('editorTitlePressedTag', 3, '000000')
-setObjectCamera('editorTitlePressedTag', 'camHUD')
-addLuaText('editorTitlePressedTag')
+makeLuaSprite('editorInputSpriteOffsetY', 'ui/buttons/value_input6', OFFSET_SPRITE2_X, OFFSET_SECTION_Y)
+scaleObject('editorInputSpriteOffsetY', 0.65, 0.85)
+setObjectCamera('editorInputSpriteOffsetY', 'camHUD')
+setProperty('editorInputSpriteOffsetY.antialiasing', false)
+addLuaSprite('editorInputSpriteOffsetY')
 
-makeLuaText('editorTitleColoredTag', ' Colored ', 0, 30, 563.44+(25*-2))
-setTextFont('editorTitleColoredTag', 'tomo.otf')
-setTextSize('editorTitleColoredTag', 25)
-setTextBorder('editorTitleColoredTag', 3, '000000')
-setObjectCamera('editorTitleColoredTag', 'camHUD')
-addLuaText('editorTitleColoredTag')
+-- Size --
 
-makeLuaText('editorTitleStrumTag', ' Strums ', 0, 30, 563.44+(25*-0))
-setTextFont('editorTitleStrumTag', 'tomo.otf')
-setTextSize('editorTitleStrumTag', 25)
-setTextBorder('editorTitleStrumTag', 3, '000000')
-setObjectCamera('editorTitleStrumTag', 'camHUD')
-addLuaText('editorTitleStrumTag')
+local SIZE_SECTION_Y = (263.44 - 5.72)
+local SIZE_SECTION_TITLE_Y = SIZE_SECTION_Y - 37
+local SIZE_SECTION_LABEL_Y = SIZE_SECTION_Y + 8
 
--- b --
+local SIZE_LABEL1_X = 10-5
+local SIZE_LABEL2_X = 240-33
 
-local function doodoo(tag, label, color, x, y, bgX, bgY)
-     local editorLabelTag = F"editorLabelTag${tag:upperAtStart()}${label:upper()}"
-     local editorBGTag    = F"editorBGTag${tag:upperAtStart()}${label:upper()}"
+local SIZE_SPRITE1_X = 40
+local SIZE_SPRITE2_X = 240
 
-     makeLuaText(editorLabelTag, label:upper():pad(1, ' '), 0, 180 + x, 563.44 + y)
-     setTextFont(editorLabelTag, 'tomo.otf')
-     setTextColor(editorLabelTag, color)
-     setTextSize(editorLabelTag, 25)
-     setTextBorder(editorLabelTag, 3, '000000')
-     setObjectCamera(editorLabelTag, 'camHUD')
-     addLuaText(editorLabelTag)
-     
-     makeLuaSprite(editorBGTag, 'ui/buttons/value_input5', 230 + x + bgX, (563.44 - 5.72) + y + bgY)
-     scaleObject(editorBGTag, 0.7, 0.8)
-     setObjectCamera(editorBGTag, 'camHUD')
-     addLuaSprite(editorBGTag)
-end
+makeLuaText('editorTitleSize', ('Size'):pad(1, ' '), 0, SIZE_LABEL1_X, SIZE_SECTION_TITLE_Y)
+setTextFont('editorTitleSize', 'tomo.otf')
+setTextSize('editorTitleSize', 20)
+setTextBorder('editorTitleSize', 3, '000000')
+setObjectCamera('editorTitleSize', 'camHUD')
+addLuaText('editorTitleSize')
 
-doodoo('strums', 'x', 'ff746c', 0, 0, 0, 0)
-doodoo('colored', 'x', 'ff746c', 0, 25*-2, 0, 0)
-doodoo('pressed', 'x', 'ff746c', 0, 25*-4, 0, 0)
-doodoo('confirm', 'x', 'ff746c', 0, 25*-6, 0, 0)
+makeLuaText('editorLabelSizeX', ('x'):upper():pad(1, ' '), 0, SIZE_LABEL1_X, SIZE_SECTION_LABEL_Y)
+setTextFont('editorLabelSizeX', 'tomo.otf')
+setTextColor('editorLabelSizeX', 'ff746c')
+setTextSize('editorLabelSizeX', 20)
+setTextBorder('editorLabelSizeX', 3, '000000')
+setObjectCamera('editorLabelSizeX', 'camHUD')
+addLuaText('editorLabelSizeX')
 
-doodoo('strums', 'y', '77dd77', 250, 0, 0, 0)
-doodoo('colored', 'y', '77dd77', 250, 25*-2, 0, 0)
-doodoo('pressed', 'y', '77dd77', 250, 25*-4, 0, 0)
-doodoo('confirm', 'y', '77dd77', 250, 25*-6, 0, 0)
+makeLuaText('editorLabelSizeY', ('y'):upper():pad(1, ' '), 0, SIZE_LABEL2_X, SIZE_SECTION_LABEL_Y)
+setTextFont('editorLabelSizeY', 'tomo.otf')
+setTextColor('editorLabelSizeY', '77dd77')
+setTextSize('editorLabelSizeY', 20)
+setTextBorder('editorLabelSizeY', 3, '000000')
+setObjectCamera('editorLabelSizeY', 'camHUD')
+addLuaText('editorLabelSizeY')
 
-doodoo('strums', 'fps', '9c77dd', 250*2, 0, 35, 0)
-doodoo('colored', 'fps', '9c77dd', 250*2, 25*-2, 35, 0)
-doodoo('pressed', 'fps', '9c77dd', 250*2, 25*-4, 35, 0)
-doodoo('confirm', 'fps', '9c77dd', 250*2, 25*-6, 35, 0) ]]
+makeLuaSprite('editorInputSpriteSizeX', 'ui/buttons/value_input6', SIZE_SPRITE1_X, SIZE_SECTION_Y)
+scaleObject('editorInputSpriteSizeX', 0.65, 0.85)
+setObjectCamera('editorInputSpriteSizeX', 'camHUD')
+setProperty('editorInputSpriteSizeX.antialiasing', false)
+addLuaSprite('editorInputSpriteSizeX')
+
+makeLuaSprite('editorInputSpriteSizeY', 'ui/buttons/value_input6', SIZE_SPRITE2_X, SIZE_SECTION_Y)
+scaleObject('editorInputSpriteSizeY', 0.65, 0.85)
+setObjectCamera('editorInputSpriteSizeY', 'camHUD')
+setProperty('editorInputSpriteSizeY.antialiasing', false)
+addLuaSprite('editorInputSpriteSizeY')

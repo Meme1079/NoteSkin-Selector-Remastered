@@ -7,111 +7,72 @@ local F = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local mouse = FlavorUI_Mouse:new('ui/cursor', 0.4, {-4,0})
 mouse:create()
 
-local editorInputFieldX = FlavorUI_TextField:new('editorInputFieldX', '', 40+8, (163.44 - 5.72)+7, 130, '')
-editorInputFieldX.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-editorInputFieldX.size = 20
-editorInputFieldX.max_length = 10
-editorInputFieldX.caret_y = 2
-editorInputFieldX.caret_width = 2.5
-editorInputFieldX.caret_height = 20
-editorInputFieldX.placeholder_content = '000.00'
-editorInputFieldX:create()
-editorInputFieldX:set_customFilterPattern("[^0-9.]*", "g")
+-- Offset --
 
-local editorInputFieldY = FlavorUI_TextField:new('editorInputFieldY', '', 240+8, (163.44 - 5.72)+7, 130, '')
-editorInputFieldY.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-editorInputFieldY.size = 20
-editorInputFieldY.max_length = 10
-editorInputFieldY.caret_y = 2
-editorInputFieldY.caret_width = 2.5
-editorInputFieldY.caret_height = 20
-editorInputFieldY.placeholder_content = '000.00'
-editorInputFieldY:create()
-editorInputFieldY:set_customFilterPattern("[^0-9.]*", "g")
+local OFFSET_SECTION_Y = (163.44 - 5.72)
+local OFFSET_SECTION_FIELD_Y = OFFSET_SECTION_Y + 7
+
+local OFFSET_FIELD1_X = 40+8
+local OFFSET_FIELD2_X = 240+8
+
+local editorInputFieldOffsetX = FlavorUI_TextField:new('editorInputFieldOffsetX', '', OFFSET_FIELD1_X, OFFSET_SECTION_FIELD_Y, 130, '')
+editorInputFieldOffsetX.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
+editorInputFieldOffsetX.size = 20
+editorInputFieldOffsetX.max_length = 10
+editorInputFieldOffsetX.caret_y = 2
+editorInputFieldOffsetX.caret_width = 2.5
+editorInputFieldOffsetX.caret_height = 20
+editorInputFieldOffsetX.placeholder_content = '000.00'
+editorInputFieldOffsetX:create()
+editorInputFieldOffsetX:set_customFilterPattern("[^0-9.]*", "g")
+
+local editorInputFieldOffsetY = FlavorUI_TextField:new('editorInputFieldOffsetY', '', OFFSET_FIELD2_X, OFFSET_SECTION_FIELD_Y, 130, '')
+editorInputFieldOffsetY.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
+editorInputFieldOffsetY.size = 20
+editorInputFieldOffsetY.max_length = 10
+editorInputFieldOffsetY.caret_y = 2
+editorInputFieldOffsetY.caret_width = 2.5
+editorInputFieldOffsetY.caret_height = 20
+editorInputFieldOffsetY.placeholder_content = '000.00'
+editorInputFieldOffsetY:create()
+editorInputFieldOffsetY:set_customFilterPattern("[^0-9.]*", "g")
+
+-- Size --
+
+local SIZE_SECTION_Y = (263.44 - 5.72)
+local SIZE_SECTION_FIELD_Y = SIZE_SECTION_Y + 7
+
+local SIZE_FIELD1_X = 40+8
+local SIZE_FIELD2_X = 240+8
+
+local editorInputFieldSizeX = FlavorUI_TextField:new('editorInputFieldSizeX', '', SIZE_FIELD1_X, SIZE_SECTION_FIELD_Y, 130, '')
+editorInputFieldSizeX.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
+editorInputFieldSizeX.size = 20
+editorInputFieldSizeX.max_length = 10
+editorInputFieldSizeX.caret_y = 2
+editorInputFieldSizeX.caret_width = 2.5
+editorInputFieldSizeX.caret_height = 20
+editorInputFieldSizeX.placeholder_content = '000.00'
+editorInputFieldSizeX:create()
+editorInputFieldSizeX:set_customFilterPattern("[^0-9.]*", "g")
+
+local editorInputFieldSizeY = FlavorUI_TextField:new('editorInputFieldSizeY', '', SIZE_FIELD2_X, SIZE_SECTION_FIELD_Y, 130, '')
+editorInputFieldSizeY.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
+editorInputFieldSizeY.size = 20
+editorInputFieldSizeY.max_length = 10
+editorInputFieldSizeY.caret_y = 2
+editorInputFieldSizeY.caret_width = 2.5
+editorInputFieldSizeY.caret_height = 20
+editorInputFieldSizeY.placeholder_content = '000.00'
+editorInputFieldSizeY:create()
+editorInputFieldSizeY:set_customFilterPattern("[^0-9.]*", "g")
 
 function onUpdate(elapsed)
-     editorInputFieldX:update()
-     editorInputFieldY:update()
+     editorInputFieldOffsetX:update()
+     editorInputFieldOffsetY:update()
+
+     editorInputFieldSizeX:update()
+     editorInputFieldSizeY:update()
 
      mouse:update()
 end
-
-
-
---[[ local editorTextFieldConfirmX = FlavorUI_TextField:new('editorTextFieldConfirmX', '', 240, (563.44 + 0.56)+(25*-6), 140, '')
-editorTextFieldConfirmX.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-editorTextFieldConfirmX.size = 22
-editorTextFieldConfirmX.max_length = 10
-editorTextFieldConfirmX.placeholder_content = '000.00'
-editorTextFieldConfirmX:create()
-editorTextFieldConfirmX:set_customFilterPattern("[^0-9.]*", "g")
-
-local editorTextFieldPressedX = FlavorUI_TextField:new('editorTextFieldPressedX', '', 240, (563.44 + 0.56)+(25*-4), 140, '')
-editorTextFieldPressedX.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-editorTextFieldPressedX.size = 22
-editorTextFieldPressedX.max_length = 10
-editorTextFieldPressedX.placeholder_content = '000.00'
-editorTextFieldPressedX:create()
-editorTextFieldPressedX:set_customFilterPattern("[^0-9.]*", "g")
-
-local editorTextFieldColoredX = FlavorUI_TextField:new('editorTextFieldColoredX', '', 240, (563.44 + 0.56)+(25*-2), 140, '')
-editorTextFieldColoredX.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-editorTextFieldColoredX.size = 22
-editorTextFieldColoredX.max_length = 10
-editorTextFieldColoredX.placeholder_content = '000.00'
-editorTextFieldColoredX:create()
-editorTextFieldColoredX:set_customFilterPattern("[^0-9.]*", "g")
-
-local editorTextFieldStrumX = FlavorUI_TextField:new('editorTextFieldStrumX', '', 240, 563.44 + 0.56, 140, '')
-editorTextFieldStrumX.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-editorTextFieldStrumX.size = 22
-editorTextFieldStrumX.max_length = 10
-editorTextFieldStrumX.placeholder_content = '000.00'
-editorTextFieldStrumX:create()
-editorTextFieldStrumX:set_customFilterPattern("[^0-9.]*", "g") -- ("(\\\\d*\\\\.\\\\d{3})?
-
-local editorTextFieldConfirmY = FlavorUI_TextField:new('editorTextFieldConfirmY', '', 250+240, (563.44 + 0.56)+(25*-6), 140, '')
-editorTextFieldConfirmY.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-editorTextFieldConfirmY.size = 22
-editorTextFieldConfirmY.max_length = 10
-editorTextFieldConfirmY.placeholder_content = '000.00'
-editorTextFieldConfirmY:create()
-editorTextFieldConfirmY:set_customFilterPattern("[^0-9.]*", "g")
-
-local editorTextFieldPressedY = FlavorUI_TextField:new('editorTextFieldPressedY', '', 250+240, (563.44 + 0.56)+(25*-4), 140, '')
-editorTextFieldPressedY.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-editorTextFieldPressedY.size = 22
-editorTextFieldPressedY.max_length = 10
-editorTextFieldPressedY.placeholder_content = '000.00'
-editorTextFieldPressedY:create()
-editorTextFieldPressedY:set_customFilterPattern("[^0-9.]*", "g")
-
-local editorTextFieldColoredY = FlavorUI_TextField:new('editorTextFieldColoredY', '', 250+240, (563.44 + 0.56)+(25*-2), 140, '')
-editorTextFieldColoredY.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-editorTextFieldColoredY.size = 22
-editorTextFieldColoredY.max_length = 10
-editorTextFieldColoredY.placeholder_content = '000.00'
-editorTextFieldColoredY:create()
-editorTextFieldColoredY:set_customFilterPattern("[^0-9.]*", "g")
-
-local editorTextFieldStrumY = FlavorUI_TextField:new('editorTextFieldStrumY', '', 250+240, (563.44 + 0.56), 140, '')
-editorTextFieldStrumY.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-editorTextFieldStrumY.size = 22
-editorTextFieldStrumY.max_length = 10
-editorTextFieldStrumY.placeholder_content = '000.00'
-editorTextFieldStrumY:create()
-editorTextFieldStrumY:set_customFilterPattern("[^0-9.]*", "g")
-
-function onUpdate(elapsed)
-     editorTextFieldConfirmX:update()
-     editorTextFieldPressedX:update()
-     editorTextFieldColoredX:update()
-     editorTextFieldStrumX:update()
-     
-     editorTextFieldConfirmY:update()
-     editorTextFieldPressedY:update()
-     editorTextFieldColoredY:update()
-     editorTextFieldStrumY:update()
-
-     mouse:update()
-end ]]
