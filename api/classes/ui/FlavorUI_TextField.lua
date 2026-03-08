@@ -1,4 +1,5 @@
 local F = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
+local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 
 local hoverObject   = funkinlua.hoverObject
@@ -31,6 +32,8 @@ function FlavorUI_TextField:new(tag, sprite, x, y, width, content)
 
      self.placeholder_content = ''
      self.placeholder_color   = '0xFFB3B3B5'
+
+     self.haxeCode = ''
      return self
 end
 
@@ -88,6 +91,8 @@ function FlavorUI_TextField:create()
                } else {
                     skinSearchInput.textObj.color = FlxColor.WHITE;
                }
+               setVar('skinSearchInput_preText', preText);
+               setVar('skinSearchInput_curText', curText);
           };
 
           add(skinSearchInput);
@@ -139,6 +144,38 @@ function FlavorUI_TextField:reset_field()
 
           skinSearchInput_placeholder.text = '${self.placeholder_content}';
           return;
+     ]]):gsub('skinSearchInput', self.tag))
+end
+
+function FlavorUI_TextField:set_field(value)
+     runHaxeCode((F[[
+          var skinSearchInput             = getVar('skinSearchInput');
+          var skinSearchInput_placeholder = getVar('skinSearchInput_placeholder');
+
+          skinSearchInput.set_text('${value}');
+          skinSearchInput_placeholder.text  = '';
+     ]]):gsub('skinSearchInput', self.tag))
+end
+
+function FlavorUI_TextField:get_field()
+     runHaxeCode((F[[
+          var skinSearchInput = getVar('skinSearchInput');
+          setVar('skinSearchInput_textContent', skinSearchInput.textObj.textField.text);
+     ]]):gsub('skinSearchInput', self.tag))
+     return getVar(('skinSearchInput_textContent'):gsub('skinSearchInput', self.tag))
+end
+
+function FlavorUI_TextField:set_filterMode(filterType)
+     runHaxeCode((F[[
+          var skinSearchInput = getVar('skinSearchInput');
+          skinSearchInput.set_filterMode(${filterType});
+     ]]):gsub('skinSearchInput', self.tag))
+end
+
+function FlavorUI_TextField:set_customFilterPattern(pattern, flag)
+     runHaxeCode((F[[
+          var skinSearchInput = getVar('skinSearchInput');
+          skinSearchInput.customFilterPattern = new EReg("${pattern}", "${flag}");
      ]]):gsub('skinSearchInput', self.tag))
 end
 
