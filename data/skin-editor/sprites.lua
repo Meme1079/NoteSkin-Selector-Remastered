@@ -12,9 +12,51 @@ setObjectCamera('skinEditorBG', 'camHUD')
 setObjectOrder('skinEditorBG', 0)
 addLuaSprite('skinEditorBG')
 
+makeLuaSprite('testSidebar', nil, 0, 0)
+makeGraphic('testSidebar', 420, SKIN_EDITOR_BG_HEIGHT, '101010')
+setObjectCamera('testSidebar', 'camHUD')
+addLuaSprite('testSidebar')
+
+-- @ --
+
+makeLuaText('editorTitleConfirm', ('Offsets'):pad(1, ' '), 0, 10-5, (163.44 - 5.72) + 8 - 45)
+setTextFont('editorTitleConfirm', 'tomo.otf')
+setTextSize('editorTitleConfirm', 20)
+setTextBorder('editorTitleConfirm', 3, '000000')
+setObjectCamera('editorTitleConfirm', 'camHUD')
+addLuaText('editorTitleConfirm')
+
+makeLuaText('editorLabelX', ('x'):upper():pad(1, ' '), 0, 10-5, (163.44 - 5.72) + 8)
+setTextFont('editorLabelX', 'tomo.otf')
+setTextColor('editorLabelX', 'ff746c')
+setTextSize('editorLabelX', 20)
+setTextBorder('editorLabelX', 3, '000000')
+setObjectCamera('editorLabelX', 'camHUD')
+addLuaText('editorLabelX')
+
+makeLuaText('editorLabelY', ('y'):upper():pad(1, ' '), 0, 240-33, (163.44 - 5.72) + 8)
+setTextFont('editorLabelY', 'tomo.otf')
+setTextColor('editorLabelY', '77dd77')
+setTextSize('editorLabelY', 20)
+setTextBorder('editorLabelY', 3, '000000')
+setObjectCamera('editorLabelY', 'camHUD')
+addLuaText('editorLabelY')
+
+makeLuaSprite('editorInputFieldX', 'ui/buttons/value_input6', 40, (163.44 - 5.72))
+scaleObject('editorInputFieldX', 0.65, 0.85)
+setObjectCamera('editorInputFieldX', 'camHUD')
+setProperty('editorInputFieldX.antialiasing', false)
+addLuaSprite('editorInputFieldX')
+
+makeLuaSprite('editorInputFieldY', 'ui/buttons/value_input6', 240, (163.44 - 5.72))
+scaleObject('editorInputFieldY', 0.65, 0.85)
+setObjectCamera('editorInputFieldY', 'camHUD')
+setProperty('editorInputFieldY.antialiasing', false)
+addLuaSprite('editorInputFieldY')
+
 -- a --
 
-makeLuaText('editorTitleConfirmTag', ' Confirm ', 0, 30, 563.44+(25*-6))
+--[[ makeLuaText('editorTitleConfirmTag', ' Confirm ', 0, 30, 563.44+(25*-6))
 setTextFont('editorTitleConfirmTag', 'tomo.otf')
 setTextSize('editorTitleConfirmTag', 25)
 setTextBorder('editorTitleConfirmTag', 3, '000000')
@@ -75,4 +117,4 @@ doodoo('confirm', 'y', '77dd77', 250, 25*-6, 0, 0)
 doodoo('strums', 'fps', '9c77dd', 250*2, 0, 35, 0)
 doodoo('colored', 'fps', '9c77dd', 250*2, 25*-2, 35, 0)
 doodoo('pressed', 'fps', '9c77dd', 250*2, 25*-4, 35, 0)
-doodoo('confirm', 'fps', '9c77dd', 250*2, 25*-6, 35, 0)
+doodoo('confirm', 'fps', '9c77dd', 250*2, 25*-6, 35, 0) ]]

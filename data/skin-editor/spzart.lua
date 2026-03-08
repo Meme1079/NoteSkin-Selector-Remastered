@@ -7,7 +7,38 @@ local F = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local mouse = FlavorUI_Mouse:new('ui/cursor', 0.4, {-4,0})
 mouse:create()
 
-local editorTextFieldConfirmX = FlavorUI_TextField:new('editorTextFieldConfirmX', '', 240, (563.44 + 0.56)+(25*-6), 140, '')
+local field_X = FlavorUI_TextField:new('field_X', '', 40+8, (163.44 - 5.72)+7, 130, '')
+field_X.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
+field_X.size = 20
+field_X.max_length = 10
+field_X.caret_y = 2
+field_X.caret_width = 2.5
+field_X.caret_height = 20
+field_X.placeholder_content = '000.00'
+field_X:create()
+field_X:set_customFilterPattern("[^0-9.]*", "g")
+
+local field_Y = FlavorUI_TextField:new('field_Y', '', 240+8, (163.44 - 5.72)+7, 130, '')
+field_Y.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
+field_Y.size = 20
+field_Y.max_length = 10
+field_Y.caret_y = 2
+field_Y.caret_width = 2.5
+field_Y.caret_height = 20
+field_Y.placeholder_content = '000.00'
+field_Y:create()
+field_Y:set_customFilterPattern("[^0-9.]*", "g")
+
+function onUpdate(elapsed)
+     field_X:update()
+     field_Y:update()
+
+     mouse:update()
+end
+
+
+
+--[[ local editorTextFieldConfirmX = FlavorUI_TextField:new('editorTextFieldConfirmX', '', 240, (563.44 + 0.56)+(25*-6), 140, '')
 editorTextFieldConfirmX.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
 editorTextFieldConfirmX.size = 22
 editorTextFieldConfirmX.max_length = 10
@@ -83,4 +114,4 @@ function onUpdate(elapsed)
      editorTextFieldStrumY:update()
 
      mouse:update()
-end
+end ]]

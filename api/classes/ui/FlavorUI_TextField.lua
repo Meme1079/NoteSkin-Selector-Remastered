@@ -25,6 +25,8 @@ function FlavorUI_TextField:new(tag, sprite, x, y, width, content)
      self.selection_color = '0xff1565de'
      self.max_length      = 50
 
+     self.caret_x       = 0
+     self.caret_y       = 0
      self.caret_width   = 3
      self.caret_height  = 25
      self.caret_offsetY = 1
@@ -95,6 +97,8 @@ function FlavorUI_TextField:create()
                setVar('skinSearchInput_curText', curText);
           };
 
+          
+
           add(skinSearchInput);
           add(skinSearchInput_placeholder);
           add(skinSearchInput_caret);
@@ -110,9 +114,11 @@ function FlavorUI_TextField:update()
           var skinSearchInput       = getVar('skinSearchInput');
           var skinSearchInput_caret = getVar('skinSearchInput_caret');
 
+          skinSearchInput.selection.scale.y = 25;
+
           skinSearchInput_caret.visible = PsychUIInputText.focusOn == null ? false : skinSearchInput.caret.visible;
           skinSearchInput_caret.x       = skinSearchInput.caret.x;
-          skinSearchInput_caret.y       = skinSearchInput.caret.y;
+          skinSearchInput_caret.y       = skinSearchInput.caret.y + ${self.caret_y};
 
           ClientPrefs.toggleVolumeKeys(PsychUIInputText.focusOn == null);
           game.allowDebugKeys = PsychUIInputText.focusOn == null;
