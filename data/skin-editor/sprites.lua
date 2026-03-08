@@ -42,17 +42,17 @@ setTextBorder('editorLabelY', 3, '000000')
 setObjectCamera('editorLabelY', 'camHUD')
 addLuaText('editorLabelY')
 
-makeLuaSprite('editorInputFieldX', 'ui/buttons/value_input6', 40, (163.44 - 5.72))
-scaleObject('editorInputFieldX', 0.65, 0.85)
-setObjectCamera('editorInputFieldX', 'camHUD')
-setProperty('editorInputFieldX.antialiasing', false)
-addLuaSprite('editorInputFieldX')
+makeLuaSprite('editorInputSpriteX', 'ui/buttons/value_input6', 40, (163.44 - 5.72))
+scaleObject('editorInputSpriteX', 0.65, 0.85)
+setObjectCamera('editorInputSpriteX', 'camHUD')
+setProperty('editorInputSpriteX.antialiasing', false)
+addLuaSprite('editorInputSpriteX')
 
-makeLuaSprite('editorInputFieldY', 'ui/buttons/value_input6', 240, (163.44 - 5.72))
-scaleObject('editorInputFieldY', 0.65, 0.85)
-setObjectCamera('editorInputFieldY', 'camHUD')
-setProperty('editorInputFieldY.antialiasing', false)
-addLuaSprite('editorInputFieldY')
+makeLuaSprite('editorInputSpriteY', 'ui/buttons/value_input6', 240, (163.44 - 5.72))
+scaleObject('editorInputSpriteY', 0.65, 0.85)
+setObjectCamera('editorInputSpriteY', 'camHUD')
+setProperty('editorInputSpriteY.antialiasing', false)
+addLuaSprite('editorInputSpriteY')
 
 -- a --
 

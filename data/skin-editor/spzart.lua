@@ -7,31 +7,31 @@ local F = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local mouse = FlavorUI_Mouse:new('ui/cursor', 0.4, {-4,0})
 mouse:create()
 
-local field_X = FlavorUI_TextField:new('field_X', '', 40+8, (163.44 - 5.72)+7, 130, '')
-field_X.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-field_X.size = 20
-field_X.max_length = 10
-field_X.caret_y = 2
-field_X.caret_width = 2.5
-field_X.caret_height = 20
-field_X.placeholder_content = '000.00'
-field_X:create()
-field_X:set_customFilterPattern("[^0-9.]*", "g")
+local editorInputFieldX = FlavorUI_TextField:new('editorInputFieldX', '', 40+8, (163.44 - 5.72)+7, 130, '')
+editorInputFieldX.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
+editorInputFieldX.size = 20
+editorInputFieldX.max_length = 10
+editorInputFieldX.caret_y = 2
+editorInputFieldX.caret_width = 2.5
+editorInputFieldX.caret_height = 20
+editorInputFieldX.placeholder_content = '000.00'
+editorInputFieldX:create()
+editorInputFieldX:set_customFilterPattern("[^0-9.]*", "g")
 
-local field_Y = FlavorUI_TextField:new('field_Y', '', 240+8, (163.44 - 5.72)+7, 130, '')
-field_Y.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
-field_Y.size = 20
-field_Y.max_length = 10
-field_Y.caret_y = 2
-field_Y.caret_width = 2.5
-field_Y.caret_height = 20
-field_Y.placeholder_content = '000.00'
-field_Y:create()
-field_Y:set_customFilterPattern("[^0-9.]*", "g")
+local editorInputFieldY = FlavorUI_TextField:new('editorInputFieldY', '', 240+8, (163.44 - 5.72)+7, 130, '')
+editorInputFieldY.font = 'NoteSkin Selector Remastered/fonts/tomo.otf'
+editorInputFieldY.size = 20
+editorInputFieldY.max_length = 10
+editorInputFieldY.caret_y = 2
+editorInputFieldY.caret_width = 2.5
+editorInputFieldY.caret_height = 20
+editorInputFieldY.placeholder_content = '000.00'
+editorInputFieldY:create()
+editorInputFieldY:set_customFilterPattern("[^0-9.]*", "g")
 
 function onUpdate(elapsed)
-     field_X:update()
-     field_Y:update()
+     editorInputFieldX:update()
+     editorInputFieldY:update()
 
      mouse:update()
 end
