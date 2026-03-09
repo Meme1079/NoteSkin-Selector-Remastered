@@ -6,9 +6,45 @@ local hoverObject   = funkinlua.hoverObject
 local clickObject   = funkinlua.clickObject
 local pressedObject = funkinlua.pressedObject
 
+---
 ---@class FlavorUI_TextField
+
+---@field font string
+---@field size number
+---@field antialiasing boolean
+---@field color string
+---@field selection_color string
+---@field max_length number
+
+---@field field_offset_x number
+---@field field_offset_y number
+
+---@field caret_x number
+---@field caret_y number
+---@field caret_width number
+---@field caret_height number
+---@field caret_color string
+
+---@field placeholder_content string
+---@field placeholder_color string
+---@field placeholder_offset_x number
+---@field placeholder_offset_y number
+
+---@field onCreate string
+---@field onCreatePost string
+---@field onUpdate string
+---@field onChange string
+---@field onField string
+---@field onFieldMax string
 local FlavorUI_TextField = {}
 
+---
+---@param tag string
+---@param text string
+---@param x number
+---@param y number
+---@param width number
+---@return FlavorUI_TextField
 function FlavorUI_TextField:new(tag, text, x, y, width)
      local self = setmetatable({}, {__index = self})
      self.tag   = tag
@@ -31,13 +67,10 @@ function FlavorUI_TextField:new(tag, text, x, y, width)
      self.caret_y       = 0
      self.caret_width   = 3
      self.caret_height  = 25
-     self.caret_offsetY = 1
      self.caret_color   = '0xffffffff'
 
-     self.placeholder_offset_x = 0
-     self.placeholder_offset_y = 0
      self.placeholder_content  = ''
-     self.placeholder_color    = '0xFFB3B3B5'
+     self.placeholder_color    = '0xFFB3B3B5'     
      self.placeholder_offset_x = 0
      self.placeholder_offset_y = 0
 
@@ -45,12 +78,14 @@ function FlavorUI_TextField:new(tag, text, x, y, width)
      self.onCreatePost = ''
      self.onUpdate     = ''
      self.onChange     = ''
-     self.onFieldMax   = ''
      self.onField      = ''
+     self.onFieldMax   = ''
 
      return self
 end
 
+---
+---@return nil
 function FlavorUI_TextField:create()
      runHaxeCode((F[[
           import flixel.FlxG;
@@ -70,7 +105,7 @@ function FlavorUI_TextField:create()
           var skinSearchInput:PsychUIInputText    = new PsychUIInputText(${self.x}, ${self.y}, ${self.width}, "${self.text}", ${self.size});
      
           skinSearchInput_caret.makeGraphic(${self.caret_width}, ${self.caret_height}, ${self.caret_color});
-          skinSearchInput_caret.y            = skinSearchInput.caret.y + ${self.caret_offsetY};
+          skinSearchInput_caret.y            = skinSearchInput.caret.y;
           skinSearchInput_caret.cameras      = [game.camHUD];
           skinSearchInput_caret.antialiasing = false;
 
@@ -125,6 +160,8 @@ function FlavorUI_TextField:create()
      ]]):gsub('skinSearchInput', self.tag))
 end
 
+---
+---@return nil
 function FlavorUI_TextField:update()
      runHaxeCode((F[[
           var skinSearchInput       = getVar('skinSearchInput');
@@ -142,6 +179,9 @@ function FlavorUI_TextField:update()
      ]]):gsub('skinSearchInput', self.tag))
 end
 
+---
+---@param value number
+---@return nil
 function FlavorUI_TextField:set_field(value)
      runHaxeCode((F[[
           var skinSearchInput             = getVar('skinSearchInput');
@@ -152,6 +192,8 @@ function FlavorUI_TextField:set_field(value)
      ]]):gsub('skinSearchInput', self.tag))
 end
 
+---
+---@return string
 function FlavorUI_TextField:get_field()
      runHaxeCode((F[[
           var skinSearchInput = getVar('skinSearchInput');
@@ -160,6 +202,10 @@ function FlavorUI_TextField:get_field()
      return getVar(('skinSearchInput_textContent'):gsub('skinSearchInput', self.tag))
 end
 
+---
+---@param invalidColor string
+---@param invalidContent string
+---@return nil
 function FlavorUI_TextField:invalid_field(invalidColor, invalidContent)
      runHaxeCode((F[[
           var skinSearchInput             = getVar('skinSearchInput');
@@ -175,6 +221,8 @@ function FlavorUI_TextField:invalid_field(invalidColor, invalidContent)
      ]]):gsub('skinSearchInput', self.tag))
 end
 
+---
+---@return nil
 function FlavorUI_TextField:reset_field()
      runHaxeCode((F[[
           var skinSearchInput             = getVar('skinSearchInput');
@@ -188,6 +236,9 @@ function FlavorUI_TextField:reset_field()
      ]]):gsub('skinSearchInput', self.tag))
 end
 
+---
+---@param filterType string
+---@return nil
 function FlavorUI_TextField:set_filterMode(filterType)
      runHaxeCode((F[[
           var skinSearchInput = getVar('skinSearchInput');
@@ -195,6 +246,10 @@ function FlavorUI_TextField:set_filterMode(filterType)
      ]]):gsub('skinSearchInput', self.tag))
 end
 
+---
+---@param pattern string
+---@param flag string
+---@return nil
 function FlavorUI_TextField:set_customFilterPattern(pattern, flag)
      runHaxeCode((F[[
           var skinSearchInput = getVar('skinSearchInput');

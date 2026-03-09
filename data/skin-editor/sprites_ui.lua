@@ -117,7 +117,6 @@ editorInputFieldFiles.onChange = [[
 ]]
 editorInputFieldFiles:create()
 
-
 function onUpdate(elapsed)
      editorInputFieldOffsetX:update()
      editorInputFieldOffsetY:update()
