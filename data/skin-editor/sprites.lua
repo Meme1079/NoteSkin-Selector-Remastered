@@ -186,3 +186,18 @@ scaleObject('editorInputSpriteSaveFile', 0.65, 0.85)
 setObjectCamera('editorInputSpriteSaveFile', 'camHUD')
 setProperty('editorInputSpriteSaveFile.antialiasing', false)
 addLuaSprite('editorInputSpriteSaveFile')
+
+
+makeLuaText('buttonThingyText', ('SAVE DATA JSON'):pad(1, ' '), 0, 120, (((630.5+660.5)/2) - 5.72))
+setTextFont('buttonThingyText', 'tomo.otf')
+setTextSize('buttonThingyText', 20)
+setTextColor('buttonThingyText', 'a1a1a1')
+setTextBorder('buttonThingyText', 0, '000000')
+setObjectCamera('buttonThingyText', 'camHUD')
+addLuaText('buttonThingyText')
+
+makeLuaSprite('buttonThingy', 'ui/buttons/save_button_thingy1', SAVEFILE_SPRITE_X, (((630.5+640.5)/2) - 5.72))
+scaleObject('buttonThingy', 0.65, 0.85)
+setObjectCamera('buttonThingy', 'camHUD')
+setProperty('buttonThingy.antialiasing', false)
+addLuaSprite('buttonThingy')
