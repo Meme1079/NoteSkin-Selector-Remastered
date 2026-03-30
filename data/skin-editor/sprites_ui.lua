@@ -91,13 +91,20 @@ editorInputFieldFiles.antialiasing         = false
 editorInputFieldFiles.placeholder_text     = 'NOTE_assets-'
 editorInputFieldFiles.placeholder_offset_x = -1
 editorInputFieldFiles.onFieldMax           = [[ FlxG.sound.play(Paths.sound('cancel'), 0.5); ]]
-editorInputFieldFiles.onChange         = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
+editorInputFieldFiles.onChange             = [[ 
+     FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1);
+
+     if (StringTools.startsWith(curText, "NOTE_assets-") == false) {
+          this.set_text("NOTE_assets-");
+          this.set_caretIndex(12);
+     }
+]]
 editorInputFieldFiles:add()
 
 -- Save --
 
 
-local editorInputFieldSaveFile = FlavorUI_TextField:new('editorInputFieldSaveFile', 'NOTE_assets-', calcPosY(15, 8), calcPosY((530.5+630.5)/2, 6), 360)
+local editorInputFieldSaveFile = FlavorUI_TextField:new('editorInputFieldSaveFile', '', calcPosY(15, 8), calcPosY((530.5+630.5)/2, 6), 360)
 editorInputFieldSaveFile.font                 = 'NoteSkin Selector Remastered/fonts/TOMO Sponge Regular.otf'
 editorInputFieldSaveFile.size                 = 20
 editorInputFieldSaveFile.maxLength            = 11+50
@@ -105,16 +112,10 @@ editorInputFieldSaveFile.caret_offset_y       = -3
 editorInputFieldSaveFile.caret_width          = 2.5
 editorInputFieldSaveFile.caret_height         = 20
 editorInputFieldSaveFile.antialiasing         = false
-editorInputFieldSaveFile.placeholder_text     = 'NOTE_assets-'
+editorInputFieldSaveFile.placeholder_text     = '/folder...'
 editorInputFieldSaveFile.placeholder_offset_x = -1
 editorInputFieldSaveFile.onFieldMax           = [[ FlxG.sound.play(Paths.sound('cancel'), 0.5); ]]
-editorInputFieldSaveFile.onChange             = [[ 
-     FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); 
-     if (StringTools.startsWith(curText, "NOTE_assets-") == false) {
-          this.set_text("NOTE_assets-");
-          this.set_caretIndex(12);
-     }
-]]
+editorInputFieldSaveFile.onChange             = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
 editorInputFieldSaveFile:add()
 
 -- Mouse --

@@ -196,7 +196,7 @@ setTextBorder('buttonThingyText', 0, '000000')
 setObjectCamera('buttonThingyText', 'camHUD')
 addLuaText('buttonThingyText')
 
-makeLuaSprite('buttonThingy', 'ui/buttons/save_button_thingy1', SAVEFILE_SPRITE_X, (((630.5+640.5)/2) - 5.72))
+makeLuaSprite('buttonThingy', 'ui/buttons/save_button_thingy3', SAVEFILE_SPRITE_X, (((630.5+640.5)/2) - 5.72))
 scaleObject('buttonThingy', 0.65, 0.85)
 setObjectCamera('buttonThingy', 'camHUD')
 setProperty('buttonThingy.antialiasing', false)
