@@ -120,9 +120,10 @@ editorInputFieldSaveFile:add()
 -- Mouse --
 
 local mouse = FlavorUI_Mouse:new('ui/cursor', 0.4, {-4,0})
+mouse:add_element('hand', 'editorInputSpriteOffsetX', 'editorInputSpriteOffsetY')
+mouse:add_element('hand', 'editorInputSpriteSizeX', 'editorInputSpriteSizeY')
+mouse:add_element('hand', 'editorInputSpriteFrames', 'editorInputSpriteFile', 'editorInputSpriteSaveFile')
 mouse:create()
-
-mouse:add_element('hand', 'editorInputSpriteOffsetX')
 
 function onUpdate(elapsed)
      editorInputFieldOffsetX:update()
