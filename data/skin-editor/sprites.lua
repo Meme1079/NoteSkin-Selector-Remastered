@@ -163,3 +163,5 @@ scaleObject('editorSaveDataSprite', 0.65, 0.85)
 setObjectCamera('editorSaveDataSprite', 'camHUD')
 setProperty('editorSaveDataSprite.antialiasing', false)
 addLuaSprite('editorSaveDataSprite')
+
+-- This is a test due to the rename!!!
