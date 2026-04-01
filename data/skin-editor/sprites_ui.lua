@@ -1,4 +1,5 @@
 local FlavorUI_TextField = require 'mods.NoteSkin Selector Remastered.api.classes.ui.FlavorUI_TextField'
+local FlavorUI_Button    = require 'mods.NoteSkin Selector Remastered.api.classes.ui.FlavorUI_Button'
 local FlavorUI_Mouse     = require 'mods.NoteSkin Selector Remastered.api.classes.ui.FlavorUI_Mouse'
 local EditorNotes        = require 'mods.NoteSkin Selector Remastered.api.classes.editor.notes.EditorNotes'
 
@@ -117,6 +118,10 @@ editorInputFieldSaveFile.onFieldMax           = [[ FlxG.sound.play(Paths.sound('
 editorInputFieldSaveFile.onChange             = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
 editorInputFieldSaveFile:add()
 
+
+local editorSaveDataSprite = FlavorUI_Button:new('editorSaveDataSprite', '')
+
+
 -- Mouse --
 
 local mouse = FlavorUI_Mouse:new(0.4, {-4,0})
@@ -134,6 +139,8 @@ function onUpdate(elapsed)
      editorInputFieldFrames:update()
      editorInputFieldFiles:update()
      editorInputFieldSaveFile:update()
+
+     editorSaveDataSprite:update()
 
      mouse:update()
 end
