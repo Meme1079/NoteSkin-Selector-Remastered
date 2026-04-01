@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="button_save.png">
+	<!-- Created using the Spritesheet and XML generator -->
+	<!-- https://uncertainprod.github.io/FNF-Spritesheet-XML-generator-Web -->
+	<SubTexture name="static0000" x="0" y="0" width="592" height="76" frameX="2" frameY="2" frameWidth="588" frameHeight="72"/>
+	<SubTexture name="hovered0000" x="0" y="152" width="592" height="76" frameX="2" frameY="2" frameWidth="588" frameHeight="72"/>
+	<SubTexture name="pressed0000" x="0" y="228" width="592" height="76" frameX="2" frameY="2" frameWidth="588" frameHeight="72"/>
+	<SubTexture name="disabled0000" x="0" y="76" width="592" height="76" frameX="2" frameY="2" frameWidth="588" frameHeight="72"/>
+</TextureAtlas>
