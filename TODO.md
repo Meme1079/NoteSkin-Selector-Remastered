@@ -10,12 +10,3 @@
 
 ## Version 3.0.0
 - [ ] Skin Debug State
-
-<!--
-
-BRO THINKS THIS THE LAST UPDATE ✌️😭
-
-## Version 3.1.0 
-- [ ] Pixel Skin Implementation 
-
--->
