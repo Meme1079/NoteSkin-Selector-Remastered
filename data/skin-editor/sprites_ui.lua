@@ -143,6 +143,7 @@ function onUpdate(elapsed)
 
      editorSaveDataSprite:update()
 
+
      if keyboardJustPressed('R') then
           editorSaveDataSprite:set_state('disabled')
           mouse:remove_element('hand', 'editorSaveDataSprite')

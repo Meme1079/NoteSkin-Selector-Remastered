@@ -22,12 +22,10 @@ function FlavorUI_Button:new(tag, state)
      self.tag   = tag
      self.state = state or 'static'
 
-     self.ddeedede = false
+     self.inter_hovered = true
+     self.inter_clicked = true
      return self
 end
-
-local a = true
-local b = true
 
 function FlavorUI_Button:update()
      local hoverMouse = hoverObject(self.tag, 'camHUD')
@@ -35,40 +33,43 @@ function FlavorUI_Button:update()
      local pressMouse = pressedObject(self.tag, 'camHUD')
      local releaseMouse = releaseObject(self.tag, 'camHUD')
 
-
      if self.state == 'disabled' then
           playAnim(self.tag, 'disabled')
           return
      end
 
-     if hoverMouse and a == true then
+     if hoverMouse == true and self.inter_hovered == true then
           playAnim(self.tag, 'hovered')
-          a = false
+          self.state = 'hovered'
+          self.inter_hovered = false
           return
      end
-     if not hoverMouse and a == false then
+     if hoverMouse == false and self.inter_hovered == false then
           playAnim(self.tag, 'static')
-          a = true
+          self.state = 'static'
+          self.inter_hovered = true
           return
      end
-     if (clickMouse or pressMouse) and b == true then
+
+     if (clickMouse or pressMouse) and self.inter_clicked == true then
           playAnim(self.tag, 'pressed')
-          b = false
+          self.state = 'pressed'
+          self.inter_clicked = false
           return
      end
-     if (releaseMouse) and b == false then
+     if (releaseMouse) and self.inter_clicked == false then
           playAnim(self.tag, 'hovered')
-          b = true
+          self.state = 'hovered'
+          self.inter_clicked = true
           return
      end
 end
 
 function FlavorUI_Button:set_state(value)
      self.state = value
-     self:update()
 
-     a = not a
-     b = true
+     self.inter_hovered = hoverObject(self.tag, 'camHUD')
+     self.inter_clicked = pressedObject(self.tag, 'camHUD')
      self:update()
 end
 
