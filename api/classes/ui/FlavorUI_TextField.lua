@@ -237,8 +237,8 @@ function FlavorUI_TextField:update()
      ]]):gsub('flavorTextField', self.tag))
 end
 
---- Sets the current field content of the text field.
----@param value string The content to set the text field to.
+--- Sets the current text field content with a new on
+---@param value string The text field content to assign.
 ---@return nil
 function FlavorUI_TextField:set_field(value)
      runHaxeCode((F[[
@@ -250,7 +250,7 @@ function FlavorUI_TextField:set_field(value)
      ]]):gsub('flavorTextField', self.tag))
 end
 
---- Gets the current field content of the text field.
+--- Gets the current text field content.
 ---@return string
 function FlavorUI_TextField:get_field()
      runHaxeCode((F[[

@@ -142,12 +142,12 @@ function onUpdate(elapsed)
      editorSaveDataSprite:update()
 
      if keyboardJustPressed('R') then
-          editorSaveDataSprite:set_state('disabled')
+          editorSaveDataSprite:set_variant('disabled')
           mouse:switch_variant('hand', 'disable', 'editorSaveDataSprite')
      end
 
      if keyboardJustPressed('D') then
-          editorSaveDataSprite:set_state('static')
+          editorSaveDataSprite:set_variant('static')
           mouse:switch_variant('disable', 'hand', 'editorSaveDataSprite')
      end
      mouse:update()

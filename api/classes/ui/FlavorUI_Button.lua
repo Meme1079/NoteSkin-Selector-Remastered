@@ -13,27 +13,29 @@ local releaseObject = funkinlua.releasedObject
 ---@class FlavorUI_Button
 local FlavorUI_Button = {}
 
----
----@param tag
----@param state
+--- Initializes the main attributes for the button.
+---@param tag string The corresponding tag name given for this button.
+---@param variant string The 
 ---@return FlavorUI_Button
-function FlavorUI_Button:new(tag, state)
+function FlavorUI_Button:new(tag, variant)
      local self = setmetatable({}, {__index = self})
-     self.tag   = tag
-     self.state = state or 'static'
+     self.tag     = tag
+     self.variant = variant or 'static'
 
      self.inter_hovered = true
      self.inter_clicked = true
      return self
 end
 
+--- Updates the button.
+---@return nil
 function FlavorUI_Button:update()
      local hoverMouse = hoverObject(self.tag, 'camHUD')
      local clickMouse = clickObject(self.tag, 'camHUD')
      local pressMouse = pressedObject(self.tag, 'camHUD')
      local releaseMouse = releaseObject(self.tag, 'camHUD')
 
-     if self.state == 'disabled' then
+     if self.variant == 'disabled' then
           playAnim(self.tag, 'disabled')
 
           if clickMouse == true then
@@ -44,7 +46,7 @@ function FlavorUI_Button:update()
 
      if hoverMouse == true and self.inter_hovered == true then
           playAnim(self.tag, 'hovered')
-          self.state = 'hovered'
+          self.variant = 'hovered'
           self.inter_hovered = false
 
           self:onHover()
@@ -52,14 +54,14 @@ function FlavorUI_Button:update()
      end
      if hoverMouse == false and self.inter_hovered == false then
           playAnim(self.tag, 'static')
-          self.state = 'static'
+          self.variant = 'static'
           self.inter_hovered = true
           return
      end
 
      if (clickMouse or pressMouse) and self.inter_clicked == true then
           playAnim(self.tag, 'pressed')
-          self.state = 'pressed'
+          self.variant = 'pressed'
           self.inter_clicked = false
 
           self:onClick()
@@ -67,7 +69,7 @@ function FlavorUI_Button:update()
      end
      if (releaseMouse) and self.inter_clicked == false then
           playAnim(self.tag, 'hovered')
-          self.state = 'hovered'
+          self.variant = 'hovered'
           self.inter_clicked = true
 
           self:onRelease()
@@ -75,27 +77,38 @@ function FlavorUI_Button:update()
      end
 end
 
-function FlavorUI_Button:set_state(value)
+--- Sets the current button variant with a new one.
+---@param variant string The new variant to assign.
+---@return nil
+function FlavorUI_Button:set_variant(variant)
      local hoverMouse = hoverObject(self.tag, 'camHUD')
      local clickMouse = clickObject(self.tag, 'camHUD')
      local pressMouse = pressedObject(self.tag, 'camHUD')
-     self.state = value
+     self.variant = variant
 
      self.inter_hovered = hoverMouse
      self.inter_clicked = pressMouse == false and true or pressMouse
      self:update()
 end
 
-function FlavorUI_Button:get_state()
-     return self.state
+--- Gets the current button variant.
+---@return string
+function FlavorUI_Button:get_variant()
+     return self.variant
 end
 
+--- Triggered when hovering a button.
+---@return nil
 function FlavorUI_Button:onHover()
 end
 
+--- Triggered when clicking a button.
+---@return nil
 function FlavorUI_Button:onClick()
 end
 
+---Triggered when the button is released.
+---@return nil
 function FlavorUI_Button:onRelease()
 end
 
