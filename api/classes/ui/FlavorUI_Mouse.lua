@@ -110,13 +110,13 @@ function FlavorUI_Mouse:add_element(variant, ...)
      for addIndex = 1, #added do
           if type(added[addIndex]) == 'string' then
                self.elements[variant][added[addIndex]] = added[addIndex]
-               return
+               goto hii
           end
 
-          if added[addIndex].deactivate ~= nil and added[addIndex].deactivate == true then
-               return
+          if added[addIndex].deactivate == false then
+               self.elements[variant][added[addIndex]] = added[addIndex].tag
           end
-          self.elements[variant][added[addIndex]] = added[addIndex].tag
+          ::hii::
      end
 end
 
@@ -132,16 +132,16 @@ function FlavorUI_Mouse:remove_element(variant, ...)
                if removeElement ~= nil then
                     self.elements[variant][removeElement] = nil
                end
-               return
+               goto hi
           end
 
-          if remove[removeIndex].deactivate ~= nil and remove[removeIndex].deactivate == true then
-               return
+          if remove[removeIndex].deactivate == false then
+               local removeElement = table.find(variant, remove[removeIndex].tag)
+               if removeElement ~= nil then
+                    self.elements[variant][removeElement] = nil
+               end
           end
-          local removeElement = table.find(variant, remove[removeIndex].tag)
-          if removeElement ~= nil then
-               self.elements[variant][removeElement] = nil
-          end
+          ::hi::
      end
 end
 
@@ -152,15 +152,19 @@ function FlavorUI_Mouse:remove_elementAll(...)
      local remove = {...}
      for variants, variant_elements in pairs(self.elements) do
           for removeIndex = 1, #remove do
-               local removeElement = function()
-                    if type(remove[removeIndex]) == 'string' then
-                         return table.find(variant_elements, remove[removeIndex])
+               if type(remove[removeIndex]) == 'string' then
+                    local removeElement = table.find(self.elements[variant], remove[removeIndex])
+                    if removeElement ~= nil then
+                         self.elements[variants][removeElement] = nil
                     end
-                    return table.find(variant_elements, remove[removeIndex].tag)
+                    goto hiiii
                end
-               if removeElement() ~= nil then
-                    self.elements[variants][removeElement()] = nil
+
+               local removeElement = table.find(variant_elements, remove[removeIndex].tag)
+               if removeElement ~= nil then
+                    self.elements[variants][removeElement] = nil
                end
+               ::hiiii::
           end
      end
 end
@@ -185,14 +189,14 @@ function FlavorUI_Mouse:switch_variant(prevVariant, nextVariant, ...)
           if type(elements[elementIndex]) == 'string' then
                self:remove_element(prevVariant, elements[elementIndex])
                self:add_element(nextVariant, elements[elementIndex])
-               return
+               goto hiii
           end
 
-          if elements[elementIndex].deactivate ~= nil and elements[elementIndex].deactivate == true then
-               return
+          if elements[elementIndex].deactivate == false then
+               self:remove_element(prevVariant, elements[elementIndex].tag)
+               self:add_element(nextVariant, elements[elementIndex].tag)
           end
-          self:remove_element(prevVariant, elements[elementIndex].tag)
-          self:add_element(nextVariant, elements[elementIndex].tag)
+          ::hiii::
      end
 end
 

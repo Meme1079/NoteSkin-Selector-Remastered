@@ -33,6 +33,7 @@ function FlavorUI_TextField:new(tag, text, x, y, fieldWidth)
      self.border_size    = 0
      self.antialiasing   = true
      self.cameras        = 'game.camHUD'
+     self.deactivate     = false
 
      -- Miscellaneous --
 

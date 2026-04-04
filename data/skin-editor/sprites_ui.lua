@@ -118,7 +118,6 @@ editorInputFieldSaveFile.onFieldMax           = [[ FlxG.sound.play(Paths.sound('
 editorInputFieldSaveFile.onChange             = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
 editorInputFieldSaveFile:add()
 
-
 local editorSaveDataSprite = FlavorUI_Button:new('editorSaveDataSprite')
 
 -- Mouse --
@@ -127,8 +126,14 @@ local mouse = FlavorUI_Mouse:new(0.4, {-4,0})
 mouse:add_element('hand', 'editorInputSpriteOffsetX', 'editorInputSpriteOffsetY')
 mouse:add_element('hand', 'editorInputSpriteSizeX', 'editorInputSpriteSizeY')
 mouse:add_element('hand', 'editorInputSpriteFrames', 'editorInputSpriteFile', 'editorInputSpriteSaveFile')
-mouse:add_element('hand', 'editorSaveDataSprite')
+mouse:add_element('hand', editorSaveDataSprite)
 mouse:create()
+
+--[[ mouse:add_element('hand', editorInputSpriteOffsetX, editorInputSpriteOffsetY)
+mouse:add_element('hand', editorInputSpriteSizeX, editorInputSpriteSizeY)
+mouse:add_element('hand', editorInputSpriteFrames, editorInputSpriteFile, editorInputSpriteSaveFile)
+mouse:add_element('hand', editorSaveDataSprite)
+mouse:create() ]]
 
 function onUpdate(elapsed)
      editorInputFieldOffsetX:update()
@@ -152,12 +157,11 @@ function onUpdate(elapsed)
 
      if keyboardJustPressed('T') then
           editorSaveDataSprite:deactivation()
-          mouse:remove_elementAll('editorSaveDataSprite')
+          mouse:remove_elementAll(editorSaveDataSprite)
      end
      if keyboardJustPressed('F') then
           editorSaveDataSprite:reactivation()
-          mouse:add_element(editorSaveDataSprite.mouseVariant, 'editorSaveDataSprite')
+          mouse:add_element(editorSaveDataSprite.mouseVariant, editorSaveDataSprite)
      end
-
      mouse:update()
 end
