@@ -2,6 +2,7 @@ local string = require 'mods.NoteSkin Selector Remastered.api.libraries.standard
 local table  = table
 
 require 'table.new'
+require 'table.clear'
 
 --- Returns the table's key by finding its value
 ---@param tab table The table itself to use

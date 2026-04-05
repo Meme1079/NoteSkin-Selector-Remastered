@@ -4,16 +4,12 @@ local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-str
 local table     = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.table'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 
-local hoverObject   = funkinlua.hoverObject
-local clickObject   = funkinlua.clickObject
-local pressedObject = funkinlua.pressedObject
+local hoverObject    = funkinlua.hoverObject
+local clickObject    = funkinlua.clickObject
+local pressedObject  = funkinlua.pressedObject
+local releasedObject = funkinlua.releasedObject
 
-local MOUSE_VARIANT_ERROR = {
-     __index    = function() error('Attempted to call an non-existing key') end,
-     __newindex = function() error('Attempted to create an non-existing key, pls stop') end
-}
-
-local MOUSE_IDLE_OFFSET    = {27.9, 27.6}
+local MOUSE_CURSOR_OFFSET  = {27.9, 27.6}
 local MOUSE_HAND_OFFSET    = {40, 27.6}
 local MOUSE_DISABLE_OFFSET = {38, 22.6}
 
@@ -30,14 +26,7 @@ function FlavorUI_Mouse:new(size, offsets)
      self.size      = size
      self.offsets   = offsets
 
-     self.elements  = setmetatable({
-          hand      = table.new(0xff,0),
-          disable   = table.new(0xff,0)
-     }, MOUSE_VARIANT_ERROR)
-     self.callbacks = setmetatable({
-          hand      = {onHover = function() end, onClick = function() end, onPress = function() end},
-          disable   = {onHover = function() end, onClick = function() end, onPress = function() end}
-     }, MOUSE_VARIANT_ERROR)
+     self.elements = table.new(0xff, 0)
      return self
 end
 
@@ -46,20 +35,20 @@ end
 function FlavorUI_Mouse:create()
      makeAnimatedLuaSprite('FlavorMouseUI', 'ui/flavorui/cursor', getMouseX('camOther'), getMouseY('camOther'))
      scaleObject('FlavorMouseUI', self.size, self.size)
-     addAnimationByPrefix('FlavorMouseUI', 'idle', 'idle0', 24, false)
-     addAnimationByPrefix('FlavorMouseUI', 'idleClick', 'idleClick', 24, false)
+     addAnimationByPrefix('FlavorMouseUI', 'cursor', 'idle0', 24, false)
+     addAnimationByPrefix('FlavorMouseUI', 'cursorClick', 'idleClick', 24, false)
      addAnimationByPrefix('FlavorMouseUI', 'hand', 'hand0', 24, false)
      addAnimationByPrefix('FlavorMouseUI', 'handClick', 'handClick', 24, false)
      addAnimationByPrefix('FlavorMouseUI', 'disable', 'disabled0', 24, false)
      addAnimationByPrefix('FlavorMouseUI', 'disableClick', 'disabledClick', 24, false)
      addAnimationByPrefix('FlavorMouseUI', 'waiting', 'waiting', 5, true)
-     addOffset('FlavorMouseUI', 'idle', MOUSE_IDLE_OFFSET[1], MOUSE_IDLE_OFFSET[2])
-     addOffset('FlavorMouseUI', 'idleClick', MOUSE_IDLE_OFFSET[1], MOUSE_IDLE_OFFSET[2])
+     addOffset('FlavorMouseUI', 'cursor', MOUSE_CURSOR_OFFSET[1], MOUSE_CURSOR_OFFSET[2])
+     addOffset('FlavorMouseUI', 'cursorClick', MOUSE_CURSOR_OFFSET[1], MOUSE_CURSOR_OFFSET[2])
      addOffset('FlavorMouseUI', 'hand', MOUSE_HAND_OFFSET[1], MOUSE_HAND_OFFSET[2])
      addOffset('FlavorMouseUI', 'handClick', MOUSE_HAND_OFFSET[1], MOUSE_HAND_OFFSET[2])
      addOffset('FlavorMouseUI', 'disable', MOUSE_DISABLE_OFFSET[1], MOUSE_DISABLE_OFFSET[2])
      addOffset('FlavorMouseUI', 'disableClick', MOUSE_DISABLE_OFFSET[1], MOUSE_DISABLE_OFFSET[2])
-     playAnim('FlavorMouseUI', 'idle')
+     playAnim('FlavorMouseUI', 'cursor')
      setObjectCamera('FlavorMouseUI', 'camOther')
      addLuaSprite('FlavorMouseUI', true)
 
@@ -75,117 +64,68 @@ function FlavorUI_Mouse:update()
      setProperty('FlavorMouseUI.y', getMouseY('camHUD') + self.offsets[2])
 
      if mouseClicked('left') or mousePressed('left') then 
-          playAnim('FlavorMouseUI', 'idleClick')
+          playAnim('FlavorMouseUI', 'cursorClick')
      else
-          playAnim('FlavorMouseUI', 'idle')
+          playAnim('FlavorMouseUI', 'cursor')
      end
 
-     for variants, variant_elements in pairs(self.elements) do
-          for _, elements in pairs(variant_elements) do
-               local hoverMouse = hoverObject(elements, 'camHUD')
-               local clickMouse = clickObject(elements, 'camHUD')
-               local pressMouse = pressedObject(elements, 'camHUD')
+     for element_names, element_metadata in pairs(self.elements) do
+          local mouse_hovered  = hoverObject(element_names, 'camHUD')
+          local mouse_clicked  = clickObject(element_names, 'camHUD')
+          local mouse_pressed  = pressedObject(element_names, 'camHUD')
+          local mouse_released = releasedObject(element_names, 'camHUD')
+     
+          if mouse_hovered then
+               playAnim('FlavorMouseUI', element_metadata.cursor_type)
+          end
+          if mouse_clicked then
 
-               if hoverMouse then
+          end
+          if mouse_clicked or mouse_pressed then
+               playAnim('FlavorMouseUI', F"${element_metadata.cursor_type}Click")
+          end
+          if mouse_released then
+          end
+     end
+
+     --[[ for variants, variant_elements in pairs(self.elements) do
+          for _, elements in pairs(variant_elements) do
+               local mouse_hovered = hoverObject(elements, 'camHUD')
+               local mouse_clicked = clickObject(elements, 'camHUD')
+               local mouse_pressed = pressedObject(elements, 'camHUD')
+
+               if mouse_hovered then
                     playAnim('FlavorMouseUI', variants)
                     self.callbacks[variants]['onHover']()
                end
-               if clickMouse then
+               if mouse_clicked then
                     self.callbacks[variants]['onClick']()
                end
-               if clickMouse or pressMouse then
+               if mouse_clicked or mouse_pressed then
                     playAnim('FlavorMouseUI', F"${variants}Click")
                     self.callbacks[variants]['onPress']()
                end
           end
-     end
+     end ]]
 end
 
---- Adds an object elements for the mouse to be interactible.
----@param variant string The specified mouse variant for the object element to interact to.
----@vararg any The said element(s) to be interactible.
----@return nil
-function FlavorUI_Mouse:add_element(variant, ...)
-     local elements = {...}
-     for elements_index = 1, #elements do
-          local elements_value = elements[elements_index]
-
-          local elements_type = type(elements_value) == 'string' and elements_value or elements_value.tag
-          self.elements[variant][elements_value] = elements_type
-     end
+function FlavorUI_Mouse:reactivate()
 end
 
---- Removes an object elements to detach its interactibility.
----@param variant string The specified mouse variant that the object is attach to.
----@vararg any The said element(s) to be remove.
----@return nil
-function FlavorUI_Mouse:remove_element(variant, ...)
-     local elements = {...}
-     for elements_index = 1, #elements do
-          local elements_value = elements[elements_index]
-
-          local elements_type = type(elements_value) == 'string' and elements_value or elements_value.tag
-          local elements_find = table.find(self.elements[variant], elements_type)
-          if elements_find ~= nil then
-               self.elements[variant][elements_find] = nil
-          end
-     end
+function FlavorUI_Mouse:deactivate()
 end
 
---- Removes an object elements through all the variants, detaching its interactibility.
----@vararg string The said element(s) to be remove.
----@return nil
-function FlavorUI_Mouse:remove_elementAll(...)
-     local elements = {...}
-     for variants, variant_elements in pairs(self.elements) do
-          for elements_index = 1, #elements do
-               local elements_value = elements[elements_index]
 
-               local elements_type = type(elements_value) == 'string' and elements_value or elements_value.tag
-               local elements_find = table.find(variant_elements, elements_type)
-               if elements_find ~= nil then
-                    self.elements[variants][elements_find] = nil
-               end
-          end
-     end
+function FlavorUI_Mouse:add_element(element, cursor_type, cursor_active)
+     local cursor_type   = cursor_type   == nil and 'hand' or cursor_type
+     local cursor_active = cursor_active == nil and true   or cursor_active
+     self.elements[element] = {cursor_type = cursor_type, cursor_active = cursor_active}
 end
 
---- Adds a custom callback functionality to the mouse, for extra customizability!!!
----@param variant string The specified mouse variant for the callback to interact to.
----@param callback string The specified callback to utilize with.
----@param code string The said code for the corresponding callback.
----@return nil
-function FlavorUI_Mouse:callback_element(variants, callback, code)
-     self.callbacks[variants][callback] = code
+function FlavorUI_Mouse:remove_element(element)
+     table.clear(self.elements[element])
 end
 
---- Switches the object element(s)' variant to a new one; helper method.
----@param prevVariant string The previous current variant of the object element(s). 
----@param nextVariant string The new variant for the object element(s) to switch to.
----@vararg any The said element(s) to be switch from.
----@return nil
-function FlavorUI_Mouse:switch_variant(prevVariant, nextVariant, ...)
-     local elements = {...}
-     for elements_index = 1, #elements do
-          local elements_value = elements[elements_index]
-
-          local elements_type = type(elements_value) == 'string' and elements_value or elements_value.tag
-          self:remove_element(prevVariant, elements_type)
-          self:add_element(nextVariant, elements_type)
-     end
-end
-
---- Gets the current object element's variant.
----@param element string The said element to get its variant.
----@return string
-function FlavorUI_Mouse:get_variant(element)
-    for variants, variant_elements in pairs(self.elements) do
-          for _, elements in pairs(variant_elements) do
-               if element == elements then
-                    return variants
-               end
-          end
-     end 
-end
+--function 
 
 return FlavorUI_Mouse
