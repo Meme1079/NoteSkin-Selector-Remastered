@@ -125,14 +125,16 @@ local editorSaveDataSprite = FlavorUI_Button:new('editorSaveDataSprite')
 local mouse = FlavorUI_Mouse:new(0.4, {-4,0})
 mouse:create()
 
+mouse:add_element('editorInputSpriteOffsetX')
+mouse:add_element('editorInputSpriteOffsetY')
+mouse:add_element('editorInputSpriteSizeX')
+mouse:add_element('editorInputSpriteSizeY')
+mouse:add_element('editorInputSpriteFrames')
+mouse:add_element('editorInputSpriteFile')
+mouse:add_element('editorInputSpriteSaveFile')
 mouse:add_element('editorSaveDataSprite')
---
 
---[[ mouse:add_element('hand', editorInputSpriteOffsetX, editorInputSpriteOffsetY)
-mouse:add_element('hand', editorInputSpriteSizeX, editorInputSpriteSizeY)
-mouse:add_element('hand', editorInputSpriteFrames, editorInputSpriteFile, editorInputSpriteSaveFile)
-mouse:add_element('hand', editorSaveDataSprite)
-mouse:create() ]]
+-- Stuff --
 
 function onUpdate(elapsed)
      editorInputFieldOffsetX:update()
@@ -142,7 +144,6 @@ function onUpdate(elapsed)
      editorInputFieldFrames:update()
      editorInputFieldFiles:update()
      editorInputFieldSaveFile:update()
-
      editorSaveDataSprite:update()
 
      mouse:update()

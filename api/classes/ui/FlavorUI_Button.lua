@@ -22,8 +22,7 @@ function FlavorUI_Button:new(tag, variant)
      self.tag     = tag
      self.variant = variant or 'static'
 
-     self.deactivate   = false
-     self.mouseVariant = 'hand'
+     self.deactivate = false
 
      self.__inter_hovered = true
      self.__inter_clicked = true
@@ -44,7 +43,6 @@ function FlavorUI_Button:update()
 
      if self.variant == 'disabled' then
           playAnim(self.tag, 'disabled')
-          self.mouseVariant = 'disable'
           self:onDisable(self)
 
           if clickMouse == true then
@@ -57,7 +55,6 @@ function FlavorUI_Button:update()
      if hoverMouse == true and self.__inter_hovered == true then
           playAnim(self.tag, 'hovered')
           self.variant = 'hovered'
-          self.mouseVariant = 'hand'
           self.__inter_hovered = false
 
           self:onHover(self)
@@ -66,7 +63,6 @@ function FlavorUI_Button:update()
      if hoverMouse == false and self.__inter_hovered == false then
           playAnim(self.tag, 'static')
           self.variant = 'static'
-          self.mouseVariant = 'hand'
           self.__inter_hovered = true
           return
      end

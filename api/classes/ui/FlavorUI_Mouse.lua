@@ -76,41 +76,35 @@ function FlavorUI_Mouse:update()
           local mouse_released = releasedObject(element_names, 'camHUD')
 
           if element_metadata.cursor_mutable == false then
-               return
+               goto SKIP_IMMUTABLE
           end
      
           if mouse_hovered then
                playAnim('FlavorMouseUI', element_metadata.cursor_type)
+               self:onHover(self)
           end
           if mouse_clicked then
-
+               self:onClick(self)
           end
           if mouse_clicked or mouse_pressed then
                playAnim('FlavorMouseUI', F"${element_metadata.cursor_type}Click")
+               self:onPress(self)
           end
           if mouse_released then
+               self:onRelease(self)
           end
+          ::SKIP_IMMUTABLE::
      end
+end
 
-     --[[ for variants, variant_elements in pairs(self._elements) do
-          for _, elements in pairs(variant_elements) do
-               local mouse_hovered = hoverObject(elements, 'camHUD')
-               local mouse_clicked = clickObject(elements, 'camHUD')
-               local mouse_pressed = pressedObject(elements, 'camHUD')
+function FlavorUI_Mouse:add_element(element, cursor_type, cursor_mutable)
+     local cursor_type    = cursor_type    == nil and 'hand' or cursor_type
+     local cursor_mutable = cursor_mutable == nil and true   or cursor_mutable
+     self._elements[element] = {cursor_type = cursor_type, cursor_mutable = cursor_mutable}
+end
 
-               if mouse_hovered then
-                    playAnim('FlavorMouseUI', variants)
-                    self.callbacks[variants]['onHover']()
-               end
-               if mouse_clicked then
-                    self.callbacks[variants]['onClick']()
-               end
-               if mouse_clicked or mouse_pressed then
-                    playAnim('FlavorMouseUI', F"${variants}Click")
-                    self.callbacks[variants]['onPress']()
-               end
-          end
-     end ]]
+function FlavorUI_Mouse:remove_element(element)
+     table.clear(self._elements[element])
 end
 
 function FlavorUI_Mouse:type(element, type)
@@ -125,16 +119,24 @@ function FlavorUI_Mouse:deactivate(element)
      self._elements[element]['cursor_mutable'] = false
 end
 
-function FlavorUI_Mouse:add_element(element, cursor_type, cursor_mutable)
-     local cursor_type    = cursor_type    == nil and 'hand' or cursor_type
-     local cursor_mutable = cursor_mutable == nil and true   or cursor_mutable
-     self._elements[element] = {cursor_type = cursor_type, cursor_mutable = cursor_mutable}
+function FlavorUI_Mouse:active(element)
+     return self._elements[element]['cursor_mutable']
 end
 
-function FlavorUI_Mouse:remove_element(element)
-     table.clear(self._elements[element])
+function FlavorUI_Mouse:exists(element)
+     return self._elements[element] ~= nil
 end
 
---function 
+function FlavorUI_Mouse:onHover(this)
+end
+
+function FlavorUI_Mouse:onClick(this)
+end
+
+function FlavorUI_Mouse:onPress(this)
+end
+
+function FlavorUI_Mouse:onRelease(this)
+end
 
 return FlavorUI_Mouse
