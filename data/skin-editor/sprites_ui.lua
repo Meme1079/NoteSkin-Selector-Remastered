@@ -125,7 +125,7 @@ local editorSaveDataSprite = FlavorUI_Button:new('editorSaveDataSprite')
 local mouse = FlavorUI_Mouse:new(0.4, {-4,0})
 mouse:create()
 
-mouse:add_element('editorInputSpriteOffsetX')
+mouse:add_element('editorSaveDataSprite')
 --
 
 --[[ mouse:add_element('hand', editorInputSpriteOffsetX, editorInputSpriteOffsetY)
@@ -147,29 +147,20 @@ function onUpdate(elapsed)
 
      mouse:update()
 
-     if keyboardJustPressed('T') then
-          mouse:remove_element('editorInputSpriteOffsetX')
-     end
-     if keyboardJustPressed('F') then
-          mouse:add_element('editorInputSpriteOffsetX')
-     end
-
-     --[[ if keyboardJustPressed('R') then
+     if keyboardJustPressed('R') then
           editorSaveDataSprite:set_variant('disabled')
-          mouse:switch_variant('hand', 'disable', editorSaveDataSprite)
+          mouse:type('editorSaveDataSprite', 'disable')
      end
      if keyboardJustPressed('D') then
           editorSaveDataSprite:set_variant('static')
-          mouse:switch_variant('disable', 'hand', editorSaveDataSprite)
+          mouse:type('editorSaveDataSprite', 'hand')
      end
-
      if keyboardJustPressed('T') then
           editorSaveDataSprite:deactivation()
-          mouse:remove_elementAll(editorSaveDataSprite)
+          mouse:deactivate('editorSaveDataSprite')
      end
      if keyboardJustPressed('F') then
           editorSaveDataSprite:reactivation()
-          mouse:add_element(editorSaveDataSprite.mouseVariant, editorSaveDataSprite)
+          mouse:reactivate('editorSaveDataSprite')
      end
-     mouse:update() ]]
 end

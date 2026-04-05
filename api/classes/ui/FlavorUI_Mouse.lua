@@ -26,7 +26,7 @@ function FlavorUI_Mouse:new(size, offsets)
      self.size      = size
      self.offsets   = offsets
 
-     self.elements = table.new(0xff, 0)
+     self._elements = table.new(0xff, 0)
      return self
 end
 
@@ -69,11 +69,15 @@ function FlavorUI_Mouse:update()
           playAnim('FlavorMouseUI', 'cursor')
      end
 
-     for element_names, element_metadata in pairs(self.elements) do
+     for element_names, element_metadata in pairs(self._elements) do
           local mouse_hovered  = hoverObject(element_names, 'camHUD')
           local mouse_clicked  = clickObject(element_names, 'camHUD')
           local mouse_pressed  = pressedObject(element_names, 'camHUD')
           local mouse_released = releasedObject(element_names, 'camHUD')
+
+          if element_metadata.cursor_mutable == false then
+               return
+          end
      
           if mouse_hovered then
                playAnim('FlavorMouseUI', element_metadata.cursor_type)
@@ -88,7 +92,7 @@ function FlavorUI_Mouse:update()
           end
      end
 
-     --[[ for variants, variant_elements in pairs(self.elements) do
+     --[[ for variants, variant_elements in pairs(self._elements) do
           for _, elements in pairs(variant_elements) do
                local mouse_hovered = hoverObject(elements, 'camHUD')
                local mouse_clicked = clickObject(elements, 'camHUD')
@@ -109,21 +113,26 @@ function FlavorUI_Mouse:update()
      end ]]
 end
 
-function FlavorUI_Mouse:reactivate()
+function FlavorUI_Mouse:type(element, type)
+     self._elements[element]['cursor_type'] = type
 end
 
-function FlavorUI_Mouse:deactivate()
+function FlavorUI_Mouse:reactivate(element)
+     self._elements[element]['cursor_mutable'] = true
 end
 
+function FlavorUI_Mouse:deactivate(element)
+     self._elements[element]['cursor_mutable'] = false
+end
 
-function FlavorUI_Mouse:add_element(element, cursor_type, cursor_active)
-     local cursor_type   = cursor_type   == nil and 'hand' or cursor_type
-     local cursor_active = cursor_active == nil and true   or cursor_active
-     self.elements[element] = {cursor_type = cursor_type, cursor_active = cursor_active}
+function FlavorUI_Mouse:add_element(element, cursor_type, cursor_mutable)
+     local cursor_type    = cursor_type    == nil and 'hand' or cursor_type
+     local cursor_mutable = cursor_mutable == nil and true   or cursor_mutable
+     self._elements[element] = {cursor_type = cursor_type, cursor_mutable = cursor_mutable}
 end
 
 function FlavorUI_Mouse:remove_element(element)
-     table.clear(self.elements[element])
+     table.clear(self._elements[element])
 end
 
 --function 
