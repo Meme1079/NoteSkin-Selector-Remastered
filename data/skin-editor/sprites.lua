@@ -176,6 +176,49 @@ setObjectCamera('editorSaveDataSprite', 'camHUD')
 setProperty('editorSaveDataSprite.antialiasing', false)
 addLuaSprite('editorSaveDataSprite')
 
+local doodooX = 600
+local doodooY = 150
+
+makeAnimatedLuaSprite('doodoo1', 'noteSkins/NOTE_assets', doodooX, doodooY)
+scaleObject('doodoo1', 0.65, 0.65)
+addAnimationByPrefix('doodoo1', 'left confirm', 'left confirm', 24, false)
+addAnimationByPrefix('doodoo1', 'left pressed', 'left pressed', 24, false)
+addAnimationByPrefix('doodoo1', 'left colored', 'purple', 24, false)
+addAnimationByPrefix('doodoo1', 'left', 'arrowLEFT', 24, false)
+playAnim('doodoo1', 'left', false)
+setObjectCamera('doodoo1', 'camHUD')
+addLuaSprite('doodoo1')
+
+makeAnimatedLuaSprite('doodoo2', 'noteSkins/NOTE_assets', doodooX+(130), doodooY)
+scaleObject('doodoo2', 0.65, 0.65)
+addAnimationByPrefix('doodoo2', 'down confirm', 'down confirm', 24, false)
+addAnimationByPrefix('doodoo2', 'down pressed', 'down pressed', 24, false)
+addAnimationByPrefix('doodoo2', 'down colored', 'blue', 24, false)
+addAnimationByPrefix('doodoo2', 'down', 'arrowDOWN', 24, false)
+playAnim('doodoo2', 'down', false)
+setObjectCamera('doodoo2', 'camHUD')
+addLuaSprite('doodoo2')
+
+makeAnimatedLuaSprite('doodoo3', 'noteSkins/NOTE_assets', doodooX+(130*2), doodooY)
+scaleObject('doodoo3', 0.65, 0.65)
+addAnimationByPrefix('doodoo3', 'up confirm', 'up confirm', 24, false)
+addAnimationByPrefix('doodoo3', 'up pressed', 'up pressed', 24, false)
+addAnimationByPrefix('doodoo3', 'up colored', 'green', 24, false)
+addAnimationByPrefix('doodoo3', 'up', 'arrowUP', 24, false)
+playAnim('doodoo3', 'up', false)
+setObjectCamera('doodoo3', 'camHUD')
+addLuaSprite('doodoo3')
+
+makeAnimatedLuaSprite('doodoo4', 'noteSkins/NOTE_assets', doodooX+(130*3), doodooY)
+scaleObject('doodoo4', 0.65, 0.65)
+addAnimationByPrefix('doodoo4', 'right confirm', 'right confirm', 24, false)
+addAnimationByPrefix('doodoo4', 'right pressed', 'right pressed', 24, false)
+addAnimationByPrefix('doodoo4', 'right colored', 'red', 24, false)
+addAnimationByPrefix('doodoo4', 'right', 'arrowRIGHT', 24, false)
+playAnim('doodoo4', 'right', false)
+setObjectCamera('doodoo4', 'camHUD')
+addLuaSprite('doodoo4')
+
 ---
 
 --[[ makeAnimatedLuaSprite('hahaha1', 'ui/flavorui/button/button_display', 500, 300)
