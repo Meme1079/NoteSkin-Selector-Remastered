@@ -122,7 +122,7 @@ local editorSaveDataSprite = FlavorUI_Button:new('editorSaveDataSprite')
 
 ---
 
-local a = EditorNotes:new('noteSkins/NOTE_assets-DSides')
+local a = EditorNotes:new('editorNotes', 'noteSkins/NOTE_assets-DSides')
 a:create()
 
 -- Mouse --
@@ -150,6 +150,8 @@ function onUpdate(elapsed)
      editorInputFieldFiles:update()
      editorInputFieldSaveFile:update()
      editorSaveDataSprite:update()
+
+     a:update_movement()
 
      mouse:update()
 
