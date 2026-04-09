@@ -6,6 +6,7 @@ local EditorNotes         = require 'mods.NoteSkin Selector Remastered.api.class
 local EditorNotesTemplate = require 'mods.NoteSkin Selector Remastered.api.classes.editor.notes.EditorNotesTemplate'
 
 local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
+local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 
 local kbCondJustPressed = funkinlua.kbCondJustPressed
@@ -149,6 +150,8 @@ mouse:add_element('editorSaveDataSprite')
 
 -- Stuff --
 
+
+
 function onUpdate(elapsed)
      editorInputFieldOffsetX:update()
      editorInputFieldOffsetY:update()
@@ -163,11 +166,31 @@ function onUpdate(elapsed)
      local FlavorUI_TextField_Focus = getPropertyFromClass('backend.ui.PsychUIInputText', 'focusOn') == nil
      
      a:update_movement()
+
+     if FlavorUI_TextField_Focus then
+          editorInputFieldOffsetX:set_field( math.round(a:get_x(), 2) )
+          editorInputFieldOffsetY:set_field( math.round(a:get_y(), 2) )
+     end
+     if kbCondJustPressed('ENTER', editorInputFieldOffsetX:focused()) then
+          a:set_x(editorInputFieldOffsetX:get_field())
+          editorInputFieldOffsetX:set_field(math.round(editorInputFieldOffsetX:get_field(), 2))
+          a:update_movement()
+     end
+     if kbCondJustPressed('ENTER', editorInputFieldOffsetY:focused()) then
+          a:set_y(editorInputFieldOffsetY:get_field())
+          editorInputFieldOffsetY:set_field(math.round(editorInputFieldOffsetY:get_field(), 2))
+          a:update_movement()
+     end
+
+     
      
      -- Main Stuff --
 
+    -- debugPrint(editorInputFieldFiles:focused())
+
      if kbCondJustPressed('ENTER', not FlavorUI_TextField_Focus)  then
-          a:set_texture('noteskins/'..editorInputFieldFiles:entered())
+          --debugPrint(editorInputFieldFiles:entered())
+          --a:texture('noteskins/'..editorInputFieldFiles:entered())
      end
      if kbCondJustPressed('Z', FlavorUI_TextField_Focus) then
           b:set_order(100)

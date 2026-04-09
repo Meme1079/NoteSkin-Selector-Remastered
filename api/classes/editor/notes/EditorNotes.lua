@@ -2,7 +2,8 @@ local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-str
 local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 
-local kbCondPressed = funkinlua.kbCondPressed
+local kbCondJustPressed = funkinlua.kbCondJustPressed
+local kbCondPressed     = funkinlua.kbCondPressed
 
 local SKIN_DIRECTIONS = {'left', 'down', 'up', 'right'}
 local SKIN_COLORS     = {'purple0', 'blue0', 'green0', 'red0'}
@@ -65,28 +66,28 @@ function EditorNotes:update_movement()
                return mainKeyPressed or altkeyPressed and not (mainKeyPressed and altkeyPressed)
           end
           if directionMovement('D', 'A') then
-               setProperty(F"${dirTag}.x", getProperty(F"${dirTag}.x") + self._dirX*self._dirA)
+               setProperty(F"${dirTag}.x", math.round(getProperty(F"${dirTag}.x") + self._dirX*self._dirA, 2))
           end
           if directionMovement('S', 'W') then
-               setProperty(F"${dirTag}.y", getProperty(F"${dirTag}.y") + self._dirY*self._dirA)
+               setProperty(F"${dirTag}.y", math.round(getProperty(F"${dirTag}.y") + self._dirY*self._dirA, 2))
           end
           if directionMovement('RIGHT', 'LEFT') then
-               setProperty(F"${dirTag}.x", getProperty(F"${dirTag}.x") + self._dirX*self._dirA/6)
+               setProperty(F"${dirTag}.x", math.round(getProperty(F"${dirTag}.x") + self._dirX*self._dirA/6, 2))
           end
           if directionMovement('DOWN', 'UP') then
-               setProperty(F"${dirTag}.y", getProperty(F"${dirTag}.y") + self._dirY*self._dirA/6)
+               setProperty(F"${dirTag}.y", math.round(getProperty(F"${dirTag}.y") + self._dirY*self._dirA/6, 2))
           end
      end
 
-     if kbCondPressed('LBRACKET', self:_get_focused()) and self._dir > 1 then
+     if kbCondJustPressed('LBRACKET', self:_get_focused()) and self._dir > 1 then
           self._dir = self._dir - 1
      end
-     if kbCondPressed('RBRACKET', self:_get_focused()) and self._dir < 4 then
+     if kbCondJustPressed('RBRACKET', self:_get_focused()) and self._dir < 4 then
           self._dir = self._dir + 1
      end
 end
 
-function EditorNotes:set_texture(sprite)
+function EditorNotes:texture(sprite)
      for editorIndex = 1, 4 do
           local editorTag = self.tag..tostring(editorIndex)
 
@@ -101,6 +102,22 @@ function EditorNotes:set_texture(sprite)
           setObjectCamera(editorTag, 'camHUD')
           addLuaSprite(editorTag)
      end
+end
+
+function EditorNotes:get_x()
+     return getProperty(F"${self:_get_tag()}.x")
+end
+
+function EditorNotes:get_y()
+     return getProperty(F"${self:_get_tag()}.y")
+end
+
+function EditorNotes:set_x(value)
+     return setProperty(F"${self:_get_tag()}.x", value)
+end
+
+function EditorNotes:set_y(value)
+     return setProperty(F"${self:_get_tag()}.y", value)
 end
 
 function EditorNotes:_get_tag()

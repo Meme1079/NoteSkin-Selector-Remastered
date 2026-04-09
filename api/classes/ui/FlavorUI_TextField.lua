@@ -159,6 +159,7 @@ function FlavorUI_TextField:add()
                ${self.onChange:gsub('this', self.tag)}
           };
           flavorTextField.onPressEnter = function(e) {
+               setVar('flavorTextField_enterObject', flavorTextField);
                setVar('flavorTextField_enterText', flavorTextField.textObj.textField.text);
                ${self.onPressEnter:gsub('this', self.tag)}
           }
@@ -237,7 +238,7 @@ function FlavorUI_TextField:update()
           flavorTextField_caret.visible = PsychUIInputText.focusOn == null ? false : flavorTextField.caret.visible;
           flavorTextField_caret.x       = flavorTextField.caret.x;
           flavorTextField_caret.y       = flavorTextField.caret.y;
-
+     
           ClientPrefs.toggleVolumeKeys(PsychUIInputText.focusOn == null);
           game.allowDebugKeys = PsychUIInputText.focusOn == null;
           ${self.onUpdate:gsub('this', self.tag)}
@@ -331,8 +332,13 @@ end
 
 function FlavorUI_TextField:entered()
      return runHaxeCode((F[[
-          var flavorTextField = getVar('flavorTextField');
-          return getVar('flavorTextField_enterText');
+          return getVar('flavorTextField');
+     ]]):gsub('flavorTextField', self.tag))
+end
+
+function FlavorUI_TextField:object()
+     return runHaxeCode((F[[
+          return getVar('flavorTextField_enterObject');
      ]]):gsub('flavorTextField', self.tag))
 end
 
