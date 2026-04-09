@@ -59,17 +59,21 @@ function EditorNotes:update_movement()
           if getProperty(F"${dirTag}.y") < BORDERS.minY then setProperty(F"${dirTag}.y", BORDERS.minY) end
           if getProperty(F"${dirTag}.y") > BORDERS.maxY then setProperty(F"${dirTag}.y", BORDERS.maxY) end
 
-          if kbCondPressed('D', self:_get_focused()) or kbCondPressed('A', self:_get_focused()) and not (kbCondPressed('D', self:_get_focused()) and kbCondPressed('A', self:_get_focused())) then
+          local function directionMovement(mainKey, altKey)
+               local mainKeyPressed = kbCondPressed(mainKey, self:_get_focused())
+               local altkeyPressed  = kbCondPressed(altKey, self:_get_focused())
+               return mainKeyPressed or altkeyPressed and not (mainKeyPressed and altkeyPressed)
+          end
+          if directionMovement('D', 'A') then
                setProperty(F"${dirTag}.x", getProperty(F"${dirTag}.x") + self._dirX*self._dirA)
           end
-          if kbCondPressed('S', self:_get_focused()) or kbCondPressed('W', self:_get_focused()) and not (kbCondPressed('S', self:_get_focused()) and kbCondPressed('W', self:_get_focused())) then
+          if directionMovement('S', 'W') then
                setProperty(F"${dirTag}.y", getProperty(F"${dirTag}.y") + self._dirY*self._dirA)
           end
-
-          if kbCondPressed('RIGHT', self:_get_focused()) or kbCondPressed('LEFT', self:_get_focused()) and not (kbCondPressed('RIGHT', self:_get_focused()) and kbCondPressed('LEFT', self:_get_focused())) then
+          if directionMovement('RIGHT', 'LEFT') then
                setProperty(F"${dirTag}.x", getProperty(F"${dirTag}.x") + self._dirX*self._dirA/6)
           end
-          if kbCondPressed('DOWN', self:_get_focused()) or kbCondPressed('UP', self:_get_focused()) and not (kbCondPressed('DOWN', self:_get_focused()) and kbCondPressed('UP', self:_get_focused())) then
+          if directionMovement('DOWN', 'UP') then
                setProperty(F"${dirTag}.y", getProperty(F"${dirTag}.y") + self._dirY*self._dirA/6)
           end
      end
