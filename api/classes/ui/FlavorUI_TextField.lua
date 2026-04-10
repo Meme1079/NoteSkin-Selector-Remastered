@@ -147,10 +147,8 @@ function FlavorUI_TextField:add()
                }
      
                if (curText.length >= ${self.maxLength}) {
-                    flavorTextField.textObj.color = FlxColor.RED;
                     ${self.onFieldMax:gsub('this', self.tag)}
                } else {
-                    flavorTextField.textObj.color = FlxColor.WHITE;
                     ${self.onField:gsub('this', self.tag)}
                }
 
@@ -159,7 +157,6 @@ function FlavorUI_TextField:add()
                ${self.onChange:gsub('this', self.tag)}
           };
           flavorTextField.onPressEnter = function(e) {
-               setVar('flavorTextField_enterObject', flavorTextField);
                setVar('flavorTextField_enterText', flavorTextField.textObj.textField.text);
                ${self.onPressEnter:gsub('this', self.tag)}
           }
@@ -238,10 +235,21 @@ function FlavorUI_TextField:update()
           flavorTextField_caret.visible = PsychUIInputText.focusOn == null ? false : flavorTextField.caret.visible;
           flavorTextField_caret.x       = flavorTextField.caret.x;
           flavorTextField_caret.y       = flavorTextField.caret.y;
-     
+
           ClientPrefs.toggleVolumeKeys(PsychUIInputText.focusOn == null);
           game.allowDebugKeys = PsychUIInputText.focusOn == null;
           ${self.onUpdate:gsub('this', self.tag)}
+     ]]):gsub('flavorTextField', self.tag))
+end
+
+function FlavorUI_TextField:set_caret_index(value)
+     runHaxeCode((F[[
+          var flavorTextField       = getVar('flavorTextField');
+          var flavorTextField_caret = getVar('flavorTextField_caret');
+
+          flavorTextField.caretIndex = ${value};
+          flavorTextField_caret.x = flavorTextField.caret.x;
+          flavorTextField_caret.y = flavorTextField.caret.y;
      ]]):gsub('flavorTextField', self.tag))
 end
 
@@ -269,10 +277,10 @@ function FlavorUI_TextField:get_field()
 end
 
 --- Invalidates the text field.
----@param invalidColor string The text color of the invalid field.
----@param invalidContent string The text content of the invalid field.
+---@param color string The text color of the invalid field.
+---@param content string The text content of the invalid field.
 ---@return nil
-function FlavorUI_TextField:invalid_field(invalidColor, invalidContent)
+function FlavorUI_TextField:invalid_field(color, content)
      runHaxeCode((F[[
           var flavorTextField             = getVar('flavorTextField');
           var flavorTextField_placeholder = getVar('flavorTextField_placeholder');
@@ -280,8 +288,8 @@ function FlavorUI_TextField:invalid_field(invalidColor, invalidContent)
           flavorTextField.caretIndex = 1;
           flavorTextField.set_text('');
      
-          flavorTextField_placeholder.text  = '${invalidContent}'; // Invalid Skin!
-          flavorTextField_placeholder.color = ${invalidColor};     // 0xFFB50000
+          flavorTextField_placeholder.text  = '${content}'; // Invalid Skin!
+          flavorTextField_placeholder.color = ${color};     // 0xFFB50000
           FlxG.sound.play(Paths.sound('cancel'), 0.5);
           return;
      ]]):gsub('flavorTextField', self.tag))
@@ -289,7 +297,7 @@ end
 
 --- Resets the current field content of the text field, no shit sherlock.
 ---@return nil
-function FlavorUI_TextField:reset_field()
+function FlavorUI_TextField:clear_field()
      runHaxeCode((F[[
           var flavorTextField             = getVar('flavorTextField');
           var flavorTextField_placeholder = getVar('flavorTextField_placeholder');
@@ -332,13 +340,8 @@ end
 
 function FlavorUI_TextField:entered()
      return runHaxeCode((F[[
-          return getVar('flavorTextField');
-     ]]):gsub('flavorTextField', self.tag))
-end
-
-function FlavorUI_TextField:object()
-     return runHaxeCode((F[[
-          return getVar('flavorTextField_enterObject');
+          var flavorTextField = getVar('flavorTextField');
+          return flavorTextField.textObj.textField.text;
      ]]):gsub('flavorTextField', self.tag))
 end
 

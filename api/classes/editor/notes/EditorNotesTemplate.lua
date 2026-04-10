@@ -34,7 +34,7 @@ function EditorNotesTemplate:create()
      end
 end
 
-function EditorNotesTemplate:set_texture(sprite)
+function EditorNotesTemplate:texture(sprite)
      for templateIndex = 1, 4 do
           local templateTag = F"editorNotesTemplate${templateIndex}"
 

@@ -20,7 +20,6 @@ function EditorNotes:new(tag, sprite)
      self._dirX = 0
      self._dirY = 0
      self._dirA = 1
-
      return self
 end
 
@@ -52,13 +51,13 @@ function EditorNotes:update_movement()
 
      local dirTag    = self:_get_tag()
      local dirLength = math.sqrt(self._dirX^2 + self._dirY^2)
+
+     --[[ if getProperty(F"${dirTag}.offset.x") < BORDERS.minX then setProperty(F"${dirTag}.offset.x", BORDERS.minX) end
+     if getProperty(F"${dirTag}.offset.x") > BORDERS.maxX then setProperty(F"${dirTag}.offset.x", BORDERS.maxX) end
+     if getProperty(F"${dirTag}.offset.y") < BORDERS.minY then setProperty(F"${dirTag}.offset.y", BORDERS.minY) end
+     if getProperty(F"${dirTag}.offset.y") > BORDERS.maxY then setProperty(F"${dirTag}.offset.y", BORDERS.maxY) end ]]
      if dirLength > 0 then
           self._dirX, self._dirY = self._dirX / dirLength, self._dirY / dirLength
-
-          if getProperty(F"${dirTag}.x") < BORDERS.minX then setProperty(F"${dirTag}.x", BORDERS.minX) end
-          if getProperty(F"${dirTag}.x") > BORDERS.maxX then setProperty(F"${dirTag}.x", BORDERS.maxX) end
-          if getProperty(F"${dirTag}.y") < BORDERS.minY then setProperty(F"${dirTag}.y", BORDERS.minY) end
-          if getProperty(F"${dirTag}.y") > BORDERS.maxY then setProperty(F"${dirTag}.y", BORDERS.maxY) end
 
           local function directionMovement(mainKey, altKey)
                local mainKeyPressed = kbCondPressed(mainKey, self:_get_focused())
@@ -66,16 +65,16 @@ function EditorNotes:update_movement()
                return mainKeyPressed or altkeyPressed and not (mainKeyPressed and altkeyPressed)
           end
           if directionMovement('D', 'A') then
-               setProperty(F"${dirTag}.x", math.round(getProperty(F"${dirTag}.x") + self._dirX*self._dirA, 2))
+               setProperty(F"${dirTag}.offset.x", math.round(getProperty(F"${dirTag}.offset.x") - self._dirX*self._dirA, 2))
           end
           if directionMovement('S', 'W') then
-               setProperty(F"${dirTag}.y", math.round(getProperty(F"${dirTag}.y") + self._dirY*self._dirA, 2))
+               setProperty(F"${dirTag}.offset.y", math.round(getProperty(F"${dirTag}.offset.y") - self._dirY*self._dirA, 2))
           end
           if directionMovement('RIGHT', 'LEFT') then
-               setProperty(F"${dirTag}.x", math.round(getProperty(F"${dirTag}.x") + self._dirX*self._dirA/6, 2))
+               setProperty(F"${dirTag}.offset.x", math.round(getProperty(F"${dirTag}.offset.x") - self._dirX*self._dirA/6, 2))
           end
           if directionMovement('DOWN', 'UP') then
-               setProperty(F"${dirTag}.y", math.round(getProperty(F"${dirTag}.y") + self._dirY*self._dirA/6, 2))
+               setProperty(F"${dirTag}.offset.y", math.round(getProperty(F"${dirTag}.offset.y") - self._dirY*self._dirA/6, 2))
           end
      end
 
@@ -104,20 +103,20 @@ function EditorNotes:texture(sprite)
      end
 end
 
-function EditorNotes:get_x()
-     return getProperty(F"${self:_get_tag()}.x")
+function EditorNotes:get_offset_x()
+     return getProperty(F"${self:_get_tag()}.offset.x")
 end
 
-function EditorNotes:get_y()
-     return getProperty(F"${self:_get_tag()}.y")
+function EditorNotes:get_offset_y()
+     return getProperty(F"${self:_get_tag()}.offset.y")
 end
 
-function EditorNotes:set_x(value)
-     return setProperty(F"${self:_get_tag()}.x", value)
+function EditorNotes:set_offset_x(value)
+     return setProperty(F"${self:_get_tag()}.offset.x", value)
 end
 
-function EditorNotes:set_y(value)
-     return setProperty(F"${self:_get_tag()}.y", value)
+function EditorNotes:set_offset_y(value)
+     return setProperty(F"${self:_get_tag()}.offset.y", value)
 end
 
 function EditorNotes:_get_tag()
