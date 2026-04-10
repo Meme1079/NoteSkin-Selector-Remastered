@@ -7,7 +7,7 @@ local kbCondPressed     = funkinlua.kbCondPressed
 
 local SKIN_DIRECTIONS = {'left', 'down', 'up', 'right'}
 local SKIN_COLORS     = {'purple0', 'blue0', 'green0', 'red0'}
-local BORDERS         = {minX = 420, maxX = 1174, minY = 1, maxY = 617}
+local BORDERS         = {LEFT = 207, RIGHT = -545, UP = 177, DOWN = -440}
 
 local EditorNotes = {}
 
@@ -19,7 +19,7 @@ function EditorNotes:new(tag, sprite)
      self._dir  = 1
      self._dirX = 0
      self._dirY = 0
-     self._dirA = 1
+     self._dirA = 1 -- amplifier
      return self
 end
 
@@ -52,10 +52,10 @@ function EditorNotes:update_movement()
      local dirTag    = self:_get_tag()
      local dirLength = math.sqrt(self._dirX^2 + self._dirY^2)
 
-     --[[ if getProperty(F"${dirTag}.offset.x") < BORDERS.minX then setProperty(F"${dirTag}.offset.x", BORDERS.minX) end
-     if getProperty(F"${dirTag}.offset.x") > BORDERS.maxX then setProperty(F"${dirTag}.offset.x", BORDERS.maxX) end
-     if getProperty(F"${dirTag}.offset.y") < BORDERS.minY then setProperty(F"${dirTag}.offset.y", BORDERS.minY) end
-     if getProperty(F"${dirTag}.offset.y") > BORDERS.maxY then setProperty(F"${dirTag}.offset.y", BORDERS.maxY) end ]]
+     if getProperty(F"${dirTag}.offset.x") < BORDERS.RIGHT then setProperty(F"${dirTag}.offset.x", BORDERS.RIGHT) end
+     if getProperty(F"${dirTag}.offset.x") > BORDERS.LEFT  then setProperty(F"${dirTag}.offset.x", BORDERS.LEFT)  end
+     if getProperty(F"${dirTag}.offset.y") < BORDERS.DOWN  then setProperty(F"${dirTag}.offset.y", BORDERS.DOWN)  end
+     if getProperty(F"${dirTag}.offset.y") > BORDERS.UP    then setProperty(F"${dirTag}.offset.y", BORDERS.UP)    end
      if dirLength > 0 then
           self._dirX, self._dirY = self._dirX / dirLength, self._dirY / dirLength
 
@@ -64,17 +64,20 @@ function EditorNotes:update_movement()
                local altkeyPressed  = kbCondPressed(altKey, self:_get_focused())
                return mainKeyPressed or altkeyPressed and not (mainKeyPressed and altkeyPressed)
           end
+
           if directionMovement('D', 'A') then
                setProperty(F"${dirTag}.offset.x", math.round(getProperty(F"${dirTag}.offset.x") - self._dirX*self._dirA, 2))
           end
           if directionMovement('S', 'W') then
                setProperty(F"${dirTag}.offset.y", math.round(getProperty(F"${dirTag}.offset.y") - self._dirY*self._dirA, 2))
           end
+
+          local stepSize = kbCondPressed('SHIFT', self:_get_focused()) == true and 1000 or 100
           if directionMovement('RIGHT', 'LEFT') then
-               setProperty(F"${dirTag}.offset.x", math.round(getProperty(F"${dirTag}.offset.x") - self._dirX*self._dirA/6, 2))
+               setProperty(F"${dirTag}.offset.x", math.round(getProperty(F"${dirTag}.offset.x") - self._dirX*self._dirA/stepSize, 3))
           end
           if directionMovement('DOWN', 'UP') then
-               setProperty(F"${dirTag}.offset.y", math.round(getProperty(F"${dirTag}.offset.y") - self._dirY*self._dirA/6, 2))
+               setProperty(F"${dirTag}.offset.y", math.round(getProperty(F"${dirTag}.offset.y") - self._dirY*self._dirA/stepSize, 3))
           end
      end
 

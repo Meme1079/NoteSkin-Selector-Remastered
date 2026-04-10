@@ -44,7 +44,7 @@ editorInputFieldOffsetY.caret_height     = 20
 editorInputFieldOffsetY.placeholder_text = '000.00'
 editorInputFieldOffsetY.onChange         = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
 editorInputFieldOffsetY:add()
-editorInputFieldOffsetY:set_customFilterPattern("[^0-9.]*", "g")
+editorInputFieldOffsetY:set_customFilterPattern("[^-0-9.]*", "g")
 mouse:add_element('editorInputSpriteOffsetY')
 
 --- Size ---
@@ -140,6 +140,7 @@ b:create()
 local a = EditorNotes:new('editorNotes', 'noteSkins/NOTE_assets-DSides')
 a:create()
 
+local BORDERS = {LEFT = 207, RIGHT = -545, UP = 177, DOWN = -440}
 function onUpdate(elapsed)
      editorInputFieldOffsetX:update()
      editorInputFieldOffsetY:update()
@@ -163,6 +164,8 @@ function onUpdate(elapsed)
 
      if kbCondJustPressed('ENTER', editorInputFieldOffsetX:focused()) then
           a:set_offset_x(editorInputFieldOffsetX:get_field())
+          if a:get_offset_x() < BORDERS.RIGHT then editorInputFieldOffsetX:set_field(BORDERS.RIGHT) end
+          if a:get_offset_x() > BORDERS.LEFT  then editorInputFieldOffsetX:set_field(BORDERS.LEFT)  end
 
           local status, result = pcall(math.round, editorInputFieldOffsetX:get_field():gsub('%-%-+', '-'), 2)
           editorInputFieldOffsetX:set_field(status == true and result or 0)
@@ -170,6 +173,8 @@ function onUpdate(elapsed)
      end
      if kbCondJustPressed('ENTER', editorInputFieldOffsetY:focused()) then
           a:set_offset_y(editorInputFieldOffsetY:get_field())
+          if a:get_offset_y() < BORDERS.DOWN then editorInputFieldOffsetY:set_field(BORDERS.DOWN) end
+          if a:get_offset_y() > BORDERS.UP   then editorInputFieldOffsetY:set_field(BORDERS.UP)   end
 
           local status, result = pcall(math.round, editorInputFieldOffsetY:get_field():gsub('%-%-+', '-'), 2)
           editorInputFieldOffsetY:set_field(status == true and result or 0)
