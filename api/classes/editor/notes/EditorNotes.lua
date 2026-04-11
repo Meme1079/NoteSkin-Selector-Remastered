@@ -154,7 +154,7 @@ function EditorNotes:update_animations()
           local function updateEditorNote(offsetName, offsetAnimation)
                self._offsets_name = offsetName:upper()
 
-               playAnim(editorTag, offsetAnimation)
+               playAnim(editorTag, offsetAnimation, true)
                setProperty(F"${editorTag}.offset.x", self._offsets[self._offsets_name][editorIndex][OFFSETS.X])
                setProperty(F"${editorTag}.offset.y", self._offsets[self._offsets_name][editorIndex][OFFSETS.Y])
           end
@@ -180,13 +180,23 @@ function EditorNotes:texture(sprite)
           local editorDirection = SKIN_DIRECTIONS[editorIndex]
           local editorColors    = SKIN_COLORS[editorIndex]
           loadFrames(editorTag, sprite)
-          addAnimationByPrefix(editorTag, F"${editorDirection} pressed", F"${editorDirection} pressed", 24, true)
+          addAnimationByPrefix(editorTag, F"${editorDirection} pressed", F"${editorDirection} press", 24, true)
           addAnimationByPrefix(editorTag, F"${editorDirection} confirm", F"${editorDirection} confirm", 24, true)
           addAnimationByPrefix(editorTag, F"${editorDirection} colored", editorColors, 24, true)
           addAnimationByPrefix(editorTag, editorDirection, F"arrow${editorDirection:upper()}", 24, true)
-          playAnim(editorTag, editorDirection)
-          setObjectCamera(editorTag, 'camHUD')
-          addLuaSprite(editorTag)
+
+          if self._offsets_name == 'STRUMS' then
+               playAnim(editorTag, editorDirection, true)
+          end
+          if self._offsets_name == 'PRESSED' then
+               playAnim(editorTag, F"${editorDirection} pressed", true)
+          end
+          if self._offsets_name == 'CONFIRM' then
+               playAnim(editorTag, F"${editorDirection} confirm", true)
+          end
+          if self._offsets_name == 'COLORED' then
+               playAnim(editorTag, F"${editorDirection} colored", true)
+          end
      end
 end
 

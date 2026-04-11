@@ -190,7 +190,7 @@ function onUpdate(elapsed)
           editorInputFieldOffsetY:set_caret_index(#editorInputFieldOffsetY:get_field())
      end
 
-     if kbCondJustPressed('ENTER', not FlavorUI_TextField_Focus)  then
+     if kbCondJustPressed('ENTER', editorInputFieldFiles:focused())  then
           a:texture('noteskins/'..editorInputFieldFiles:entered())
      end
      if kbCondJustPressed('Z', FlavorUI_TextField_Focus) then
