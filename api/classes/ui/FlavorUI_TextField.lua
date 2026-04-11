@@ -37,11 +37,13 @@ function FlavorUI_TextField:new(tag, text, x, y, fieldWidth)
 
      -- Miscellaneous --
 
-     self.maxLength         = 0
-     self.passwordMask      = false
-     self.selection_scale_x = -1
-     self.selection_scale_y = 25
-     self.selection_color   = '0xff007bff'
+     self.maxLength          = 0
+     self.passwordMask       = false
+     self.selection_offset_x = nil
+     self.selection_offset_y = nil
+     self.selection_scale_x  = -1
+     self.selection_scale_y  = 25
+     self.selection_color    = '0xff007bff'
 
      -- Fields --
 
@@ -231,7 +233,9 @@ function FlavorUI_TextField:update()
 
           flavorTextField.selection.scale.x = ${self.selection_scale_x} != -1 ? ${self.selection_scale_x} : flavorTextField.selection.scale.x;
           flavorTextField.selection.scale.y = ${self.selection_scale_y} != -1 ? ${self.selection_scale_y} : flavorTextField.selection.scale.y;
-          
+          flavorTextField.selection.offset.x = ${self.selection_offset_x ~= nil} == true ? ${self.selection_offset_x} : flavorTextField.selection.offset.x;
+          flavorTextField.selection.offset.y = ${self.selection_offset_y ~= nil} == true ? ${self.selection_offset_y} : flavorTextField.selection.offset.y;
+
           flavorTextField_caret.visible = PsychUIInputText.focusOn == null ? false : flavorTextField.caret.visible;
           flavorTextField_caret.x       = flavorTextField.caret.x;
           flavorTextField_caret.y       = flavorTextField.caret.y;

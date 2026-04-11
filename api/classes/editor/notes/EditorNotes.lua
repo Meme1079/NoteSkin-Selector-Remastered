@@ -38,7 +38,15 @@ function EditorNotes:new(tag, sprite)
           COLORED = {{0,0}, {0,0}, {0,0}, {0,0}},
           STRUMS  = {{0,0}, {0,0}, {0,0}, {0,0}}
      }
-     self._offsets_name = 'STRUMS'
+     self._frames  = {
+          CONFIRM = 24,
+          PRESSED = 24,
+          COLORED = 24,
+          STRUMS  = 24
+     }
+     self._size = {0.65, 0.65}
+     self._animation_name = 'STRUMS'
+     
      return self
 end
 
@@ -135,11 +143,11 @@ function EditorNotes:update_animations()
           local editorColors    = SKIN_COLORS[editorIndex]
 
           local function updateEditorNote(offsetName, offsetAnimation)
-               self._offsets_name = offsetName:upper()
+               self._animation_name = offsetName:upper()
 
                playAnim(editorTag, offsetAnimation, true)
-               setProperty(F"${editorTag}.offset.x", self._offsets[self._offsets_name][editorIndex][OFFSETS.X])
-               setProperty(F"${editorTag}.offset.y", self._offsets[self._offsets_name][editorIndex][OFFSETS.Y])
+               setProperty(F"${editorTag}.offset.x", self._offsets[self._animation_name][editorIndex][OFFSETS.X])
+               setProperty(F"${editorTag}.offset.y", self._offsets[self._animation_name][editorIndex][OFFSETS.Y])
           end
           if kbCondJustPressed('U', self:_get_focused()) then
                updateEditorNote('strums', F"${editorDirection}")
@@ -172,35 +180,35 @@ function EditorNotes:texture(sprite)
           addAnimationByPrefix(editorTag, F"${editorDirection} colored", editorColors, 24, true)
           addAnimationByPrefix(editorTag, editorDirection, F"arrow${editorDirection:upper()}", 24, true)
 
-          if self._offsets_name == 'STRUMS' then
+          if self._animation_name == 'STRUMS' then
                playAnim(editorTag, editorDirection, true)
           end
-          if self._offsets_name == 'PRESSED' then
+          if self._animation_name == 'PRESSED' then
                playAnim(editorTag, F"${editorDirection} pressed", true)
           end
-          if self._offsets_name == 'CONFIRM' then
+          if self._animation_name == 'CONFIRM' then
                playAnim(editorTag, F"${editorDirection} confirm", true)
           end
-          if self._offsets_name == 'COLORED' then
+          if self._animation_name == 'COLORED' then
                playAnim(editorTag, F"${editorDirection} colored", true)
           end
      end
 end
 
 function EditorNotes:get_offset_data_x()
-     return tonumber( self._offsets[self._offsets_name][self._dir][OFFSETS.X] )
+     return tonumber( self._offsets[self._animation_name][self._dir][OFFSETS.X] )
 end
 
 function EditorNotes:get_offset_data_y()
-     return tonumber( self._offsets[self._offsets_name][self._dir][OFFSETS.Y] )
+     return tonumber( self._offsets[self._animation_name][self._dir][OFFSETS.Y] )
 end
 
 function EditorNotes:set_offset_data_x(value)
-     self._offsets[self._offsets_name][self._dir][OFFSETS.X] = value
+     self._offsets[self._animation_name][self._dir][OFFSETS.X] = value
 end
 
 function EditorNotes:set_offset_data_y(value)
-     self._offsets[self._offsets_name][self._dir][OFFSETS.Y] = value
+     self._offsets[self._animation_name][self._dir][OFFSETS.Y] = value
 end
 
 function EditorNotes:_get_tag()

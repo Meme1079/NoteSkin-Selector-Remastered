@@ -101,15 +101,18 @@ mouse:add_element('editorInputSpriteFrames')
 --- File ---
 
 local editorInputFieldFiles = FlavorUI_TextField:new('editorInputFieldFiles', '', calcPosY(15, 8), calcPosY((430.5+530.5)/2, 6), 360)
-editorInputFieldFiles.font                 = 'NoteSkin Selector Remastered/fonts/TOMO Sponge Regular.otf'
-editorInputFieldFiles.size                 = 20
+editorInputFieldFiles.font                 = 'NoteSkin Selector Remastered/fonts/cooper-hewitt heavy.ttf'
+editorInputFieldFiles.size                 = 17
 editorInputFieldFiles.maxLength            = 11+50
+editorInputFieldFiles.offset_y             = -9
+editorInputFieldFiles.selection_offset_y   = -13
 editorInputFieldFiles.caret_offset_y       = -3
 editorInputFieldFiles.caret_width          = 2.5
 editorInputFieldFiles.caret_height         = 20
 editorInputFieldFiles.antialiasing         = false
 editorInputFieldFiles.placeholder_text     = 'folder/skin'
 editorInputFieldFiles.placeholder_offset_x = -1
+editorInputFieldFiles.placeholder_offset_y = -9
 editorInputFieldFiles.onChange             = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
 editorInputFieldFiles:add()
 mouse:add_element('editorInputSpriteFile')
@@ -117,15 +120,18 @@ mouse:add_element('editorInputSpriteFile')
 --- Save ---
 
 local editorInputFieldSaveFile = FlavorUI_TextField:new('editorInputFieldSaveFile', '', calcPosY(15, 8), calcPosY((530.5+630.5)/2, 6), 360)
-editorInputFieldSaveFile.font                 = 'NoteSkin Selector Remastered/fonts/TOMO Sponge Regular.otf'
-editorInputFieldSaveFile.size                 = 20
+editorInputFieldSaveFile.font                 = 'NoteSkin Selector Remastered/fonts/cooper-hewitt heavy.ttf'
+editorInputFieldSaveFile.size                 = 17
 editorInputFieldSaveFile.maxLength            = 11+50
+editorInputFieldSaveFile.offset_y             = -9
+editorInputFieldSaveFile.selection_offset_y   = -13
 editorInputFieldSaveFile.caret_offset_y       = -3
 editorInputFieldSaveFile.caret_width          = 2.5
 editorInputFieldSaveFile.caret_height         = 20
 editorInputFieldSaveFile.antialiasing         = false
 editorInputFieldSaveFile.placeholder_text     = '/folder...'
 editorInputFieldSaveFile.placeholder_offset_x = -1
+editorInputFieldSaveFile.placeholder_offset_y = -9
 editorInputFieldSaveFile.onChange             = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
 editorInputFieldSaveFile:add()
 mouse:add_element('editorInputSpriteSaveFile')
