@@ -100,7 +100,7 @@ mouse:add_element('editorInputSpriteFrames')
 
 --- File ---
 
-local editorInputFieldFiles = FlavorUI_TextField:new('editorInputFieldFiles', 'NOTE_assets-', calcPosY(15, 8), calcPosY((430.5+530.5)/2, 6), 360)
+local editorInputFieldFiles = FlavorUI_TextField:new('editorInputFieldFiles', '', calcPosY(15, 8), calcPosY((430.5+530.5)/2, 6), 360)
 editorInputFieldFiles.font                 = 'NoteSkin Selector Remastered/fonts/TOMO Sponge Regular.otf'
 editorInputFieldFiles.size                 = 20
 editorInputFieldFiles.maxLength            = 11+50
@@ -108,16 +108,9 @@ editorInputFieldFiles.caret_offset_y       = -3
 editorInputFieldFiles.caret_width          = 2.5
 editorInputFieldFiles.caret_height         = 20
 editorInputFieldFiles.antialiasing         = false
-editorInputFieldFiles.placeholder_text     = 'NOTE_assets-'
+editorInputFieldFiles.placeholder_text     = 'folder/skin'
 editorInputFieldFiles.placeholder_offset_x = -1
-editorInputFieldFiles.onChange             = [[ 
-     FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1);
-
-     if (StringTools.startsWith(curText, "NOTE_assets-") == false) {
-          this.set_text("NOTE_assets-");
-          this.set_caretIndex(12);
-     }
-]]
+editorInputFieldFiles.onChange             = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
 editorInputFieldFiles:add()
 mouse:add_element('editorInputSpriteFile')
 
@@ -146,9 +139,10 @@ local b = EditorNotesTemplate:new('noteSkins/NOTE_assets')
 b:create()
 
 local a = EditorNotes:new('editorNotes', 'noteSkins/NOTE_assets-DSides')
+a.mouse = mouse
 a:create()
 
-local BORDERS = {LEFT = 207, RIGHT = -545, UP = 177, DOWN = -440}
+local pp = 0
 function onUpdate(elapsed)
      editorInputFieldOffsetX:update()
      editorInputFieldOffsetY:update()
@@ -173,8 +167,6 @@ function onUpdate(elapsed)
 
      if kbCondJustPressed('ENTER', editorInputFieldOffsetX:focused()) then
           a:set_offset_data_x(editorInputFieldOffsetX:get_field())
-          if a:get_offset_data_x() < BORDERS.RIGHT then editorInputFieldOffsetX:set_field(BORDERS.RIGHT) end
-          if a:get_offset_data_x() > BORDERS.LEFT  then editorInputFieldOffsetX:set_field(BORDERS.LEFT)  end
 
           local status, result = pcall(math.round, editorInputFieldOffsetX:get_field():gsub('%-%-+', '-'), 2)
           editorInputFieldOffsetX:set_field(status == true and result or a:get_offset_data_x())
@@ -182,8 +174,6 @@ function onUpdate(elapsed)
      end
      if kbCondJustPressed('ENTER', editorInputFieldOffsetY:focused()) then
           a:set_offset_data_y(editorInputFieldOffsetY:get_field())
-          if a:get_offset_data_y() < BORDERS.DOWN then editorInputFieldOffsetY:set_field(BORDERS.DOWN) end
-          if a:get_offset_data_y() > BORDERS.UP   then editorInputFieldOffsetY:set_field(BORDERS.UP)   end
 
           local status, result = pcall(math.round, editorInputFieldOffsetY:get_field():gsub('%-%-+', '-'), 2)
           editorInputFieldOffsetY:set_field(status == true and result or a:get_offset_data_y())

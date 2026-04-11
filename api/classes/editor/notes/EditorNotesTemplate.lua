@@ -15,21 +15,20 @@ end
 function EditorNotesTemplate:create()
      for templateIndex = 1, 4 do
           local templateTag = F"editorNotesTemplate${templateIndex}"
-          local templateX = 600 + (130*(templateIndex-1))
+          local templateX = 630 + (110*(templateIndex-1))
           local templateY = 150
      
           local templateDirection = SKIN_DIRECTIONS[templateIndex]
           local templateColors    = SKIN_COLORS[templateIndex]
           makeAnimatedLuaSprite(templateTag, self.sprite, templateX, templateY)
           scaleObject(templateTag, 0.65, 0.65)
-          addAnimationByPrefix(templateTag, F"${templateDirection} pressed", F"${templateDirection} pressed", 24, false)
+          addAnimationByPrefix(templateTag, F"${templateDirection} pressed", F"${templateDirection} press", 24, false)
           addAnimationByPrefix(templateTag, F"${templateDirection} confirm", F"${templateDirection} confirm", 24, false)
           addAnimationByPrefix(templateTag, F"${templateDirection} colored", templateColors, 24, false)
           addAnimationByPrefix(templateTag, templateDirection, F"arrow${templateDirection:upper()}", 24, false)
           playAnim(templateTag, templateDirection, false)
           setProperty(F"${templateTag}.alpha", 0.5)
           setObjectCamera(templateTag, 'camHUD')
-          --setObjectOrder(templateTag, 100)
           addLuaSprite(templateTag)
      end
 end
@@ -52,7 +51,9 @@ end
 function EditorNotesTemplate:set_order(value)
      for templateIndex = 1, 4 do
           local templateTag = F"editorNotesTemplate${templateIndex}"
-          setObjectOrder(templateTag, value)
+          if luaSpriteExists(templateTag) == true then
+               setObjectOrder(templateTag, value)
+          end
      end
 end
 

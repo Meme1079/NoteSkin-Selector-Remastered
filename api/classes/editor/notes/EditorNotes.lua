@@ -8,14 +8,6 @@ local json = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 local kbCondJustPressed = funkinlua.kbCondJustPressed
 local kbCondPressed     = funkinlua.kbCondPressed
 
----@enum BORDERS
-local BORDERS = {
-     LEFT  = 207,
-     RIGHT = -545,
-     UP    = 177,
-     DOWN  = -440
-}
-
 ---@enum OFFSETS
 local OFFSETS = {
      X = 1,
@@ -33,6 +25,7 @@ function EditorNotes:new(tag, sprite)
      local self = setmetatable({}, {__index = self})
      self.tag    = tag
      self.sprite = sprite
+     self.mouse  = nil
 
      self._dir  = 1
      self._dirX = 0
@@ -52,7 +45,7 @@ end
 function EditorNotes:create()
      for editorIndex = 1, 4 do
           local editorTag = self.tag..tostring(editorIndex)
-          local editorX = 600 + (130*(editorIndex-1))
+          local editorX = 630 + (110*(editorIndex-1))
           local editorY = 150
 
           local editorDirection = SKIN_DIRECTIONS[editorIndex]
@@ -66,6 +59,7 @@ function EditorNotes:create()
           playAnim(editorTag, editorDirection)
           setObjectCamera(editorTag, 'camHUD')
           addLuaSprite(editorTag)
+          self.mouse:add_element(editorTag)
 
           for skinAnimationIndex = 1, #SKIN_ANIMATIONS do
                local skinAnimations = SKIN_ANIMATIONS[skinAnimationIndex]:upper()
@@ -98,24 +92,6 @@ function EditorNotes:update_movement()
 
      local dirTag    = self:_get_tag()
      local dirLength = math.sqrt(self._dirX^2 + self._dirY^2)
-
-     if getProperty(F"${dirTag}.offset.x") < BORDERS.RIGHT then
-          self:set_offset_data_x(BORDERS.RIGHT)
-          setProperty(F"${dirTag}.offset.x", self:get_offset_data_x())
-     end
-     if getProperty(F"${dirTag}.offset.x") > BORDERS.LEFT  then
-          self:set_offset_data_x(BORDERS.LEFT)
-          setProperty(F"${dirTag}.offset.x", self:get_offset_data_x())
-     end
-     if getProperty(F"${dirTag}.offset.y") < BORDERS.DOWN  then
-          self:set_offset_data_y(BORDERS.DOWN)
-          setProperty(F"${dirTag}.offset.y", self:get_offset_data_y())
-     end
-     if getProperty(F"${dirTag}.offset.y") > BORDERS.UP    then
-          self:set_offset_data_y(BORDERS.UP)
-          setProperty(F"${dirTag}.offset.y", self:get_offset_data_y())
-     end
-     
      if dirLength > 0 then
           self._dirX = self._dirX / dirLength
           self._dirY = self._dirY / dirLength
@@ -170,6 +146,10 @@ function EditorNotes:update_animations()
           end
           if kbCondJustPressed('P', self:_get_focused()) then
                updateEditorNote('colored', F"${editorDirection} colored")
+          end
+
+          if funkinlua.clickObject(editorTag, 'camHUD') == true then
+               self._dir = tonumber( editorTag:match('%d$') )
           end
      end
 end
