@@ -25,7 +25,7 @@ makeLuaSprite('skinEditorBG', '', 0, 0)
 makeGraphic('skinEditorBG', SKIN_EDITOR_BG_WIDTH, SKIN_EDITOR_BG_HEIGHT, '242424')
 setObjectCamera('skinEditorBG', 'camHUD')
 setObjectOrder('skinEditorBG', 0)
-addLuaSprite('skinEditorBG')
+addLuaSprite('skinEditorBG', true)
 
 makeLuaSprite('testSidebar', nil, 0, 0)
 makeGraphic('testSidebar', 420, SKIN_EDITOR_BG_HEIGHT, '101010')

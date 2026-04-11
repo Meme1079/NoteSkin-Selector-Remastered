@@ -67,11 +67,7 @@ function EditorNotes:create()
           playAnim(editorTag, editorDirection)
           setObjectCamera(editorTag, 'camHUD')
           addLuaSprite(editorTag)
-
           self.mouse:add_element(editorTag)
-          self.mouse.onClick = function(this)
-               playSound('select')
-          end
 
           for skinAnimationIndex = 1, #SKIN_ANIMATIONS do
                local skinAnimations = SKIN_ANIMATIONS[skinAnimationIndex]:upper()
@@ -164,6 +160,7 @@ function EditorNotes:update_animations()
 
           if funkinlua.clickObject(editorTag, 'camHUD') == true then
                self._dir = tonumber( editorTag:match('%d$') )
+               playSound('exitWindow')
           end
      end
 end

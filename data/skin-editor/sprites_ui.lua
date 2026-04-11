@@ -187,6 +187,10 @@ function onUpdate(elapsed)
      end
 
      if kbCondJustPressed('ENTER', editorInputFieldFiles:focused())  then
+          if checkFileExists(F"images/noteSkins/${editorInputFieldFiles:entered()}.png") == false then
+               editorInputFieldFiles:invalid_field('0xffff0000', 'Skin Doesn\\\'t Exist!')
+               return
+          end
           a:texture('noteskins/'..editorInputFieldFiles:entered())
      end
      if kbCondJustPressed('Z', FlavorUI_TextField_Focus) then

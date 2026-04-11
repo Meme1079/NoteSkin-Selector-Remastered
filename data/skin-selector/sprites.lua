@@ -35,7 +35,7 @@ makeLuaSprite('skinSelectorBG', 'menuDesat', 0, 0)
 setObjectCamera('skinSelectorBG', 'camHUD')
 setObjectOrder('skinSelectorBG', 0)
 setProperty('skinSelectorBG.color', 0x5220bd)
-addLuaSprite('skinSelectorBG')
+addLuaSprite('skinSelectorBG', true)
 
 -- Page Scrollbar --
 
