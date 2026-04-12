@@ -66,8 +66,13 @@ function EditorNotes:create()
           addAnimationByPrefix(editorTag, editorDirection, F"arrow${editorDirection:upper()}", 24, true)
           playAnim(editorTag, editorDirection)
           setObjectCamera(editorTag, 'camHUD')
-          addLuaSprite(editorTag)
+          addLuaSprite(editorTag, true)
           self.mouse:add_element(editorTag)
+
+          if editorIndex == 1 then
+               setProperty('skinEditorHighlight.x', editorX-5)
+               setProperty('skinEditorHighlight.y', editorY-5)
+          end
 
           for skinAnimationIndex = 1, #SKIN_ANIMATIONS do
                local skinAnimations = SKIN_ANIMATIONS[skinAnimationIndex]:upper()
@@ -137,7 +142,6 @@ function EditorNotes:update_animations()
 
           local editorDirection = SKIN_DIRECTIONS[editorIndex]
           local editorColors    = SKIN_COLORS[editorIndex]
-
           local function updateEditorNote(offsetName, offsetAnimation)
                self._animation_name = offsetName:upper()
 
@@ -160,7 +164,10 @@ function EditorNotes:update_animations()
 
           if funkinlua.clickObject(editorTag, 'camHUD') == true then
                self._dir = tonumber( editorTag:match('%d$') )
+
                playSound('exitWindow')
+               setProperty('skinEditorHighlight.x', editorX-5)
+               setProperty('skinEditorHighlight.y', editorY-5)
           end
      end
 end

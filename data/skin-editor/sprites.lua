@@ -27,10 +27,16 @@ setObjectCamera('skinEditorBG', 'camHUD')
 setObjectOrder('skinEditorBG', 0)
 addLuaSprite('skinEditorBG', true)
 
-makeLuaSprite('testSidebar', nil, 0, 0)
-makeGraphic('testSidebar', 420, SKIN_EDITOR_BG_HEIGHT, '101010')
-setObjectCamera('testSidebar', 'camHUD')
-addLuaSprite('testSidebar')
+makeLuaSprite('skinEditorSidebar', nil, 0, 0)
+makeGraphic('skinEditorSidebar', 420, SKIN_EDITOR_BG_HEIGHT, '101010')
+setObjectCamera('skinEditorSidebar', 'camHUD')
+addLuaSprite('skinEditorSidebar')
+
+makeLuaSprite('skinEditorHighlight', nil, 0, 0)
+makeGraphic('skinEditorHighlight', 112, 110, '000000')
+setObjectCamera('skinEditorHighlight', 'camHUD')
+setProperty('skinEditorHighlight.alpha', 0.2)
+addLuaSprite('skinEditorHighlight', false)
 
 -- Offset --
 

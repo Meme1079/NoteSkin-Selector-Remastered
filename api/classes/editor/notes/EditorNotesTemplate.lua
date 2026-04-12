@@ -29,7 +29,7 @@ function EditorNotesTemplate:create()
           playAnim(templateTag, templateDirection, false)
           setProperty(F"${templateTag}.alpha", 0.5)
           setObjectCamera(templateTag, 'camHUD')
-          addLuaSprite(templateTag)
+          addLuaSprite(templateTag, true)
      end
 end
 
