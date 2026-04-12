@@ -191,10 +191,16 @@ function onUpdate(elapsed)
           editorInputFieldOffsetY:set_field(status == true and result or a:get_offset_data_y())
           editorInputFieldOffsetY:set_caret_index(#editorInputFieldOffsetY:get_field())
      end
+
      if kbCondJustPressed('ENTER', editorInputFieldSizeX:focused()) then
           if #editorInputFieldSizeX:get_field() <= 0 then
                editorInputFieldSizeX:invalid_field('0xffff0000', 'No Value!'); return
           end
+
+          if tonumber(editorInputFieldSizeX:get_field()) >= 1 then editorInputFieldSizeX:set_field(1)   end
+          if tonumber(editorInputFieldSizeX:get_field()) <= 0 then editorInputFieldSizeX:set_field(0.1) end
+          editorInputFieldSizeX:set_caret_index(#editorInputFieldSizeX:get_field())
+
           a:set_size_data_x(editorInputFieldSizeX:get_field())
           a:update_scale()
      end
@@ -202,6 +208,11 @@ function onUpdate(elapsed)
           if #editorInputFieldSizeY:get_field() <= 0 then
                editorInputFieldSizeY:invalid_field('0xffff0000', 'No Value!'); return
           end
+
+          if tonumber(editorInputFieldSizeY:get_field()) >= 1 then editorInputFieldSizeY:set_field(1)   end
+          if tonumber(editorInputFieldSizeY:get_field()) <= 0 then editorInputFieldSizeY:set_field(0.1) end
+          editorInputFieldSizeY:set_caret_index(#editorInputFieldSizeY:get_field())
+
           a:set_size_data_x(editorInputFieldSizeY:get_field())
           a:update_scale()
      end
