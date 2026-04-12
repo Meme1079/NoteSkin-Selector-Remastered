@@ -57,27 +57,27 @@ mouse:add_element('editorInputSpriteOffsetY')
 
 --- Size ---
 
-local editorInputFieldSizeX = FlavorUI_TextField:new('editorInputFieldSizeX', '', calcPosX(40, 8), calcPosY(230.5, 7), 130)
+local editorInputFieldSizeX = FlavorUI_TextField:new('editorInputFieldSizeX', '0.65', calcPosX(40, 8), calcPosY(230.5, 7), 130)
 editorInputFieldSizeX.font             = 'NoteSkin Selector Remastered/fonts/tomo.otf'
 editorInputFieldSizeX.size             = 20
-editorInputFieldSizeX.maxLength        = 6
+editorInputFieldSizeX.maxLength        = 4
 editorInputFieldSizeX.caret_offset_y   = -2
 editorInputFieldSizeX.caret_width      = 2.5
 editorInputFieldSizeX.caret_height     = 20
-editorInputFieldSizeX.placeholder_text = '000.00'
+editorInputFieldSizeX.placeholder_text = '0.65'
 editorInputFieldSizeX.onChange         = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
 editorInputFieldSizeX:add()
 editorInputFieldSizeX:set_customFilterPattern("[^0-9.]*", "g")
 mouse:add_element('editorInputSpriteSizeX')
 
-local editorInputFieldSizeY = FlavorUI_TextField:new('editorInputFieldSizeY', '', calcPosX(240, 8), calcPosY(230.5, 7), 130)
+local editorInputFieldSizeY = FlavorUI_TextField:new('editorInputFieldSizeY', '0.65', calcPosX(240, 8), calcPosY(230.5, 7), 130)
 editorInputFieldSizeY.font             = 'NoteSkin Selector Remastered/fonts/tomo.otf'
 editorInputFieldSizeY.size             = 20
-editorInputFieldSizeY.maxLength        = 6
+editorInputFieldSizeY.maxLength        = 4
 editorInputFieldSizeY.caret_offset_y   = -2
 editorInputFieldSizeY.caret_width      = 2.5
 editorInputFieldSizeY.caret_height     = 20
-editorInputFieldSizeY.placeholder_text = '000.00'
+editorInputFieldSizeY.placeholder_text = '0.65'
 editorInputFieldSizeY.onChange         = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
 editorInputFieldSizeY:add()
 editorInputFieldSizeY:set_customFilterPattern("[^0-9.]*", "g")
@@ -85,14 +85,14 @@ mouse:add_element('editorInputSpriteSizeY')
 
 --- Frames ---
 
-local editorInputFieldFrames = FlavorUI_TextField:new('editorInputFieldFrames', '', calcPosX(40, 8), calcPosY(330.5, 7), 130)
+local editorInputFieldFrames = FlavorUI_TextField:new('editorInputFieldFrames', '24', calcPosX(40, 8), calcPosY(330.5, 7), 130)
 editorInputFieldFrames.font             = 'NoteSkin Selector Remastered/fonts/tomo.otf'
 editorInputFieldFrames.size             = 20
 editorInputFieldFrames.maxLength        = 6
 editorInputFieldFrames.caret_offset_y   = -2
 editorInputFieldFrames.caret_width      = 2.5
 editorInputFieldFrames.caret_height     = 20
-editorInputFieldFrames.placeholder_text = '00'
+editorInputFieldFrames.placeholder_text = '24'
 editorInputFieldFrames.onChange         = [[ FlxG.sound.play(Paths.soundRandom('keyclicks/keyClick', 1, 8, true), 1); ]]
 editorInputFieldFrames:add()
 editorInputFieldFrames:set_customFilterPattern("[^0-9]*", "g")
@@ -172,6 +172,9 @@ function onUpdate(elapsed)
      end
 
      if kbCondJustPressed('ENTER', editorInputFieldOffsetX:focused()) then
+          if #editorInputFieldOffsetX:get_field() <= 0 then
+               editorInputFieldOffsetX:invalid_field('0xffff0000', 'No Value!'); return
+          end
           a:set_offset_data_x(editorInputFieldOffsetX:get_field())
 
           local status, result = pcall(math.round, editorInputFieldOffsetX:get_field():gsub('%-%-+', '-'), 2)
@@ -179,6 +182,9 @@ function onUpdate(elapsed)
           editorInputFieldOffsetX:set_caret_index(#editorInputFieldOffsetX:get_field())
      end
      if kbCondJustPressed('ENTER', editorInputFieldOffsetY:focused()) then
+          if #editorInputFieldOffsetY:get_field() <= 0 then
+               editorInputFieldOffsetY:invalid_field('0xffff0000', 'No Value!'); return
+          end
           a:set_offset_data_y(editorInputFieldOffsetY:get_field())
 
           local status, result = pcall(math.round, editorInputFieldOffsetY:get_field():gsub('%-%-+', '-'), 2)
@@ -186,18 +192,23 @@ function onUpdate(elapsed)
           editorInputFieldOffsetY:set_caret_index(#editorInputFieldOffsetY:get_field())
      end
      if kbCondJustPressed('ENTER', editorInputFieldSizeX:focused()) then
+          if #editorInputFieldSizeX:get_field() <= 0 then
+               editorInputFieldSizeX:invalid_field('0xffff0000', 'No Value!'); return
+          end
           a:set_size_data_x(editorInputFieldSizeX:get_field())
           a:update_scale()
      end
      if kbCondJustPressed('ENTER', editorInputFieldSizeY:focused()) then
+          if #editorInputFieldSizeY:get_field() <= 0 then
+               editorInputFieldSizeY:invalid_field('0xffff0000', 'No Value!'); return
+          end
           a:set_size_data_x(editorInputFieldSizeY:get_field())
           a:update_scale()
      end
 
      if kbCondJustPressed('ENTER', editorInputFieldFiles:focused())  then
           if checkFileExists(F"images/noteSkins/${editorInputFieldFiles:entered()}.png") == false then
-               editorInputFieldFiles:invalid_field('0xffff0000', 'Skin Doesn\\\'t Exist!')
-               return
+               editorInputFieldFiles:invalid_field('0xffff0000', 'Skin Doesn\\\'t Exist!'); return
           end
           a:texture('noteskins/'..editorInputFieldFiles:entered())
      end
