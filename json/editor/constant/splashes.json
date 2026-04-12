@@ -1,0 +1,53 @@
+{
+     "animations": {
+          "note_splash1": {
+               "left_splash1": {
+                    "prefix": "note splash purple 1",
+                    "name": "left_splash1",
+                    "offsets": [0,0]
+               },
+               "down_splash1": {
+                    "prefix": "note splash blue 1",
+                    "name": "down_splash1",
+                    "offsets": [0,0]
+               },
+               "up_splash1": {
+                    "prefix": "note splash green 1",
+                    "name": "up_splash1",
+                    "offsets": [0,0]
+               },
+               "right_splash1": {
+                    "prefix": "note splash red 1",
+                    "name": "right_splash1",
+                    "offsets": [0,0]
+               }
+          },
+          "note_splash2": {
+               "left_splash2": {
+                    "prefix": "note splash purple 2",
+                    "name": "left_splash2",
+                    "offsets": [0,0]
+               },
+               "down_splash2": {
+                    "prefix": "note splash blue 2",
+                    "name": "down_splash2",
+                    "offsets": [0,0]
+               },
+               "up_splash2": {
+                    "prefix": "note splash green 2",
+                    "name": "up_splash2",
+                    "offsets": [0,0]
+               },
+               "right_splash2": {
+                    "prefix": "note splash red 2",
+                    "name": "right_splash2",
+                    "offsets": [0,0]
+               }
+          }
+     },
+     "frames": {
+          "note_splash1": 24,
+          "note_splash2": 24
+     },
+     "size": [0.65, 0.65]
+}
