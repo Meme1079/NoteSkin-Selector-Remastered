@@ -185,6 +185,14 @@ function onUpdate(elapsed)
           editorInputFieldOffsetY:set_field(status == true and result or a:get_offset_data_y())
           editorInputFieldOffsetY:set_caret_index(#editorInputFieldOffsetY:get_field())
      end
+     if kbCondJustPressed('ENTER', editorInputFieldSizeX:focused()) then
+          a:set_size_data_x(editorInputFieldSizeX:get_field())
+          a:update_scale()
+     end
+     if kbCondJustPressed('ENTER', editorInputFieldSizeY:focused()) then
+          a:set_size_data_x(editorInputFieldSizeY:get_field())
+          a:update_scale()
+     end
 
      if kbCondJustPressed('ENTER', editorInputFieldFiles:focused())  then
           if checkFileExists(F"images/noteSkins/${editorInputFieldFiles:entered()}.png") == false then
