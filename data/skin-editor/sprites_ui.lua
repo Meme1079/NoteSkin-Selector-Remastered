@@ -11,6 +11,8 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 
 local kbCondJustPressed = funkinlua.kbCondJustPressed
 
+local json = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
+
 ---@enum BORDERS
 local BORDERS = {
      LEFT  = 207,
@@ -148,7 +150,6 @@ local a = EditorNotes:new('editorNotes', 'noteSkins/NOTE_assets-DSides')
 a.mouse = mouse
 a:create()
 
-local pp = 0
 function onUpdate(elapsed)
      editorInputFieldOffsetX:update()
      editorInputFieldOffsetY:update()
@@ -209,7 +210,6 @@ function onUpdate(elapsed)
           if #editorInputFieldSizeY:get_field() <= 0 then
                editorInputFieldSizeY:invalid_field('0xffff0000', 'No Value!'); return
           end
-
           if tonumber(editorInputFieldSizeY:get_field()) >= 1 then editorInputFieldSizeY:set_field(1)   end
           if tonumber(editorInputFieldSizeY:get_field()) <= 0 then editorInputFieldSizeY:set_field(0.1) end
           editorInputFieldSizeY:set_caret_index(#editorInputFieldSizeY:get_field())
@@ -222,7 +222,6 @@ function onUpdate(elapsed)
           if #editorInputFieldFrames:get_field() <= 0 then
                editorInputFieldFrames:invalid_field('0xffff0000', 'No Value!'); return
           end
-
           if tonumber(editorInputFieldFrames:get_field()) >= 99 then editorInputFieldFrames:set_field(99) end
           if tonumber(editorInputFieldFrames:get_field()) <= 0  then editorInputFieldFrames:set_field(1)  end
           
@@ -236,6 +235,16 @@ function onUpdate(elapsed)
           end
           a:texture('noteskins/'..editorInputFieldFiles:entered())
      end
+
+     editorSaveDataSprite.onRelease = function(this)
+          if #editorInputFieldSaveFile:get_field() <= 0 then
+               editorInputFieldSaveFile:invalid_field('0xffff0000', 'No Value!'); return
+          end
+
+          local j = editorInputFieldSaveFile:get_field():gsub('%..*', '')
+          saveFile(F"NoteSkin Selector Remastered/json/editor/${j}.json", json.stringify(a:save(), nil, 5))
+     end
+
      if kbCondJustPressed('Z', FlavorUI_TextField_Focus) then
           b:set_order(100)
      end

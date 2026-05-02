@@ -87,6 +87,33 @@ function EditorNotes:create()
      end
 end
 
+function EditorNotes:texture(sprite)
+     for editorIndex = 1, 4 do
+          local editorTag = self.tag..tostring(editorIndex)
+
+          local editorDirection = SKIN_DIRECTIONS[editorIndex]
+          local editorColors    = SKIN_COLORS[editorIndex]
+          loadFrames(editorTag, sprite)
+          addAnimationByPrefix(editorTag, F"${editorDirection} pressed", F"${editorDirection} press", 24, true)
+          addAnimationByPrefix(editorTag, F"${editorDirection} confirm", F"${editorDirection} confirm", 24, true)
+          addAnimationByPrefix(editorTag, F"${editorDirection} colored", editorColors, 24, true)
+          addAnimationByPrefix(editorTag, editorDirection, F"arrow${editorDirection:upper()}", 24, true)
+
+          if self.__animation_name == 'STRUMS' then
+               playAnim(editorTag, editorDirection, true)
+          end
+          if self.__animation_name == 'PRESSED' then
+               playAnim(editorTag, F"${editorDirection} pressed", true)
+          end
+          if self.__animation_name == 'CONFIRM' then
+               playAnim(editorTag, F"${editorDirection} confirm", true)
+          end
+          if self.__animation_name == 'COLORED' then
+               playAnim(editorTag, F"${editorDirection} colored", true)
+          end
+     end
+end
+
 function EditorNotes:update_movement()
      if kbCondPressed('D', self:_get_focused()) or kbCondPressed('RIGHT', self:_get_focused()) then
           self._dirX = self._dirX + 1
@@ -199,31 +226,37 @@ function EditorNotes:update_frames()
      end
 end
 
-function EditorNotes:texture(sprite)
-     for editorIndex = 1, 4 do
-          local editorTag = self.tag..tostring(editorIndex)
+function EditorNotes:save()
+     local p = self.__json.offsets
+     local h = self.__json.frames
+     local r = self.__json.size
 
-          local editorDirection = SKIN_DIRECTIONS[editorIndex]
-          local editorColors    = SKIN_COLORS[editorIndex]
-          loadFrames(editorTag, sprite)
-          addAnimationByPrefix(editorTag, F"${editorDirection} pressed", F"${editorDirection} press", 24, true)
-          addAnimationByPrefix(editorTag, F"${editorDirection} confirm", F"${editorDirection} confirm", 24, true)
-          addAnimationByPrefix(editorTag, F"${editorDirection} colored", editorColors, 24, true)
-          addAnimationByPrefix(editorTag, editorDirection, F"arrow${editorDirection:upper()}", 24, true)
+     local i = 0
+     local animations = {}
+     local frames = {}
+     local size = r
 
-          if self.__animation_name == 'STRUMS' then
-               playAnim(editorTag, editorDirection, true)
+
+     for k,v in pairs(p) do
+          animations[k:lower()] = {}
+
+          for q,w in pairs(v) do
+               i = i + 1
+               local directions = SKIN_DIRECTIONS[i]
+
+               animations[k:lower()][F"${directions}_${k:lower()}"] = {}
+               animations[k:lower()][F"${directions}_${k:lower()}"]['prefix'] = F"${directions} ${k:lower()}"
+               animations[k:lower()][F"${directions}_${k:lower()}"]['name'] = F"${directions}_${k:lower()}"
+               animations[k:lower()][F"${directions}_${k:lower()}"]['offsets'] = w
           end
-          if self.__animation_name == 'PRESSED' then
-               playAnim(editorTag, F"${editorDirection} pressed", true)
-          end
-          if self.__animation_name == 'CONFIRM' then
-               playAnim(editorTag, F"${editorDirection} confirm", true)
-          end
-          if self.__animation_name == 'COLORED' then
-               playAnim(editorTag, F"${editorDirection} colored", true)
-          end
+          i = 0
      end
+    
+     for k,v in pairs(h) do
+          frames[k:lower()] = v
+     end
+
+     return {animations = animations, frames = frames, size = size}
 end
 
 function EditorNotes:get_offset_data_x()

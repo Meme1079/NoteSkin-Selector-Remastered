@@ -1,0 +1,150 @@
+{
+     "frames": {
+          "colored": 24,
+          "strums": 24,
+          "pressed": 24,
+          "confirm": 24
+     },
+     "size": [
+          0.65,
+          0.65
+     ],
+     "animations": {
+          "colored": {
+               "right_colored": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "right colored",
+                    "name": "right_colored"
+               },
+               "left_colored": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "left colored",
+                    "name": "left_colored"
+               },
+               "up_colored": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "up colored",
+                    "name": "up_colored"
+               },
+               "down_colored": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "down colored",
+                    "name": "down_colored"
+               }
+          },
+          "strums": {
+               "right_strums": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "right strums",
+                    "name": "right_strums"
+               },
+               "down_strums": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "down strums",
+                    "name": "down_strums"
+               },
+               "left_strums": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "left strums",
+                    "name": "left_strums"
+               },
+               "up_strums": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "up strums",
+                    "name": "up_strums"
+               }
+          },
+          "pressed": {
+               "down_pressed": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "down pressed",
+                    "name": "down_pressed"
+               },
+               "left_pressed": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "left pressed",
+                    "name": "left_pressed"
+               },
+               "up_pressed": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "up pressed",
+                    "name": "up_pressed"
+               },
+               "right_pressed": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "right pressed",
+                    "name": "right_pressed"
+               }
+          },
+          "confirm": {
+               "right_confirm": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "right confirm",
+                    "name": "right_confirm"
+               },
+               "down_confirm": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "down confirm",
+                    "name": "down_confirm"
+               },
+               "up_confirm": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "up confirm",
+                    "name": "up_confirm"
+               },
+               "left_confirm": {
+                    "offsets": [
+                         27.13,
+                         28.35
+                    ],
+                    "prefix": "left confirm",
+                    "name": "left_confirm"
+               }
+          }
+     }
+}
