@@ -7,11 +7,10 @@ local EditorNotesTemplate = require 'mods.NoteSkin Selector Remastered.api.class
 
 local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
+local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
 
 local kbCondJustPressed = funkinlua.kbCondJustPressed
-
-local json = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 
 ---@enum BORDERS
 local BORDERS = {
@@ -234,15 +233,19 @@ function onUpdate(elapsed)
                editorInputFieldFiles:invalid_field('0xffff0000', 'Skin Doesn\\\'t Exist!'); return
           end
           a:texture('noteskins/'..editorInputFieldFiles:entered())
+          editorInputFieldOffsetX:set_field( math.round(a:get_offset_data_x(), 2) )
+          editorInputFieldOffsetY:set_field( math.round(a:get_offset_data_y(), 2) )
+          editorInputFieldFrames:set_field(a:get_framerate_data())
      end
 
      editorSaveDataSprite.onRelease = function(this)
           if #editorInputFieldSaveFile:get_field() <= 0 then
-               editorInputFieldSaveFile:invalid_field('0xffff0000', 'No Value!'); return
+               --editorInputFieldSaveFile:invalid_field('0xffff0000', 'No Value!'); return
           end
 
           local j = editorInputFieldSaveFile:get_field():gsub('%..*', '')
-          saveFile(F"NoteSkin Selector Remastered/json/editor/${j}.json", json.stringify(a:save(), nil, 5))
+          a:save()
+          --saveFile(F"NoteSkin Selector Remastered/json/editor/${j}.json", json.stringify(a:save(), nil, 5))
      end
 
      if kbCondJustPressed('Z', FlavorUI_TextField_Focus) then

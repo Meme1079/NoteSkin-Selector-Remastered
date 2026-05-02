@@ -90,14 +90,21 @@ end
 function EditorNotes:texture(sprite)
      for editorIndex = 1, 4 do
           local editorTag = self.tag..tostring(editorIndex)
+          local editorX = 630 + (110*(editorIndex-1))
+          local editorY = 150
 
           local editorDirection = SKIN_DIRECTIONS[editorIndex]
           local editorColors    = SKIN_COLORS[editorIndex]
-          loadFrames(editorTag, sprite)
+          makeAnimatedLuaSprite(editorTag, sprite, editorX, editorY)
+          scaleObject(editorTag, 0.65, 0.65)
           addAnimationByPrefix(editorTag, F"${editorDirection} pressed", F"${editorDirection} press", 24, true)
           addAnimationByPrefix(editorTag, F"${editorDirection} confirm", F"${editorDirection} confirm", 24, true)
           addAnimationByPrefix(editorTag, F"${editorDirection} colored", editorColors, 24, true)
           addAnimationByPrefix(editorTag, editorDirection, F"arrow${editorDirection:upper()}", 24, true)
+          playAnim(editorTag, editorDirection)
+          setObjectCamera(editorTag, 'camHUD')
+          addLuaSprite(editorTag, true)
+          self.mouse:add_element(editorTag)
 
           if self.__animation_name == 'STRUMS' then
                playAnim(editorTag, editorDirection, true)
@@ -110,6 +117,13 @@ function EditorNotes:texture(sprite)
           end
           if self.__animation_name == 'COLORED' then
                playAnim(editorTag, F"${editorDirection} colored", true)
+          end
+
+          for skinAnimationIndex = 1, #SKIN_ANIMATIONS do
+               local skinAnimations = SKIN_ANIMATIONS[skinAnimationIndex]:upper()
+               self.__json.offsets[skinAnimations][editorIndex][POSITION.X] = math.round(getProperty(F"${editorTag}.offset.x"), 2)
+               self.__json.offsets[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
+               self.__json.frames[skinAnimations] = getProperty(F"${editorTag}.animation.curAnim.frameRate")
           end
      end
 end
@@ -231,32 +245,23 @@ function EditorNotes:save()
      local h = self.__json.frames
      local r = self.__json.size
 
-     local i = 0
-     local animations = {}
-     local frames = {}
-     local size = r
+     for i = 1, 4 do
+          local k = SKIN_DIRECTIONS[i]
+          
+          for j = 1, 4 do
+               local v = SKIN_ANIMATIONS[j]
 
-
-     for k,v in pairs(p) do
-          animations[k:lower()] = {}
-
-          for q,w in pairs(v) do
-               i = i + 1
-               local directions = SKIN_DIRECTIONS[i]
-
-               animations[k:lower()][F"${directions}_${k:lower()}"] = {}
-               animations[k:lower()][F"${directions}_${k:lower()}"]['prefix'] = F"${directions} ${k:lower()}"
-               animations[k:lower()][F"${directions}_${k:lower()}"]['name'] = F"${directions}_${k:lower()}"
-               animations[k:lower()][F"${directions}_${k:lower()}"]['offsets'] = w
+               if v == 'pressed' then
+                    debugPrint(F"${k}_${v}")
+               end
+               
           end
-          i = 0
      end
-    
-     for k,v in pairs(h) do
-          frames[k:lower()] = v
+     
+     for editorIndex = 1, 4 do
+          local editorTag = self.tag..tostring(editorIndex)
+          --debugPrint( math.round(p.CONFIRM[1][1] - math.round(getProperty(F"${editorTag}.offset.x"), 2), 2) )
      end
-
-     return {animations = animations, frames = frames, size = size}
 end
 
 function EditorNotes:get_offset_data_x()
