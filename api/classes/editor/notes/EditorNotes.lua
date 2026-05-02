@@ -103,10 +103,16 @@ function EditorNotes:update_movement()
      if kbCondJustPressed('LBRACKET', self:_get_focused()) and self._dir > 1 then
           self._dir = self._dir - 1
           playSound('select')
+
+          local editorX = 630 + (110*(self._dir-1))
+          setProperty('skinEditorHighlight.x', editorX-5)
      end
      if kbCondJustPressed('RBRACKET', self:_get_focused()) and self._dir < 4 then
           self._dir = self._dir + 1
           playSound('select')
+
+          local editorX = 630 + (110*(self._dir-1))
+          setProperty('skinEditorHighlight.x', editorX-5)
      end
 
      local dirTag    = self:_get_tag()
