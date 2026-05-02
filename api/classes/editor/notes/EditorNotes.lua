@@ -82,6 +82,7 @@ function EditorNotes:create()
                local skinAnimations = SKIN_ANIMATIONS[skinAnimationIndex]:upper()
                self.__json.offsets[skinAnimations][editorIndex][POSITION.X] = math.round(getProperty(F"${editorTag}.offset.x"), 2)
                self.__json.offsets[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
+               self.__json.frames[skinAnimations] = getProperty(F"${editorTag}.animation.curAnim.frameRate")
           end
      end
 end
@@ -158,6 +159,7 @@ function EditorNotes:update_animations()
                playAnim(editorTag, offsetAnimation, true)
                setProperty(F"${editorTag}.offset.x", self.__json.offsets[self.__animation_name][editorIndex][POSITION.X])
                setProperty(F"${editorTag}.offset.y", self.__json.offsets[self.__animation_name][editorIndex][POSITION.Y])
+               setProperty(F"${editorTag}.animation.curAnim.frameRate", self.__json.frames[self.__animation_name])
           end
           if kbCondJustPressed('U', self:_get_focused()) then
                updateEditorNote('strums', F"${editorDirection}")
@@ -187,6 +189,13 @@ function EditorNotes:update_scale()
           local editorTag = self.tag..tostring(editorIndex)
           setProperty(F"${editorTag}.scale.x", self:get_size_data_x())
           setProperty(F"${editorTag}.scale.y", self:get_size_data_y())
+     end
+end
+
+function EditorNotes:update_frames()
+     for editorIndex = 1, 4 do
+          local editorTag = self.tag..tostring(editorIndex)
+          setProperty(F"${editorTag}.animation.curAnim.frameRate", self:get_framerate_data())
      end
 end
 
@@ -247,6 +256,14 @@ end
 
 function EditorNotes:set_size_data_y(value)
      self.__json.size[POSITION.Y] = value
+end
+
+function EditorNotes:get_framerate_data()
+     return tonumber( self.__json.frames[self.__animation_name] )
+end
+
+function EditorNotes:set_framerate_data(value)
+     self.__json.frames[self.__animation_name] = value
 end
 
 function EditorNotes:_get_tag()

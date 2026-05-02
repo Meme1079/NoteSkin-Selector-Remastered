@@ -88,7 +88,7 @@ mouse:add_element('editorInputSpriteSizeY')
 local editorInputFieldFrames = FlavorUI_TextField:new('editorInputFieldFrames', '24', calcPosX(40, 8), calcPosY(330.5, 7), 130)
 editorInputFieldFrames.font             = 'NoteSkin Selector Remastered/fonts/tomo.otf'
 editorInputFieldFrames.size             = 20
-editorInputFieldFrames.maxLength        = 6
+editorInputFieldFrames.maxLength        = 2
 editorInputFieldFrames.caret_offset_y   = -2
 editorInputFieldFrames.caret_width      = 2.5
 editorInputFieldFrames.caret_height     = 20
@@ -169,6 +169,7 @@ function onUpdate(elapsed)
      if FlavorUI_TextField_Focus then
           editorInputFieldOffsetX:set_field( math.round(a:get_offset_data_x(), 2) )
           editorInputFieldOffsetY:set_field( math.round(a:get_offset_data_y(), 2) )
+          editorInputFieldFrames:set_field(a:get_framerate_data())
      end
 
      if kbCondJustPressed('ENTER', editorInputFieldOffsetX:focused()) then
@@ -215,6 +216,18 @@ function onUpdate(elapsed)
 
           a:set_size_data_x(editorInputFieldSizeY:get_field())
           a:update_scale()
+     end
+
+     if kbCondJustPressed('ENTER', editorInputFieldFrames:focused()) then
+          if #editorInputFieldFrames:get_field() <= 0 then
+               editorInputFieldFrames:invalid_field('0xffff0000', 'No Value!'); return
+          end
+
+          if tonumber(editorInputFieldFrames:get_field()) >= 99 then editorInputFieldFrames:set_field(99) end
+          if tonumber(editorInputFieldFrames:get_field()) <= 0  then editorInputFieldFrames:set_field(1)  end
+          
+          a:set_framerate_data(editorInputFieldFrames:get_field())
+          a:update_frames()
      end
 
      if kbCondJustPressed('ENTER', editorInputFieldFiles:focused())  then
