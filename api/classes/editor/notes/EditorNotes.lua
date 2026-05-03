@@ -217,10 +217,10 @@ function EditorNotes:update_animations()
                updateEditorNote('strums', F"${editorDirection}")
           end
           if kbCondJustPressed('I', self:_get_focused()) then
-               updateEditorNote('pressed', F"${editorDirection} pressed")
+               updateEditorNote('confirm', F"${editorDirection} confirm")
           end
           if kbCondJustPressed('O', self:_get_focused()) then
-               updateEditorNote('confirm', F"${editorDirection} confirm")
+               updateEditorNote('pressed', F"${editorDirection} pressed")
           end
           if kbCondJustPressed('P', self:_get_focused()) then
                updateEditorNote('colored', F"${editorDirection} colored")
@@ -266,7 +266,7 @@ function EditorNotes:save()
                local b = o[SKIN_ANIMATIONS[qwer]:upper()][i]
 
                local c = math.round(a[1] - b[1], 2)
-               local d = math.round(a[2] - b[2], 2)
+               local d = math.round(b[2] - a[2], 2)
                offsets[SKIN_ANIMATIONS[qwer]][i] = {c,d}
           end
      end
