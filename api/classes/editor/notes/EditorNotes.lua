@@ -1,9 +1,8 @@
 local F         = require 'mods.NoteSkin Selector Remastered.api.libraries.f-strings.F'
 local string    = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.string'
 local math      = require 'mods.NoteSkin Selector Remastered.api.libraries.standard.math'
+local json      = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinlua'
-
-local json = require 'mods.NoteSkin Selector Remastered.api.libraries.json.main'
 
 local kbCondJustPressed = funkinlua.kbCondJustPressed
 local kbCondPressed     = funkinlua.kbCondPressed
@@ -51,6 +50,12 @@ function EditorNotes:new(tag, sprite)
                0.65
           }
      }
+     self.__json_offset_dummy = {
+          CONFIRM = {{0,0}, {0,0}, {0,0}, {0,0}},
+          PRESSED = {{0,0}, {0,0}, {0,0}, {0,0}},
+          COLORED = {{0,0}, {0,0}, {0,0}, {0,0}},
+          STRUMS  = {{0,0}, {0,0}, {0,0}, {0,0}}
+     }
      return self
 end
 
@@ -83,6 +88,9 @@ function EditorNotes:create()
                self.__json.offsets[skinAnimations][editorIndex][POSITION.X] = math.round(getProperty(F"${editorTag}.offset.x"), 2)
                self.__json.offsets[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
                self.__json.frames[skinAnimations] = getProperty(F"${editorTag}.animation.curAnim.frameRate")
+
+               self.__json_offset_dummy[skinAnimations][editorIndex][POSITION.X] = math.round(getProperty(F"${editorTag}.offset.x"), 2)
+               self.__json_offset_dummy[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
           end
      end
 end
@@ -240,28 +248,23 @@ function EditorNotes:update_frames()
      end
 end
 
-function EditorNotes:save()
-     local p = self.__json.offsets
-     local h = self.__json.frames
-     local r = self.__json.size
+function EditorNotes:save() 
+     local p = self.__json_offset_dummy
+     local o = self.__json.offsets
 
-     for i = 1, 4 do
-          local k = SKIN_DIRECTIONS[i]
+     local offsets = {}
+     for qwer = 1, #SKIN_ANIMATIONS do
+          offsets[SKIN_ANIMATIONS[qwer]] = {}
           
-          for j = 1, 4 do
-               local v = SKIN_ANIMATIONS[j]
+          for i = 1, 4 do
+               local a = p[SKIN_ANIMATIONS[qwer]:upper()][i]
+               local b = o[SKIN_ANIMATIONS[qwer]:upper()][i]
 
-               if v == 'pressed' then
-                    debugPrint(F"${k}_${v}")
-               end
-               
+               offsets[SKIN_ANIMATIONS[qwer]][i] = {a[1] - b[1], a[2] - b[2]}
           end
      end
+
      
-     for editorIndex = 1, 4 do
-          local editorTag = self.tag..tostring(editorIndex)
-          --debugPrint( math.round(p.CONFIRM[1][1] - math.round(getProperty(F"${editorTag}.offset.x"), 2), 2) )
-     end
 end
 
 function EditorNotes:get_offset_data_x()
