@@ -145,7 +145,7 @@ mouse:add_element('editorSaveDataSprite')
 local b = EditorNotesTemplate:new('noteSkins/NOTE_assets')
 b:create()
 
-local a = EditorNotes:new('editorNotes', 'noteSkins/NOTE_assets-DSides')
+local a = EditorNotes:new('editorNotes', 'noteSkins/NOTE_assets')
 a.mouse = mouse
 a:create()
 
@@ -254,6 +254,3 @@ function onUpdate(elapsed)
           b:set_order(3)
      end
 end
-
--- 26 26.6, 25.5 26.6, 25.5 26.6, 25 26.6
--- 24 23.5, 23 23.5, 23 23.5, 23 23.5
