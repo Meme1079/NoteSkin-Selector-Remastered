@@ -240,12 +240,11 @@ function onUpdate(elapsed)
 
      editorSaveDataSprite.onRelease = function(this)
           if #editorInputFieldSaveFile:get_field() <= 0 then
-               --editorInputFieldSaveFile:invalid_field('0xffff0000', 'No Value!'); return
+               editorInputFieldSaveFile:invalid_field('0xffff0000', 'No Value!'); return
           end
 
           local j = editorInputFieldSaveFile:get_field():gsub('%..*', '')
-          debugPrint(a:save())
-          --saveFile(F"NoteSkin Selector Remastered/json/editor/${j}.json", json.stringify(a:save(), nil, 5))
+          saveFile(F"NoteSkin Selector Remastered/json/editor/${j}.json", json.stringify(a:save(), nil, 5))
      end
 
      if kbCondJustPressed('Z', FlavorUI_TextField_Focus) then

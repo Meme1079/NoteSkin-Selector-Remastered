@@ -132,6 +132,9 @@ function EditorNotes:texture(sprite)
                self.__json.offsets[skinAnimations][editorIndex][POSITION.X] = math.round(getProperty(F"${editorTag}.offset.x"), 2)
                self.__json.offsets[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
                self.__json.frames[skinAnimations] = getProperty(F"${editorTag}.animation.curAnim.frameRate")
+
+               self.__json_offset_dummy[skinAnimations][editorIndex][POSITION.X] = math.round(getProperty(F"${editorTag}.offset.x"), 2)
+               self.__json_offset_dummy[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
           end
      end
 end
