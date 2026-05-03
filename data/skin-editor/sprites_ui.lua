@@ -244,7 +244,7 @@ function onUpdate(elapsed)
           end
 
           local j = editorInputFieldSaveFile:get_field():gsub('%..*', '')
-          a:save()
+          debugPrint(a:save())
           --saveFile(F"NoteSkin Selector Remastered/json/editor/${j}.json", json.stringify(a:save(), nil, 5))
      end
 

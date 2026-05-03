@@ -251,6 +251,8 @@ end
 function EditorNotes:save() 
      local p = self.__json_offset_dummy
      local o = self.__json.offsets
+     local e = self.__json.frames
+     local h = self.__json.size
 
      local offsets = {}
      for qwer = 1, #SKIN_ANIMATIONS do
@@ -260,11 +262,29 @@ function EditorNotes:save()
                local a = p[SKIN_ANIMATIONS[qwer]:upper()][i]
                local b = o[SKIN_ANIMATIONS[qwer]:upper()][i]
 
-               offsets[SKIN_ANIMATIONS[qwer]][i] = {a[1] - b[1], a[2] - b[2]}
+               local c = math.round(a[1] - b[1], 2)
+               local d = math.round(a[2] - b[2], 2)
+               offsets[SKIN_ANIMATIONS[qwer]][i] = {c,d}
           end
      end
 
-     
+     local k = getTextFromFile('json/editor/constant/notes.json')
+     local r = json.parse(k)
+     local i = 0
+     for k,v in pairs(r.animations) do
+          for q,w in pairs(v) do
+               i = i + 1
+               w.offsets = offsets[k][i]
+          end
+          i = 0
+     end
+
+     for k,v in pairs(r.frames) do
+          r.frames[k] = e[k:upper()]
+     end
+     r.size = h
+
+     return r
 end
 
 function EditorNotes:get_offset_data_x()

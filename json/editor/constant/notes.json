@@ -90,7 +90,7 @@
           }
      },
      "frames": {
-          "confirm": 64,
+          "confirm": 24,
           "pressed": 24,
           "colored": 24,
           "strums": 24
