@@ -50,7 +50,7 @@ function EditorNotes:new(tag, sprite)
                0.65
           }
      }
-     self.__json_offset_dummy = {
+     self.__json_offsets_dummy = {
           CONFIRM = {{0,0}, {0,0}, {0,0}, {0,0}},
           PRESSED = {{0,0}, {0,0}, {0,0}, {0,0}},
           COLORED = {{0,0}, {0,0}, {0,0}, {0,0}},
@@ -89,8 +89,8 @@ function EditorNotes:create()
                self.__json.offsets[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
                self.__json.frames[skinAnimations] = getProperty(F"${editorTag}.animation.curAnim.frameRate")
 
-               self.__json_offset_dummy[skinAnimations][editorIndex][POSITION.X] = math.round(getProperty(F"${editorTag}.offset.x"), 2)
-               self.__json_offset_dummy[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
+               self.__json_offsets_dummy[skinAnimations][editorIndex][POSITION.X] = math.round(getProperty(F"${editorTag}.offset.x"), 2)
+               self.__json_offsets_dummy[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
           end
      end
 end
@@ -133,8 +133,8 @@ function EditorNotes:texture(sprite)
                self.__json.offsets[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
                self.__json.frames[skinAnimations] = getProperty(F"${editorTag}.animation.curAnim.frameRate")
 
-               self.__json_offset_dummy[skinAnimations][editorIndex][POSITION.X] = math.round(getProperty(F"${editorTag}.offset.x"), 2)
-               self.__json_offset_dummy[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
+               self.__json_offsets_dummy[skinAnimations][editorIndex][POSITION.X] = math.round(getProperty(F"${editorTag}.offset.x"), 2)
+               self.__json_offsets_dummy[skinAnimations][editorIndex][POSITION.Y] = math.round(getProperty(F"${editorTag}.offset.y"), 2)
           end
      end
 end
@@ -252,42 +252,42 @@ function EditorNotes:update_frames()
 end
 
 function EditorNotes:save() 
-     local p = self.__json_offset_dummy
-     local o = self.__json.offsets
-     local e = self.__json.frames
-     local h = self.__json.size
+     local jsonDataOffsetsDummy = self.__json_offsets_dummy
+     local jsonDataOffsets      = self.__json.offsets
+     local jsonDataFrames       = self.__json.frames
+     local jsonDataSize         = self.__json.size
 
      local offsets = {}
-     for qwer = 1, #SKIN_ANIMATIONS do
-          offsets[SKIN_ANIMATIONS[qwer]] = {}
+     for skinAnimationIndex = 1, #SKIN_ANIMATIONS do
+          local skinAnimation = SKIN_ANIMATIONS[skinAnimationIndex]
+          offsets[skinAnimation] = {}
           
-          for i = 1, 4 do
-               local a = p[SKIN_ANIMATIONS[qwer]:upper()][i]
-               local b = o[SKIN_ANIMATIONS[qwer]:upper()][i]
+          for strumIndex = 1, 4 do
+               local offsetsDummy = jsonDataOffsetsDummy[skinAnimation:upper()][strumIndex]
+               local offsetsData  = jsonDataOffsets[skinAnimation:upper()][strumIndex]
 
-               local c = math.round(a[1] - b[1], 2)
-               local d = math.round(b[2] - a[2], 2)
-               offsets[SKIN_ANIMATIONS[qwer]][i] = {c,d}
+               local strumOffsetX = math.round(offsetsDummy[POSITION.X] - offsetsData[POSITION.X],  2)
+               local strumOffsetY = math.round(offsetsData[POSITION.Y]  - offsetsDummy[POSITION.Y], 2)
+               offsets[skinAnimation][strumIndex] = {strumOffsetX, strumOffsetY}
           end
      end
 
-     local k = getTextFromFile('json/editor/constant/notes.json')
-     local r = json.parse(k)
-     local i = 0
-     for k,v in pairs(r.animations) do
-          for q,w in pairs(v) do
-               i = i + 1
-               w.offsets = offsets[k][i]
+     local jsonNotesConst = getTextFromFile('json/editor/constant/notes.json')
+     local jsonNotesParse = json.parse(jsonNotesConst)
+     local jsonNotesIndex = 0
+     for names, values in pairs(jsonNotesParse.animations) do
+          for _, anims in pairs(values) do
+               jsonNotesIndex = jsonNotesIndex + 1
+               anims.offsets = offsets[names][jsonNotesIndex]
           end
-          i = 0
+          jsonNotesIndex = 0
      end
-
-     for k,v in pairs(r.frames) do
-          r.frames[k] = e[k:upper()]
+     for names in pairs(jsonNotesParse.frames) do
+          jsonNotesParse.frames[names] = jsonDataFrames[names:upper()]
      end
-     r.size = h
+     jsonNotesParse.size = jsonDataSize
 
-     return r
+     return jsonNotesParse
 end
 
 function EditorNotes:get_offset_data_x()
