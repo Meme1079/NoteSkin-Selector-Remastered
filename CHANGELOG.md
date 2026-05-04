@@ -4,7 +4,7 @@
      - Skin Classes have been split into multiple subclasses each corresponding to their functions.
      - Added a custom UI API (FlavorUI), that I've dedicated way too long on this.
 - Added the Skin Editor, making way more better and stylish than the last time.
-- Added a new noteskin D-Sides.
+- Added a new noteskin D-Sides and SonicFunk.
 - Added a warning for switching pages (i.e. using keys from your keyboard) while searching skins.
 - Added an ability to enable preview animation to fix conflicts with the note keybinds and controls.
 - Adjust scrollbar thumb offsets between the start and end page positions.

@@ -246,8 +246,4 @@ function onUpdatePost(elapsed)
                loadSkinSelectorState()
           end
      end
-
-     if keyboardJustPressed('F1') then
-          loadNewSong('Skin Editor', 2, {'Easy', 'Normal', 'Hard'})
-     end
 end

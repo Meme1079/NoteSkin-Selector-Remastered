@@ -253,4 +253,7 @@ function onUpdate(elapsed)
      if kbCondJustPressed('X', FlavorUI_TextField_Focus) then
           b:set_order(3)
      end
+     if kbCondJustPressed('C', FlavorUI_TextField_Focus) then
+          b:set_order(0)
+     end
 end

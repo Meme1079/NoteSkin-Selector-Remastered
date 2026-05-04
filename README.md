@@ -95,6 +95,7 @@ NoteSkin Selector Remastered © 2024 by Meme1079 is licensed under CC BY-NC-ND 4
 - M1KU - [Hatsune Miku - Project Funkin'](https://gamebanana.com/mods/485992)
 - MM, MM Luigi - [FNF: Mario's Madness](https://gamebanana.com/mods/359554)
 - Ourple - [Vs Ourple Guy](https://ourpleguy.neocities.org/)
+- SonicFunk - [Sonic The Funk](https://gamebanana.com/mods/655019)
 - Rush - [RUSHSHOT](https://gamebanana.com/mods/523534)
 - TGT - [Tails Gets Trolled](https://gamebanana.com/mods/320596)
 

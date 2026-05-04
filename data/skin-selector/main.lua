@@ -42,6 +42,9 @@ function onUpdatePost(elapsed)
           local GAME_DIFFICULTY_LISTS = NoteSkinSelector:get('GAME_DIFFICULTY_LISTS', 'GENERAL')
           loadNewSong(GAME_SONG_NAME, tonumber(GAME_DIFFICULTY_ID), GAME_DIFFICULTY_LISTS)
      end
+     if keyboardJustPressed('F1') then
+          loadNewSong('Skin Editor', 2, {'Easy', 'Normal', 'Hard'})
+     end
 end
 
 local allowCountdown = false;

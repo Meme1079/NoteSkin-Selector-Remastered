@@ -21,6 +21,10 @@ function onUpdatePost(elapsed)
      local g = getPropertyFromClass('backend.ui.PsychUIInputText', 'focusOn')
      if kbCondJustPressed('ONE',    g == nil) then restartSong(true) end
      if kbCondJustPressed('ESCAPE', g == nil) then exitSong()        end
+
+     if keyboardJustPressed('TAB') then
+          loadNewSong('Skin Selector', 2, {'Easy', 'Normal', 'Hard'})
+     end
 end
 
 local allowCountdown = false;
