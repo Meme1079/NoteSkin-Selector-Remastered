@@ -14,7 +14,7 @@ function onCreatePost()
                removeLuaScript(scripts, true)
           end
      end
-     playMusic('editor/sherbet lobby', 0.3, true)
+     playMusic('editor/cruising', 0.3, true)
 end
 
 function onUpdatePost(elapsed)

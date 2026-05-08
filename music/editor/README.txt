@@ -1,6 +1,6 @@
 OFFICIAL EDITOR THEME
 
 CREDITS:
-     - Song: Get On Up Again!
-     - Artist: astranova
-     - Link: https://www.youtube.com/watch?v=zaUU69UtQLA
+     - Song: Cruising
+     - Artist: Xploshi
+     - Link: https://www.youtube.com/watch?v=samD2CCGkRU
