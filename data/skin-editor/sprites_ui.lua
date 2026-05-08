@@ -142,12 +142,12 @@ mouse:add_element('editorSaveDataSprite')
 
 -- Updates --
 
-local b = EditorNotesTemplate:new('noteSkins/NOTE_assets')
-b:create()
+local EditorTemplateNotes = EditorNotesTemplate:new('noteSkins/NOTE_assets')
+EditorTemplateNotes:create()
 
-local a = EditorNotes:new('editorNotes', 'noteSkins/NOTE_assets')
-a.mouse = mouse
-a:create()
+local EditorSkinNotes = EditorNotes:new('editorNotes', 'noteSkins/NOTE_assets')
+EditorSkinNotes.mouse = mouse
+EditorSkinNotes:create()
 
 function onUpdate(elapsed)
      editorInputFieldOffsetX:update()
@@ -163,33 +163,33 @@ function onUpdate(elapsed)
      -- Main Stuff --
 
      local FlavorUI_TextField_Focus = getPropertyFromClass('backend.ui.PsychUIInputText', 'focusOn') == nil
-     a:update_animations()
-     a:update_movement()
+     EditorSkinNotes:update_animations()
+     EditorSkinNotes:update_movement()
      
      if FlavorUI_TextField_Focus then
-          editorInputFieldOffsetX:set_field( math.round(a:get_offset_data_x(), 2) )
-          editorInputFieldOffsetY:set_field( math.round(a:get_offset_data_y(), 2) )
-          editorInputFieldFrames:set_field(a:get_framerate_data())
+          editorInputFieldOffsetX:set_field( math.round(EditorSkinNotes:get_offset_data_x(), 2) )
+          editorInputFieldOffsetY:set_field( math.round(EditorSkinNotes:get_offset_data_y(), 2) )
+          editorInputFieldFrames:set_field(EditorSkinNotes:get_framerate_data())
      end
 
      if kbCondJustPressed('ENTER', editorInputFieldOffsetX:focused()) then
           if #editorInputFieldOffsetX:get_field() <= 0 then
                editorInputFieldOffsetX:invalid_field('0xffff0000', 'No Value!'); return
           end
-          a:set_offset_data_x(editorInputFieldOffsetX:get_field())
+          EditorSkinNotes:set_offset_data_x(editorInputFieldOffsetX:get_field())
 
           local status, result = pcall(math.round, editorInputFieldOffsetX:get_field():gsub('%-%-+', '-'), 2)
-          editorInputFieldOffsetX:set_field(status == true and result or a:get_offset_data_x())
+          editorInputFieldOffsetX:set_field(status == true and result or EditorSkinNotes:get_offset_data_x())
           editorInputFieldOffsetX:set_caret_index(#editorInputFieldOffsetX:get_field())
      end
      if kbCondJustPressed('ENTER', editorInputFieldOffsetY:focused()) then
           if #editorInputFieldOffsetY:get_field() <= 0 then
                editorInputFieldOffsetY:invalid_field('0xffff0000', 'No Value!'); return
           end
-          a:set_offset_data_y(editorInputFieldOffsetY:get_field())
+          EditorSkinNotes:set_offset_data_y(editorInputFieldOffsetY:get_field())
 
           local status, result = pcall(math.round, editorInputFieldOffsetY:get_field():gsub('%-%-+', '-'), 2)
-          editorInputFieldOffsetY:set_field(status == true and result or a:get_offset_data_y())
+          editorInputFieldOffsetY:set_field(status == true and result or EditorSkinNotes:get_offset_data_y())
           editorInputFieldOffsetY:set_caret_index(#editorInputFieldOffsetY:get_field())
      end
 
@@ -202,8 +202,8 @@ function onUpdate(elapsed)
           if tonumber(editorInputFieldSizeX:get_field()) <= 0 then editorInputFieldSizeX:set_field(0.1) end
           editorInputFieldSizeX:set_caret_index(#editorInputFieldSizeX:get_field())
 
-          a:set_size_data_x(editorInputFieldSizeX:get_field())
-          a:update_scale()
+          EditorSkinNotes:set_size_data_x(editorInputFieldSizeX:get_field())
+          EditorSkinNotes:update_scale()
      end
      if kbCondJustPressed('ENTER', editorInputFieldSizeY:focused()) then
           if #editorInputFieldSizeY:get_field() <= 0 then
@@ -213,8 +213,8 @@ function onUpdate(elapsed)
           if tonumber(editorInputFieldSizeY:get_field()) <= 0 then editorInputFieldSizeY:set_field(0.1) end
           editorInputFieldSizeY:set_caret_index(#editorInputFieldSizeY:get_field())
 
-          a:set_size_data_x(editorInputFieldSizeY:get_field())
-          a:update_scale()
+          EditorSkinNotesa:set_size_data_x(editorInputFieldSizeY:get_field())
+          EditorSkinNotes:update_scale()
      end
 
      if kbCondJustPressed('ENTER', editorInputFieldFrames:focused()) then
@@ -224,18 +224,18 @@ function onUpdate(elapsed)
           if tonumber(editorInputFieldFrames:get_field()) >= 99 then editorInputFieldFrames:set_field(99) end
           if tonumber(editorInputFieldFrames:get_field()) <= 0  then editorInputFieldFrames:set_field(1)  end
           
-          a:set_framerate_data(editorInputFieldFrames:get_field())
-          a:update_frames()
+          EditorSkinNotes:set_framerate_data(editorInputFieldFrames:get_field())
+          EditorSkinNotes:update_frames()
      end
 
      if kbCondJustPressed('ENTER', editorInputFieldFiles:focused())  then
           if checkFileExists(F"images/noteSkins/${editorInputFieldFiles:entered()}.png") == false then
                editorInputFieldFiles:invalid_field('0xffff0000', 'Skin Doesn\\\'t Exist!'); return
           end
-          a:texture('noteskins/'..editorInputFieldFiles:entered())
-          editorInputFieldOffsetX:set_field( math.round(a:get_offset_data_x(), 2) )
-          editorInputFieldOffsetY:set_field( math.round(a:get_offset_data_y(), 2) )
-          editorInputFieldFrames:set_field(a:get_framerate_data())
+          EditorSkinNotes:texture('noteskins/'..editorInputFieldFiles:entered())
+          editorInputFieldOffsetX:set_field( math.round(EditorSkinNotes:get_offset_data_x(), 2) )
+          editorInputFieldOffsetY:set_field( math.round(EditorSkinNotes:get_offset_data_y(), 2) )
+          editorInputFieldFrames:set_field(EditorSkinNotes:get_framerate_data())
      end
 
      editorSaveDataSprite.onRelease = function(this)
@@ -243,17 +243,17 @@ function onUpdate(elapsed)
                editorInputFieldSaveFile:invalid_field('0xffff0000', 'No Value!'); return
           end
 
-          local j = editorInputFieldSaveFile:get_field():gsub('%..*', '')
-          saveFile(F"NoteSkin Selector Remastered/json/editor/${j}.json", json.stringify(a:save(), nil, 5))
+          local editorFileFilter = editorInputFieldSaveFile:get_field():gsub('%..*', '')
+          saveFile(F"NoteSkin Selector Remastered/json/editor/${editorFileFilter}.json", json.stringify(EditorSkinNotes:save(), nil, 5))
      end
 
      if kbCondJustPressed('Z', FlavorUI_TextField_Focus) then
-          b:set_order(100)
+          EditorTemplateNotes:set_order(100)
      end
      if kbCondJustPressed('X', FlavorUI_TextField_Focus) then
-          b:set_order(3)
+          EditorTemplateNotes:set_order(3)
      end
      if kbCondJustPressed('C', FlavorUI_TextField_Focus) then
-          b:set_order(0)
+          EditorTemplateNotes:set_order(0)
      end
 end
