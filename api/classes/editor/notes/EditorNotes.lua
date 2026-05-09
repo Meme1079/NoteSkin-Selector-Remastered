@@ -6,6 +6,7 @@ local funkinlua = require 'mods.NoteSkin Selector Remastered.api.modules.funkinl
 
 local kbCondJustPressed = funkinlua.kbCondJustPressed
 local kbCondPressed     = funkinlua.kbCondPressed
+local clickObject       = funkinlua.clickObject
 
 ---@enum POSITION
 local POSITION = {
@@ -24,7 +25,7 @@ function EditorNotes:new(tag, sprite)
      local self = setmetatable({}, {__index = self})
      self.tag    = tag
      self.sprite = sprite
-     self.mouse = nil
+     self.mouse  = nil
 
      self._dir  = 1
      self._dirX = 0
@@ -226,7 +227,7 @@ function EditorNotes:update_animations()
                updateEditorNote('colored', F"${editorDirection} colored")
           end
 
-          if funkinlua.clickObject(editorTag, 'camHUD') == true then
+          if clickObject(editorTag, 'camHUD') == true then
                self._dir = tonumber( editorTag:match('%d$') )
 
                playSound('exitWindow')
@@ -290,6 +291,13 @@ function EditorNotes:save()
      return jsonNotesParse
 end
 
+function EditorNotes:remove()
+     for editorIndex = 1, 4 do
+          local editorTag = self.tag..tostring(editorIndex)
+          removeLuaSprite(editorTag, true)
+     end
+end
+
 function EditorNotes:get_offset_data_x()
      return tonumber( self.__json.offsets[self.__animation_name][self._dir][POSITION.X] )
 end
@@ -336,9 +344,6 @@ end
 
 function EditorNotes:_get_focused()
      return getPropertyFromClass('backend.ui.PsychUIInputText', 'focusOn') == nil
-end
-
-function EditorNotes:fart()
 end
 
 return EditorNotes

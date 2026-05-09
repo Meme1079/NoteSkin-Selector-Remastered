@@ -17,7 +17,7 @@
 	<SubTexture name="note splash green 10002" x="860" y="2" width="147" height="178" frameX="-10" frameY="-9" frameWidth="168" frameHeight="200"/>
 	<SubTexture name="note splash green 10003" x="1023" y="2" width="158" height="193" frameX="-3" frameY="-2" frameWidth="168" frameHeight="200"/>
 	<SubTexture name="note splash green 10004" x="1197" y="2" width="161" height="200" frameX="0" frameY="0" frameWidth="168" frameHeight="200"/>
-    <SubTexture name="note splash green 20000" x="688" y="2" width="156" height="164" frameX="-12" frameY="-11" frameWidth="168" frameHeight="200"/>
+     <SubTexture name="note splash green 20000" x="688" y="2" width="156" height="164" frameX="-12" frameY="-11" frameWidth="168" frameHeight="200"/>
 	<SubTexture name="note splash green 20001" x="688" y="2" width="156" height="164" frameX="-12" frameY="-11" frameWidth="168" frameHeight="200"/>
 	<SubTexture name="note splash green 20002" x="860" y="2" width="147" height="178" frameX="-10" frameY="-9" frameWidth="168" frameHeight="200"/>
 	<SubTexture name="note splash green 20003" x="1023" y="2" width="158" height="193" frameX="-3" frameY="-2" frameWidth="168" frameHeight="200"/>
@@ -29,7 +29,7 @@
 	<SubTexture name="note splash purple 10003" x="1709" y="2" width="158" height="193" frameX="-3" frameY="-2" frameWidth="168" frameHeight="200"/>
 	<SubTexture name="note splash purple 10004" x="2" y="218" width="161" height="200" frameX="0" frameY="0" frameWidth="168" frameHeight="200"/>
 
-<SubTexture name="note splash purple 20000" x="1374" y="2" width="156" height="164" frameX="-12" frameY="-11" frameWidth="168" frameHeight="200"/>
+     <SubTexture name="note splash purple 20000" x="1374" y="2" width="156" height="164" frameX="-12" frameY="-11" frameWidth="168" frameHeight="200"/>
 	<SubTexture name="note splash purple 20001" x="1374" y="2" width="156" height="164" frameX="-12" frameY="-11" frameWidth="168" frameHeight="200"/>
 	<SubTexture name="note splash purple 20002" x="1546" y="2" width="147" height="178" frameX="-10" frameY="-9" frameWidth="168" frameHeight="200"/>
 	<SubTexture name="note splash purple 20003" x="1709" y="2" width="158" height="193" frameX="-3" frameY="-2" frameWidth="168" frameHeight="200"/>
