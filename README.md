@@ -27,57 +27,51 @@ NoteSkin Selector Remastered © 2024 by Meme1079 is licensed under CC BY-NC-ND 4
      - A preview strum in each of the skins and its accompanying animations
 - Subfolders for custom skin packs
 - Customizable background music
-- Extremely Optimize
+- Somewhat Optimize, idk
 - Data Saving
 
 ## Controls
+### Selection
 - <kbd>Tab</kbd> - Entering the skin selection screen _(May required to be double-tap if double-tapping is enabled)_
 - <kbd>Q</kbd> or <kbd>E</kbd> - Switching up or down in pages
 - <kbd>O</kbd> or <kbd>P</kbd> - Switching left or right in skin selection states
 - <kbd>Z</kbd> or <kbd>X</kbd> - Switching left or right in preview animations
 - <kbd>Enter</Kbd> - Returning back to the song
 - <kbd>Esc</kbd> - Exiting without going back to the song
+- <kbd>F1</kbd> - Entering Skin Editor
+
+### Editor
+- <kbd>Z</Kbd> - Make the template reference note move closer
+- <kbd>X</Kbd> - Make the template reference note move back
+- <kbd>C</Kbd> - Make the template reference note disappear
+- <kbd>N</kbd> or <kbd>M</kbd> - Switching left or right in skin editor states
+- <kbd>W</Kbd>, <kbd>A</Kbd>, <kbd>S</Kbd>, <kbd>D</Kbd> - Moving the skin's offset positions
+- <kbd>UP</Kbd>, <kbd>LEFT</Kbd>, <kbd>DOWN</Kbd>, <kbd>RIGHT</Kbd> - Moving the skin's offset positions in smaller steps
+- <kbd>Enter</Kbd> - Returning back to the skin Selection
 
 ***
 
-## Version 2.0.1
-### Bug Fixes
-- Fixed a bug when typing special characters that correspond to the special string patterns, will result in an error.
-- Fixed a bug where the previously selected skin was prevented while switching to a different page and selecting skins from that page.
-
-## Version 2.0.0
+## Version 3.0.0
 ### Additions/Changes
-- Overhual the main GUI with a new redesign, cuz it looks cool. _(inspired by OreUI from Minecraft)_
-- Overhual the main source-code of the mod for organization and an ability to soft-code new skin selection states.
-     - Classes to create custom states for different skins by using inheritance and polymorphism stuff.
-     - Loads separated chunks of object sprites of the skins when switching pages.
-- Additions/Changes on the skin selection states.
-     - Added the splashskin selection state.
-          - Obviously works the same as the noteskin selection state.
-          - You can switch to other skin selection states by pressing <kbd>O</kbd> (left) or <kbd>P</kbd> (right) keys.
-     - Added a slider for switching skin pages manually.
-          - Automatically snaps to the nearest page.
-          - Automatically disable it itself if there's only contain 1 page within that state.
-     - Added prevention for invalid data.
-          - If detected, it will reset the specific data that is currently invalid.
-     - Added a search bar for searching certain skins more easily.
-     - Added a "smoother" color tweening to the background.
-- Additions/Changes on the Display Grid Selection.
-     - Added a new graphic icon to each display grid to easily see the skin's more easily.
-          - Features a hovering, pressed, selection, and blocked sprites.
-     - Increase the grid selection from a `3x4` to a `4x4`, to easily select more skins.
-- Additions/Changes on the Preview Strum Selection.
-     - Added a new GUI for selecting preview strum animations.
-          - Display it's current preview strum animation name.
-          - 2 selection buttons to change the preview strum animations.
-- Added an implementation for custom skin packs.
-     - Subfolders for the skin's texture within the skin packs (`images` folder).
-     - Subfolders for the skin's metdata JSON within the skin packs (`json` folder).
-- Organized file locations.
-     - Added an `api` folder to group: `classes`, `libraries`, and `modules` for convenient sake.
-     
-> [!NOTE]
-> The Noteskin Debug State is temporarily removed for reasons. Because I wanna rush it out becuase it has been almost a year without an update. And making an editor is the most hardest part, so cut me some slack here. This will be re-added back in the version 3.0.0.
+- Refactor the main source code to prevent shitty spaghetti code.
+     - Skin Classes have been split into multiple subclasses each corresponding to their functions.
+     - Added a custom UI API (FlavorUI), that I've dedicated way too long on this.
+- Added the Skin Editor, making way more better and stylish than the last time.
+- Added a new noteskin D-Sides and SonicFunk.
+- Added a warning for switching pages (i.e. using keys from your keyboard) while searching skins.
+- Added an ability to enable preview animation to fix conflicts with the note keybinds and controls.
+- Adjust scrollbar thumb offsets between the start and end page positions.
+- Selection of the skin will always remain constant, even when the skin has missing animations.
+- Optimize checkboxes, syncing and clicking now checks for its interaction instead of every updated frame.
+- Optimize certain parts of the code that might slightly actually optimize it.
+     - Correctly allocate table to their corresponding array and dictionaries.
+     - Remove certain component attributes that have never been utilize within the code.
+
+### Bug Fixes
+- Fixed a previous bug where holding the skin button then switching to another page, will cause some selection issue when choosing a skin.
+- Fixed a bug where the searching algorithm would not render any skins due to the array having a max limit for some reason.
+- Fixed a bug where the skin highlight name wouldn't render properly when searching/switching while hovering the skins.
+- Fixed a bug when searching up skins will have their incorrect offsets shown.
 
 ***
 
@@ -104,6 +98,7 @@ NoteSkin Selector Remastered © 2024 by Meme1079 is licensed under CC BY-NC-ND 4
 - Extras Menu - Sonic Mega Collection
 - Palmtree Panic (P mix) - Sonic CD
 - Monkey - Original: [Mario Paint (Hirokazu Tanaka)](https://www.youtube.com/watch?v=gMRFXrbfKEo); Remix: [Mario's Madness (FriedFrick)](https://www.youtube.com/watch?v=x0AMU2nelAw)
+- [Cruising](https://www.youtube.com/watch?v=samD2CCGkRU) - Xploshi
 
 ## Lua Libraries
 <!-- - [MathParser](https://github.com/bytexenon/MathParser.lua) - bytexenon -->

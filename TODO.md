@@ -9,4 +9,4 @@
 - [x] Support for version 0.7.3
 
 ## Version 3.0.0
-- [ ] Skin Debug State
+- [x] Skin Debug State
