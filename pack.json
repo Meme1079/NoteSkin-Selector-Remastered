@@ -1,7 +1,8 @@
 {
 	"name": "NoteSkin Selector",
-	"description": "A Remastered of NoteSkin Selector!\n\nOne of my old shitty mod, created in 2022. This mod heavily improves and enhances everything from the old mod. Making it selecting skins more easier and better.\n\nIt's basically, a more improved version of the current built-in noteskin system in the engine, because that one sucks ass ngl.\n\nVersion: 3.0.0\n\n© 2024 by Meme0179 is licensed under CC BY-NC-ND 4.0",
+	"description": "A Remastered of NoteSkin Selector!\n\nOne of my old shitty mod, created in 2022. This mod heavily improves and enhances everything from the old mod. Making it selecting skins more easier and better.\n\nIt's basically, a more improved version of the current built-in noteskin system in the engine, because that one sucks ass ngl.\n\nVersion: 3.0.0\n\n© 2024 by MemeFlavor is licensed under CC BY-NC-ND 4.0",
 	"restart": true,
 	"runsGlobally": true,
+	"version": "3.0.0",
 	"color": [70, 66, 173]
 }
